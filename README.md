@@ -1,5 +1,7 @@
 # Working Hours & Holidays
 
+Fork of [shrippen/kimai-holiday-bundle](https://github.com/shrippen/kimai-holiday-bundle) for [zafe](https://zafe.at), licensed GPL-3.0-or-later. Adds shift planning ([spec](docs/superpowers/specs/2026-10-23-kimai-dienstplan-design.md)). Requires Kimai ≥ 2.64, tested with 2.70.2.
+
 Open-source Kimai plugin for working hours, overtime, absences, and public holidays — an alternative to the commercial [WorkContractBundle / Controlling](https://www.kimai.org/en/store/controlling.html) plugin.
 
 **Requires [Kimai](https://www.kimai.org/) ≥ 2.64.** Do **not** install alongside `WorkContractBundle`; remove the commercial plugin first. Permission names and UX intentionally overlap so existing docs and habits transfer.
@@ -10,7 +12,7 @@ Open-source Kimai plugin for working hours, overtime, absences, and public holid
 |---|---|
 | **Kimai plugin id** | `HolidayBundle` |
 | **License** | [GPL-3.0-or-later](LICENSE) |
-| **PHP** | ≥ 8.1 |
+| **PHP** | ≥ 8.2 |
 
 ## Features
 
@@ -36,7 +38,7 @@ Open-source Kimai plugin for working hours, overtime, absences, and public holid
 
 ```bash
 cd /path/to/kimai/var/plugins
-git clone https://github.com/shrippen/kimai-holiday-bundle.git HolidayBundle
+git clone https://github.com/zafe-apps/kimai-holiday-bundle.git HolidayBundle
 ```
 
 Or download a release archive and extract it to `var/plugins/HolidayBundle/`.
@@ -72,14 +74,16 @@ Schedule that on the **host** if you want automatic updates (the official image 
 
 ### Absences
 
-**Employment contract → Absences** lists the absences of one user and year (`/holiday/absence/{year}`, `?user=` for other
+**Employment contract → Absences** lists the absences of one user and year (`/holiday/absence/{year}`, `{year}` = index of the vacation year (0 = first employment year; calendar year number without start date), `?user=` for other
 users you may access). The tiles at the top show vacation taken, vacation requested, sick days and the remaining vacation
 (entitlement from **Profile → Employment contract**).
+The vacation year runs from the contract start date (anniversary to anniversary) and the balance of the previous year
+carries over automatically; without a start date the calendar year is used and nothing carries over.
 
 - **Create** opens the absence form in a modal. Vacation, time off in lieu and "other" absences start as *Requested*;
   sickness is approved immediately.
 - Click a row (or **… → Edit**) to change an absence. Saving an approved absence that needs approval sets it back to
-  *Requested*.
+  *Requested*, unless an approver edits someone else's absence (it stays approved).
 - Approvers select requested absences with the checkboxes and use **Approve** / **Reject** below the table, or the row menu.
   Both run immediately; the notice offers **Undo**, which sets the absences back to *Requested*. Undo works for
   15 minutes, only for the approver who acted, in the same browser session, and only for absences nobody changed since.
@@ -101,7 +105,8 @@ requested absences as faded icons; today is framed. Filter by team with the team
 
 **Administration → Public holidays** manages public holiday groups. Select a group on the left, then add single holidays,
 import a calendar (curated ICS feeds or a custom HTTPS URL) or sync a subscribed group. The number of imported holidays
-is shown after the import.
+is shown after the import. Editing a group's exclusion list applies from the next sync or import; holidays already
+imported stay until they are deleted.
 
 ### Manual bookings
 
@@ -146,7 +151,7 @@ The personal **ICS calendar link** is a secret of its owner: it is created when 
 
 ## API (examples)
 
-- `GET /api/holiday/absences?year=2026`
+- `GET /api/holiday/absences?year=2026` (`year` is a calendar year, as in the ICS feed; the UI uses vacation years)
 - `POST /api/holiday/absences` — JSON: `type`, `startDate`, `endDate`, `halfDay`, `comment`
 - `POST /api/holiday/absences/{id}/approve|reject|request`
 - `GET /api/holiday/absences/types`
@@ -157,7 +162,7 @@ Dates must use `YYYY-MM-DD`. Invalid input (unknown type, bad date, end before s
 
 ## Absence timesheets
 
-With an absence project/activity configured (system settings) and calculation mode *compensate*, approving an absence creates one timesheet per workday. These entries are tagged with the timesheet meta field `holiday_absence_id`, are **not billable**, and replace the absence credit in the working-time balance (no double counting). They are removed when the absence is rejected, re-requested, edited or deleted — except entries that were already **exported**, which are kept. Absence days skip weekends, non-working days and full-day public holidays.
+With an absence project/activity configured (system settings) and calculation mode *compensate*, approving an absence creates one timesheet per workday. These entries are tagged with the timesheet meta field `holiday_absence_id`, are **not billable**, and replace the absence credit in the working-time balance (no double counting). They are removed when the absence is rejected, re-requested, edited or deleted — except entries that were already **exported**, which are kept. Absence days skip non-working days (no contract hours) and full-day public holidays.
 
 ## Compatibility
 

@@ -59,7 +59,7 @@
                                 <th class="text-nowrap">{{ 'user'|trans }}</th>
                                 {# Two-digit days (as Kimai's working times) keep the columns equally wide #}
                                 {% for day in 1..m.daysInMonth %}
-                                    {{ kit.calendar_day('%02d'|format(day), {tag: 'td', today: day == m.today, weekend: m.weekend[day]}) }}
+                                    {{ kit.calendar_day('%02d'|format(day), {tag: 'td', today: day == m.today}) }}
                                 {% endfor %}
                             </tr>
                         </thead>
@@ -80,7 +80,7 @@
                                         {{ kit.calendar_day('', {
                                             tag: 'td',
                                             today: day == m.today,
-                                            weekend: m.weekend[day],
+                                            weekend: row.off[day],
                                             holiday: holiday is not null,
                                             absence: entries|filter(e => not e.requested) is not empty,
                                             label: (holiday is not null ? [holiday] : [])|merge(labels)|join(', ') ?: null,

@@ -72,15 +72,17 @@ class AbsenceCalendarController extends AbstractController
         $months = [];
         for ($month = $firstMonth; $month <= $lastMonth; ++$month) {
             $monthStart = new \DateTimeImmutable(sprintf('%d-%02d-01', $year, $month));
-            $weekend = [];
             $daysInMonth = (int) $monthStart->format('t');
-            for ($day = 1; $day <= $daysInMonth; ++$day) {
-                $weekend[$day] = $this->workdayHelper->isWeekend($monthStart->setDate($year, $month, $day));
-            }
             $grid = [];
             foreach ($users as $user) {
+                // Per user: days without contract hours or on a full-day holiday are shaded
+                $off = [];
+                for ($day = 1; $day <= $daysInMonth; ++$day) {
+                    $off[$day] = $this->workdayHelper->isNonWorkingDay($user, $monthStart->setDate($year, $month, $day));
+                }
                 $grid[$user->getId()] = [
                     'user' => $user,
+                    'off' => $off,
                     'days' => [],
                     'holidays' => $holidays[$user->getId()][$month] ?? [],
                 ];
@@ -88,7 +90,6 @@ class AbsenceCalendarController extends AbstractController
             $months[$month] = [
                 'date' => $monthStart,
                 'daysInMonth' => $daysInMonth,
-                'weekend' => $weekend,
                 'today' => $today->format('Y-n') === $year . '-' . $month ? (int) $today->format('j') : null,
                 'grid' => $grid,
             ];

@@ -40,6 +40,7 @@
                             </a>
                             {% if g.icsUrl %}<span class="text-body-secondary" title="{{ 'holiday.public_holiday.subscribed'|trans }}">{{ icon('link', true) }}</span>{% endif %}
                             {{ widgets.table_actions({
+                                edit: {url: path('holiday_public_holiday_group_edit', {id: g.id}), class: 'modal-ajax-form'},
                                 trash: {url: path('holiday_public_holiday_group_delete', {id: g.id}), class: 'modal-ajax-form text-red', title: 'trash'},
                             }) }}
                         </div>
@@ -71,6 +72,7 @@
                             <td class="{{ datatable_column_class('holiday_public_holidays', 'half_day') }}">{{ widgets.label_boolean(h.halfDay) }}</td>
                             <td class="{{ datatable_column_class('holiday_public_holidays', 'actions') }}">
                                 {{ widgets.table_actions({
+                                    edit: {url: path('holiday_public_holiday_edit', {id: h.id}), class: 'modal-ajax-form'},
                                     trash: {url: path('holiday_public_holiday_delete', {id: h.id}), class: 'modal-ajax-form text-red', title: 'trash'},
                                 }) }}
                             </td>

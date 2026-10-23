@@ -22,21 +22,30 @@ class AbsenceRepository extends ServiceEntityRepository
     /**
      * @return Absence[]
      */
-    public function findByUserAndYear(User $user, int $year): array
+    public function findByUserBetween(User $user, \DateTimeInterface $from, \DateTimeInterface $to): array
     {
-        $start = new \DateTimeImmutable(sprintf('%d-01-01', $year));
-        $end = new \DateTimeImmutable(sprintf('%d-12-31', $year));
-
         return $this->createQueryBuilder('a')
             ->andWhere('a.user = :user')
-            ->andWhere('a.startDate <= :end')
-            ->andWhere('a.endDate >= :start')
+            ->andWhere('a.startDate <= :to')
+            ->andWhere('a.endDate >= :from')
             ->setParameter('user', $user)
-            ->setParameter('start', $start)
-            ->setParameter('end', $end)
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
             ->orderBy('a.startDate', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return Absence[]
+     */
+    public function findByUserAndYear(User $user, int $year): array
+    {
+        return $this->findByUserBetween(
+            $user,
+            new \DateTimeImmutable(sprintf('%d-01-01', $year)),
+            new \DateTimeImmutable(sprintf('%d-12-31', $year))
+        );
     }
 
     /**
@@ -109,6 +118,28 @@ class AbsenceRepository extends ServiceEntityRepository
     }
 
     /**
+     * Open requests of the given users, oldest start first (one query).
+     *
+     * @param User[] $users
+     * @return Absence[]
+     */
+    public function findRequestedForUsers(array $users): array
+    {
+        if ($users === []) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.user IN (:users)')
+            ->andWhere('a.status = :status')
+            ->setParameter('users', $users)
+            ->setParameter('status', AbsenceStatus::REQUESTED->value)
+            ->orderBy('a.startDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Absences of the user (not rejected) that overlap the given date range.
      *
      * @return Absence[]
@@ -156,22 +187,19 @@ class AbsenceRepository extends ServiceEntityRepository
     /**
      * @return Absence[]
      */
-    public function findApprovedVacationsInYear(User $user, int $year): array
+    public function findApprovedVacationsBetween(User $user, \DateTimeInterface $from, \DateTimeInterface $to): array
     {
-        $start = new \DateTimeImmutable(sprintf('%d-01-01', $year));
-        $end = new \DateTimeImmutable(sprintf('%d-12-31', $year));
-
         return $this->createQueryBuilder('a')
             ->andWhere('a.user = :user')
             ->andWhere('a.type = :type')
             ->andWhere('a.status = :status')
-            ->andWhere('a.startDate <= :end')
-            ->andWhere('a.endDate >= :start')
+            ->andWhere('a.startDate <= :to')
+            ->andWhere('a.endDate >= :from')
             ->setParameter('user', $user)
             ->setParameter('type', AbsenceType::VACATION)
             ->setParameter('status', AbsenceStatus::APPROVED)
-            ->setParameter('start', $start)
-            ->setParameter('end', $end)
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
             ->getQuery()
             ->getResult();
     }

@@ -7,9 +7,9 @@ use KimaiPlugin\HolidayBundle\Entity\Absence;
 use KimaiPlugin\HolidayBundle\Repository\PublicHolidayRepository;
 
 /**
- * Absence days only count on contractual workdays — never on weekends (Sat/Sun),
- * never on days with 0 expected hours (e.g. configured non-working weekdays)
- * and never on full-day public holidays of the user's holiday group.
+ * Absence days only count on contractual workdays: the contract has expected hours
+ * for that weekday (within contract start/end) and the day is no full-day public
+ * holiday of the user's holiday group. No weekday is special-cased.
  */
 class AbsenceWorkdayHelper
 {
@@ -22,11 +22,20 @@ class AbsenceWorkdayHelper
     ) {
     }
 
-    public function isWeekend(\DateTimeInterface $date): bool
+    /**
+     * Whether the contract expects hours on this day (weekday hours, contract start/end).
+     */
+    public function hasContractHours(User $user, \DateTimeInterface $date): bool
     {
-        $n = (int) ($date instanceof \DateTimeImmutable ? $date : \DateTimeImmutable::createFromInterface($date))->format('N');
+        return $this->userWorkContract->getExpectedSecondsForDate($user, $date) > 0;
+    }
 
-        return $n >= 6;
+    /**
+     * No contract hours or a full-day public holiday.
+     */
+    public function isNonWorkingDay(User $user, \DateTimeInterface $date): bool
+    {
+        return !$this->hasContractHours($user, $date) || $this->isFullDayPublicHoliday($user, $date);
     }
 
     /**
@@ -34,15 +43,7 @@ class AbsenceWorkdayHelper
      */
     public function isAbsenceApplicableDay(User $user, \DateTimeInterface $date): bool
     {
-        if ($this->isWeekend($date)) {
-            return false;
-        }
-
-        if ($this->userWorkContract->getExpectedSecondsForDate($user, $date) <= 0) {
-            return false;
-        }
-
-        return !$this->isFullDayPublicHoliday($user, $date);
+        return !$this->isNonWorkingDay($user, $date);
     }
 
     public function isFullDayPublicHoliday(User $user, \DateTimeInterface $date): bool
@@ -68,10 +69,9 @@ class AbsenceWorkdayHelper
     }
 
     /**
-     * Workdays covered by the absence (half-day = 0.5 per applicable day).
-     * Optionally limit to a calendar year for Urlaubskonto.
+     * Applicable days of the absence inside [$from, $to] (inclusive, null = unbounded).
      */
-    public function countDays(Absence $absence, ?int $year = null): float
+    public function countDaysBetween(Absence $absence, ?\DateTimeImmutable $from, ?\DateTimeImmutable $to): float
     {
         $user = $absence->getUser();
         $cursor = $absence->getStartDate();
@@ -82,7 +82,8 @@ class AbsenceWorkdayHelper
 
         $used = 0.0;
         while ($cursor <= $end) {
-            if (($year === null || (int) $cursor->format('Y') === $year) && $this->isAbsenceApplicableDay($user, $cursor)) {
+            $inWindow = ($from === null || $cursor >= $from) && ($to === null || $cursor <= $to);
+            if ($inWindow && $this->isAbsenceApplicableDay($user, $cursor)) {
                 $used += $absence->isHalfDay() ? 0.5 : 1.0;
             }
             $cursor = $cursor->modify('+1 day');

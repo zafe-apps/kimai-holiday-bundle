@@ -9,6 +9,7 @@ services:
         exclude:
             - '../../demo/'
             - '../../dev/'
+            - '../../Tests/'
             - '../../Migrations/'
             - '../../Resources/'
             - '../../DependencyInjection/'

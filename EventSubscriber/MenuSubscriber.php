@@ -3,7 +3,10 @@
 namespace KimaiPlugin\HolidayBundle\EventSubscriber;
 
 use App\Event\ConfigureMainMenuEvent;
+use App\Entity\User;
 use App\Utils\MenuItemModel;
+use KimaiPlugin\HolidayBundle\Service\OpenRequestCounter;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -12,8 +15,11 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class MenuSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly AuthorizationCheckerInterface $security)
-    {
+    public function __construct(
+        private readonly AuthorizationCheckerInterface $security,
+        private readonly Security $currentUser,
+        private readonly OpenRequestCounter $openRequests,
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -42,6 +48,10 @@ class MenuSubscriber implements EventSubscriberInterface
                 $absence->setTranslationDomain('messages');
                 $contract->addChild($absence);
             }
+
+            if ($this->security->isGranted('approve_other_absence')) {
+                $this->addRequestsItem($contract, $contract->getChild('holiday_absence'));
+            }
         }
 
         if ($this->security->isGranted('absence')) {
@@ -60,6 +70,30 @@ class MenuSubscriber implements EventSubscriberInterface
                 $item->setTranslationDomain('messages');
                 $admin->addChild($item);
             }
+        }
+    }
+
+    /**
+     * "Open requests" entry plus a badge on the absence entry, so approvers notice requests without a mailer.
+     */
+    private function addRequestsItem(MenuItemModel $contract, ?MenuItemModel $absence): void
+    {
+        $user = $this->currentUser->getUser();
+        $count = $user instanceof User ? $this->openRequests->countFor($user) : 0;
+
+        if ($contract->getChild('holiday_absence_requests') === null) {
+            $item = new MenuItemModel('holiday_absence_requests', 'holiday.menu.requests', 'holiday_absence_requests', [], 'holiday');
+            $item->setTranslationDomain('messages');
+            $contract->addChild($item);
+            if ($count > 0) {
+                $item->setBadge((string) $count);
+                $item->setBadgeColor('yellow');
+            }
+        }
+
+        if ($count > 0 && $absence !== null) {
+            $absence->setBadge((string) $count);
+            $absence->setBadgeColor('yellow');
         }
     }
 }

@@ -66,6 +66,10 @@
         <source>holiday.error.overlap</source>
         <target>Diese Abwesenheit überschneidet sich mit einer bestehenden Abwesenheit.</target>
       </trans-unit>
+      <trans-unit id="h020" resname="holiday.error.half_day_not_allowed">
+        <source>holiday.error.half_day_not_allowed</source>
+        <target>Halbe Urlaubstage sind nicht erlaubt.</target>
+      </trans-unit>
       <trans-unit id="h016" resname="holiday.error.not_requested">
         <source>holiday.error.not_requested</source>
         <target>Nur beantragte Abwesenheiten können genehmigt oder abgelehnt werden.</target>
@@ -81,6 +85,10 @@
       <trans-unit id="h019" resname="holiday.error.invalid_comment">
         <source>holiday.error.invalid_comment</source>
         <target>Der Kommentar muss ein Text sein.</target>
+      </trans-unit>
+      <trans-unit id="h100" resname="holiday.error.self_approval">
+        <source>holiday.error.self_approval</source>
+        <target>Eigene Abwesenheiten können nicht selbst genehmigt werden. Das macht ein anderer Genehmiger.</target>
       </trans-unit>
     </body>
   </file>

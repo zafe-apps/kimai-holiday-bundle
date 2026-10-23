@@ -46,7 +46,12 @@ final class AbsencePermissions
 
     public function canApproveFor(?User $user): bool
     {
-        return $this->check($user, 'approve_own_absence', 'approve_other_absence');
+        // nobody approves their own absence, admins included (Spec 4.3)
+        if ($user === null || $user === $this->getCurrentUser()) {
+            return false;
+        }
+
+        return $this->security->isGranted('approve_other_absence') && $this->canAccessUser($user);
     }
 
     public function canApprove(Absence $absence): bool

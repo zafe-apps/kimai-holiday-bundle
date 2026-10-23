@@ -15,7 +15,13 @@ function keys(string $file): array
         exit(1);
     }
     $xml->registerXPathNamespace('x', 'urn:oasis:names:tc:xliff:document:1.2');
-    $keys = array_map(static fn ($unit) => (string) $unit['resname'], $xml->xpath('//x:trans-unit'));
+    $units = $xml->xpath('//x:trans-unit');
+    $ids = array_map(static fn ($unit) => (string) $unit['id'], $units);
+    foreach (array_keys(array_filter(array_count_values($ids), static fn ($n) => $n > 1)) as $id) {
+        fwrite(STDERR, "FAIL: " . basename($file) . ": trans-unit id '$id' is duplicated\n");
+        $GLOBALS['failed'] = true;
+    }
+    $keys = array_map(static fn ($unit) => (string) $unit['resname'], $units);
     sort($keys);
 
     return $keys;

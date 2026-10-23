@@ -52,10 +52,13 @@ class HolidayExtension extends Extension implements PrependExtensionInterface
             'edit_public_holidays',
         ];
 
+        // approve_own_absence stays in the list above, but no role gets it: nobody approves their own absence
+        $granted = array_values(array_diff($permissions, ['approve_own_absence']));
+
         $container->prependExtensionConfig('kimai', [
             'permissions' => [
                 'roles' => [
-                    'ROLE_SUPER_ADMIN' => $permissions,
+                    'ROLE_SUPER_ADMIN' => $granted,
                     'ROLE_ADMIN' => [
                         'hours_own_profile',
                         'hours_other_profile',
@@ -72,7 +75,6 @@ class HolidayExtension extends Extension implements PrependExtensionInterface
                         'delete_other_absence',
                         'view_team_absence',
                         'view_other_absence',
-                        'approve_own_absence',
                         'approve_other_absence',
                         'approval_other_absence',
                         'edit_public_holidays',

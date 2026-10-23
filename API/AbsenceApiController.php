@@ -226,10 +226,8 @@ class AbsenceApiController extends AbstractController
 
     private function assertCanApprove(Absence $absence): void
     {
+        // nobody approves their own absence (the service enforces it as well)
         $own = $absence->getUser() === $this->getUser();
-        if ($own && $this->isGranted('approve_own_absence')) {
-            return;
-        }
         if (!$own && $this->isGranted('approve_other_absence') && $this->canAccessUser($absence->getUser())) {
             return;
         }

@@ -90,7 +90,7 @@ class CalendarFeedController extends AbstractController
         $events = [];
         foreach ($holidays as $holiday) {
             $date = $holiday->getDate();
-            if ($date === null || $this->workdayHelper->isWeekend($date)) {
+            if ($date === null || !$this->workdayHelper->hasContractHours($user, $date)) {
                 continue;
             }
             $events[] = [

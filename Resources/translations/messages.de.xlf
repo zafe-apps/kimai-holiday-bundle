@@ -309,7 +309,7 @@ Aktion: beantragt</target>
       </trans-unit>
       <trans-unit id="h075" resname="holiday.mail.approved.body">
         <source>holiday.mail.approved.body</source>
-        <target>Ihre Abwesenheit (%type%) vom %start% bis %end% wurde genehmigt.</target>
+        <target>%approver% hat die Abwesenheit von %user% (%type%) vom %start% bis %end% genehmigt.</target>
       </trans-unit>
       <trans-unit id="h076" resname="holiday.mail.rejected.subject">
         <source>holiday.mail.rejected.subject</source>
@@ -317,7 +317,7 @@ Aktion: beantragt</target>
       </trans-unit>
       <trans-unit id="h077" resname="holiday.mail.rejected.body">
         <source>holiday.mail.rejected.body</source>
-        <target>Ihre Abwesenheit (%type%) vom %start% bis %end% wurde abgelehnt.</target>
+        <target>%approver% hat die Abwesenheit von %user% (%type%) vom %start% bis %end% abgelehnt.</target>
       </trans-unit>
       <trans-unit id="h078" resname="holiday.public_holiday.country_help">
         <source>holiday.public_holiday.country_help</source>
@@ -601,7 +601,7 @@ Aktion: beantragt</target>
       </trans-unit>
       <trans-unit id="h148" resname="holiday.absence.empty_year">
         <source>holiday.absence.empty_year</source>
-        <target>Keine Abwesenheiten in %year%.</target>
+        <target>Keine Abwesenheiten im Urlaubsjahr %year%.</target>
       </trans-unit>
       <trans-unit id="h149" resname="holiday.page.absence">
         <source>holiday.page.absence</source>
@@ -630,6 +630,18 @@ Aktion: beantragt</target>
       <trans-unit id="h155" resname="holiday.kpi.vacation_left">
         <source>holiday.kpi.vacation_left</source>
         <target>Resturlaub</target>
+      </trans-unit>
+      <trans-unit id="h175" resname="holiday.kpi.carry_over">
+        <source>holiday.kpi.carry_over</source>
+        <target>Übertrag aus Vorjahr</target>
+      </trans-unit>
+      <trans-unit id="h176" resname="holiday.kpi.vacation_year">
+        <source>holiday.kpi.vacation_year</source>
+        <target>Urlaubsjahr %label%</target>
+      </trans-unit>
+      <trans-unit id="h177" resname="holiday.notice.no_start_date">
+        <source>holiday.notice.no_start_date</source>
+        <target>Kein Eintrittsdatum im Vertrag — Urlaubsjahr = Kalenderjahr</target>
       </trans-unit>
       <trans-unit id="h156" resname="holiday.kpi.of_entitlement">
         <source>holiday.kpi.of_entitlement</source>
@@ -702,6 +714,42 @@ Aktion: beantragt</target>
       <trans-unit id="h174" resname="holiday.absence.undo.skipped">
         <source>holiday.absence.undo.skipped</source>
         <target>%count% nicht zurückgesetzt: seitdem geändert oder Monat gesperrt.</target>
+      </trans-unit>
+      <trans-unit id="h178" resname="holiday.menu.requests">
+        <source>holiday.menu.requests</source>
+        <target>Offene Anträge</target>
+      </trans-unit>
+      <trans-unit id="h179" resname="holiday.requests.title">
+        <source>holiday.requests.title</source>
+        <target>Offene Anträge</target>
+      </trans-unit>
+      <trans-unit id="h180" resname="holiday.requests.empty">
+        <source>holiday.requests.empty</source>
+        <target>Keine offenen Anträge.</target>
+      </trans-unit>
+      <trans-unit id="h181" resname="holiday.requests.user">
+        <source>holiday.requests.user</source>
+        <target>Mitarbeiter</target>
+      </trans-unit>
+      <trans-unit id="h182" resname="holiday.public_holiday.excluded_names">
+        <source>holiday.public_holiday.excluded_names</source>
+        <target>Ausgeschlossene Feiertage</target>
+      </trans-unit>
+      <trans-unit id="h183" resname="holiday.public_holiday.excluded_names_help">
+        <source>holiday.public_holiday.excluded_names_help</source>
+        <target>Ein Name je Zeile. Diese Einträge aus dem Kalender werden nicht importiert; gelöschte Feiertage landen automatisch hier.</target>
+      </trans-unit>
+      <trans-unit id="h184" resname="holiday.public_holiday.edit">
+        <source>holiday.public_holiday.edit</source>
+        <target>Feiertag bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="h185" resname="holiday.public_holiday.deleted_excluded">
+        <source>holiday.public_holiday.deleted_excluded</source>
+        <target>Gelöscht. „%name%“ wurde der Ausschlussliste hinzugefügt und kommt beim Abgleich nicht zurück.</target>
+      </trans-unit>
+      <trans-unit id="h186" resname="holiday.public_holiday.edit_group">
+        <source>holiday.public_holiday.edit_group</source>
+        <target>Gruppe bearbeiten</target>
       </trans-unit>
     </body>
   </file>

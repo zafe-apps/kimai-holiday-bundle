@@ -1,28 +1,14 @@
-# Checks on every push: PHP syntax, translations (same keys in de and en), and the release zip
-# installed into Kimai 2.67 (dev/ci.sh).
-#
-# Public mirror: Gitea pushes every branch and tag here on each commit.
-# This runs the checks and reports them back to the commit on Gitea as
-# the status "github / test", where the pull requests live. There are no
-# pull requests on GitHub, so everything runs on push.
-#
-# Needs the secret GITEA_TOKEN: a Gitea token with write access to the
-# repository (commit statuses).
+# Checks on every push and pull request: PHP syntax, translations (same keys in de and en),
+# and the release zip installed into Kimai 2.70.2 (dev/ci.sh).
 name: CI
 
 on:
   push:
     branches: ["**"]
-
-# No concurrency group: every commit runs to the end and keeps its own
-# status, a newer push does not cancel an older run.
+  pull_request:
 
 permissions:
   contents: read
-
-env:
-  GITEA_STATUS: https://git.arianw.de/api/v1/repos/shrippen/kimai-holiday-bundle/statuses/${{ github.sha }}
-  RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 jobs:
   lint:
@@ -31,22 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.1', '8.2', '8.3', '8.4']
-    outputs:
-      started: ${{ steps.start.outputs.t }}
+        php: ['8.2', '8.3', '8.4']
     steps:
-      # A missing status is no reason to fail the checks.
-      - id: start
-        name: Report pending to Gitea
-        run: |
-          echo "t=$(date +%s)" >> "$GITHUB_OUTPUT"
-          curl -fsS -X POST "$GITEA_STATUS" \
-            -H "Authorization: token $GITEA_TOKEN" -H "Content-Type: application/json" \
-            -d "{\"state\":\"pending\",\"context\":\"github / test\",\"description\":\"running\",\"target_url\":\"$RUN_URL\"}" \
-            || echo "::warning::Gitea status not reported"
-        env:
-          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
-
       - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
@@ -61,14 +33,14 @@ jobs:
         run: php dev/check-translations.php
 
   kimai:
-    name: Kimai 2.67 end-to-end
+    name: Kimai 2.70.2 end-to-end
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      KIMAI_VERSION: '2.67.0'
+      KIMAI_VERSION: '2.70.2'
     services:
       mariadb:
-        image: mariadb:10.11
+        image: mariadb:11
         env:
           MARIADB_ROOT_PASSWORD: root
           MARIADB_DATABASE: kimai
@@ -92,13 +64,12 @@ jobs:
           tools: composer:v2
 
       - name: Database host
-        # Gitea runner: job container reaches the service by name; GitHub: service port on localhost
         env:
           HOST_PORT: ${{ job.services.mariadb.ports['3306'] }}
         run: |
           host=127.0.0.1 port="$HOST_PORT"
           if getent hosts mariadb > /dev/null; then host=mariadb port=3306; fi
-          echo "DATABASE_URL=mysql://kimai:kimai@$host:$port/kimai?charset=utf8mb4&serverVersion=10.11.0-MariaDB" >> "$GITHUB_ENV"
+          echo "DATABASE_URL=mysql://kimai:kimai@$host:$port/kimai?charset=utf8mb4&serverVersion=11.0.0-MariaDB" >> "$GITHUB_ENV"
 
       - name: Build plugin zip (same as release)
         working-directory: plugin
@@ -110,31 +81,15 @@ jobs:
       - name: Test the zip in Kimai
         run: plugin/dev/ci.sh kimai HolidayBundle-ci.zip
 
-  # Also runs when a check failed or was cancelled, so Gitea never keeps a
-  # stale "pending". success only if every check passed, failure if one
-  # failed, otherwise error (cancelled, skipped).
-  report:
-    needs: [lint, kimai]
-    if: always()
-    timeout-minutes: 5
+  unit:
+    name: Unit tests (PHPUnit in Docker)
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - name: Report result to Gitea
-        run: |
-          state=success
-          for r in $RESULTS; do
-            case "$r" in
-              success) ;;
-              failure) state=failure ;;
-              *) if [ "$state" = success ]; then state=error; fi ;;
-            esac
-          done
-          desc=$state
-          if [ -n "$STARTED" ]; then desc="$state in $(( ($(date +%s) - STARTED) / 60 )) min"; fi
-          curl -fsS -X POST "$GITEA_STATUS" \
-            -H "Authorization: token $GITEA_TOKEN" -H "Content-Type: application/json" \
-            -d "{\"state\":\"$state\",\"context\":\"github / test\",\"description\":\"$desc\",\"target_url\":\"$RUN_URL\"}"
-        env:
-          RESULTS: ${{ join(needs.*.result, ' ') }}
-          STARTED: ${{ needs.lint.outputs.started }}
-          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+      - uses: actions/checkout@v4
+
+      - name: Build Kimai dev image
+        run: docker compose -f dev/docker-compose.yml build kimai
+
+      - name: PHPUnit
+        run: dev/test.sh
