@@ -94,6 +94,29 @@ final class AbsenceApprovalServiceTest extends TestCase
         $this->assertNull($absence->getApprovedBy());
     }
 
+    public function testApproverEditingOthersAbsenceKeepsItApproved(): void
+    {
+        $boss = UserBuilder::make()->build();
+        $employee = UserBuilder::make()->build();
+        $absence = AbsenceBuilder::vacation($employee, '2026-10-21', '2026-10-21')->setStatus(AbsenceStatus::APPROVED);
+
+        $this->service(true, [$boss], [$boss, $employee])->update($absence, $boss);
+
+        $this->assertSame(AbsenceStatus::APPROVED, $absence->getStatus());
+        $this->assertSame($boss, $absence->getApprovedBy());
+    }
+
+    public function testUserEditingOwnAbsenceGoesBackToRequested(): void
+    {
+        $boss = UserBuilder::make()->build();
+        $absence = AbsenceBuilder::vacation($boss, '2026-10-21', '2026-10-21')->setStatus(AbsenceStatus::APPROVED);
+
+        $this->service(true, [$boss], [$boss])->update($absence, $boss);
+
+        $this->assertSame(AbsenceStatus::REQUESTED, $absence->getStatus());
+        $this->assertNull($absence->getApprovedBy());
+    }
+
     private function absence(AbsenceType $type, bool $half): Absence
     {
         $user = UserBuilder::make()->build();

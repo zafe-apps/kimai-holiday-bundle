@@ -91,7 +91,8 @@ class AbsenceApprovalService
     }
 
     /**
-     * Persist changes and require re-approval when the type needs approval.
+     * Persist changes and require re-approval when the type needs approval, unless an approver edits
+     * someone else's absence.
      * Compensatory timesheets are cleared until approved again.
      *
      * @param \DateTimeImmutable|null $previousStart Date range before the edit (for lock checks)
@@ -117,7 +118,8 @@ class AbsenceApprovalService
         $absence->setApprovedBy(null);
         $absence->setApprovedAt(null);
 
-        if ($absence->getType()->requiresApproval()) {
+        // an approver editing someone else's absence decides it right away (as in create())
+        if ($absence->getType()->requiresApproval() && !$this->isApprovedByActor($absence, $actor)) {
             $absence->setStatus(AbsenceStatus::REQUESTED);
             $this->absenceRepository->save($absence);
             $this->notifier->notifyRequested($absence);
