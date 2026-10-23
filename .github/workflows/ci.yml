@@ -80,3 +80,16 @@ jobs:
 
       - name: Test the zip in Kimai
         run: plugin/dev/ci.sh kimai HolidayBundle-ci.zip
+
+  unit:
+    name: Unit tests (PHPUnit in Docker)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Kimai dev image
+        run: docker compose -f dev/docker-compose.yml build kimai
+
+      - name: PHPUnit
+        run: dev/test.sh

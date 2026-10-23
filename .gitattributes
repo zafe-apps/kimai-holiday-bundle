@@ -12,3 +12,4 @@
 /dev            export-ignore
 /.claude        export-ignore
 /.superpowers    export-ignore
+/Tests          export-ignore
