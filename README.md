@@ -77,6 +77,8 @@ Schedule that on the **host** if you want automatic updates (the official image 
 **Employment contract → Absences** lists the absences of one user and year (`/holiday/absence/{year}`, `?user=` for other
 users you may access). The tiles at the top show vacation taken, vacation requested, sick days and the remaining vacation
 (entitlement from **Profile → Employment contract**).
+The vacation year runs from the contract start date (anniversary to anniversary) and the balance of the previous year
+carries over automatically; without a start date the calendar year is used and nothing carries over.
 
 - **Create** opens the absence form in a modal. Vacation, time off in lieu and "other" absences start as *Requested*;
   sickness is approved immediately.
@@ -159,7 +161,7 @@ Dates must use `YYYY-MM-DD`. Invalid input (unknown type, bad date, end before s
 
 ## Absence timesheets
 
-With an absence project/activity configured (system settings) and calculation mode *compensate*, approving an absence creates one timesheet per workday. These entries are tagged with the timesheet meta field `holiday_absence_id`, are **not billable**, and replace the absence credit in the working-time balance (no double counting). They are removed when the absence is rejected, re-requested, edited or deleted — except entries that were already **exported**, which are kept. Absence days skip weekends, non-working days and full-day public holidays.
+With an absence project/activity configured (system settings) and calculation mode *compensate*, approving an absence creates one timesheet per workday. These entries are tagged with the timesheet meta field `holiday_absence_id`, are **not billable**, and replace the absence credit in the working-time balance (no double counting). They are removed when the absence is rejected, re-requested, edited or deleted — except entries that were already **exported**, which are kept. Absence days skip non-working days (no contract hours) and full-day public holidays.
 
 ## Compatibility
 

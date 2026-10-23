@@ -24,7 +24,9 @@ final class AbsencePageSubscriber extends AbstractActionsSubscriber
             return;
         }
 
+        // 'year' is the vacation-year index (export); links to calendar pages need a calendar year
         $year = (int) ($payload['year'] ?? date('Y'));
+        $calendarYear = (int) ($payload['calendar_year'] ?? $year);
         $userParam = $user->getId() === $event->getUser()->getId() ? null : $user->getId();
 
         if ($payload['can_create'] ?? false) {
@@ -33,7 +35,7 @@ final class AbsencePageSubscriber extends AbstractActionsSubscriber
 
         if ($payload['can_ics'] ?? false) {
             $event->addAction('link', [
-                'url' => $this->path('holiday_absence_ics', ['user' => $userParam, 'year' => $year]),
+                'url' => $this->path('holiday_absence_ics', ['user' => $userParam, 'year' => $calendarYear]),
                 'class' => 'modal-ajax-form',
                 'title' => 'holiday.absence.ics.title',
                 'translation_domain' => 'messages',
@@ -44,7 +46,7 @@ final class AbsencePageSubscriber extends AbstractActionsSubscriber
 
         if ($this->isGranted('absence')) {
             $event->addAction('calendar', [
-                'url' => $this->path('holiday_absence_calendar', ['year' => $year]),
+                'url' => $this->path('holiday_absence_calendar', ['year' => $calendarYear]),
                 'title' => 'holiday.menu.absence_calendar',
                 'translation_domain' => 'messages',
             ]);

@@ -631,6 +631,18 @@ Aktion: beantragt</target>
         <source>holiday.kpi.vacation_left</source>
         <target>Resturlaub</target>
       </trans-unit>
+      <trans-unit id="h175" resname="holiday.kpi.carry_over">
+        <source>holiday.kpi.carry_over</source>
+        <target>Übertrag aus Vorjahr</target>
+      </trans-unit>
+      <trans-unit id="h176" resname="holiday.kpi.vacation_year">
+        <source>holiday.kpi.vacation_year</source>
+        <target>Urlaubsjahr %label%</target>
+      </trans-unit>
+      <trans-unit id="h177" resname="holiday.notice.no_start_date">
+        <source>holiday.notice.no_start_date</source>
+        <target>Kein Eintrittsdatum im Vertrag — Urlaubsjahr = Kalenderjahr</target>
+      </trans-unit>
       <trans-unit id="h156" resname="holiday.kpi.of_entitlement">
         <source>holiday.kpi.of_entitlement</source>
         <target>von %days% Tagen</target>

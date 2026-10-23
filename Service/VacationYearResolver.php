@@ -1,0 +1,98 @@
+<?php
+
+namespace KimaiPlugin\HolidayBundle\Service;
+
+use App\Entity\User;
+
+/**
+ * Vacation year = employment year starting on the anniversary of the contract start date
+ * (calendar year when the user has no start date).
+ */
+class VacationYearResolver
+{
+    public function isCalendarFallback(User $user): bool
+    {
+        return $user->getWorkStartingDay() === null;
+    }
+
+    public function forDate(User $user, \DateTimeInterface $date): VacationYear
+    {
+        $anchor = $this->anchor($user);
+        if ($anchor === null) {
+            return $this->calendarYear((int) $date->format('Y'));
+        }
+
+        $day = $date->format('Y-m-d');
+        $index = (int) $date->format('Y') - (int) $anchor->format('Y');
+        if ($this->startOf($anchor, $index)->format('Y-m-d') > $day) {
+            --$index;
+        }
+
+        return $this->forIndex($user, $index);
+    }
+
+    /**
+     * Index below 0 (before the contract start) falls into the first year.
+     */
+    public function forIndex(User $user, int $index): VacationYear
+    {
+        $anchor = $this->anchor($user);
+        if ($anchor === null) {
+            return $this->calendarYear($index);
+        }
+
+        $index = max(0, $index);
+
+        return new VacationYear(
+            $this->startOf($anchor, $index),
+            $this->startOf($anchor, $index + 1)->modify('-1 day'),
+            $index
+        );
+    }
+
+    /**
+     * Null before the contract start. Without a start date the calendar year before.
+     */
+    public function previous(User $user, VacationYear $year): ?VacationYear
+    {
+        if ($this->anchor($user) === null) {
+            return $this->calendarYear($year->index - 1);
+        }
+
+        return $year->index <= 0 ? null : $this->forIndex($user, $year->index - 1);
+    }
+
+    public function next(User $user, VacationYear $year): VacationYear
+    {
+        return $this->forIndex($user, $year->index + 1);
+    }
+
+    private function anchor(User $user): ?\DateTimeImmutable
+    {
+        $start = $user->getWorkStartingDay();
+
+        return $start === null ? null : \DateTimeImmutable::createFromInterface($start)->setTime(0, 0);
+    }
+
+    /**
+     * Anniversary in the year anchor+index; 29.02. becomes the last day of February in other years.
+     */
+    private function startOf(\DateTimeImmutable $anchor, int $index): \DateTimeImmutable
+    {
+        $year = (int) $anchor->format('Y') + $index;
+        $month = (int) $anchor->format('n');
+        $first = new \DateTimeImmutable(sprintf('%d-%02d-01', $year, $month));
+        $day = min((int) $anchor->format('j'), (int) $first->format('t'));
+
+        return $first->setDate($year, $month, $day);
+    }
+
+    private function calendarYear(int $year): VacationYear
+    {
+        return new VacationYear(
+            new \DateTimeImmutable(sprintf('%d-01-01', $year)),
+            new \DateTimeImmutable(sprintf('%d-12-31', $year)),
+            $year
+        );
+    }
+}

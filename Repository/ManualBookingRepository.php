@@ -53,11 +53,8 @@ class ManualBookingRepository extends ServiceEntityRepository
         return (int) $result;
     }
 
-    public function sumHolidayDaysInYear(User $user, int $year): float
+    public function sumHolidayDaysBetween(User $user, \DateTimeInterface $from, \DateTimeInterface $to): float
     {
-        $start = new \DateTimeImmutable(sprintf('%d-01-01', $year));
-        $end = new \DateTimeImmutable(sprintf('%d-12-31', $year));
-
         $result = $this->createQueryBuilder('b')
             ->select('COALESCE(SUM(b.amountDays), 0)')
             ->andWhere('b.user = :user')
@@ -65,8 +62,8 @@ class ManualBookingRepository extends ServiceEntityRepository
             ->andWhere('b.bookingDate BETWEEN :start AND :end')
             ->setParameter('user', $user)
             ->setParameter('kind', ManualBookingKind::HOLIDAY)
-            ->setParameter('start', $start)
-            ->setParameter('end', $end)
+            ->setParameter('start', $from)
+            ->setParameter('end', $to)
             ->getQuery()
             ->getSingleScalarResult();
 

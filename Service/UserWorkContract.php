@@ -47,34 +47,62 @@ class UserWorkContract
     }
 
     /**
-     * Yearly vacation entitlement. With $year, it is pro-rated for a contract that starts or ends
-     * within that year: 1/12 per full calendar month of employment, rounded up to half days.
+     * Yearly vacation entitlement for the calendar year (old callers); see getVacationDaysForYear().
      */
     public function getVacationDaysPerYear(User $user, ?int $year = null): float
     {
+        if ($year === null) {
+            return (float) $user->getHolidaysPerYear();
+        }
+
+        return $this->getVacationDaysForYear($user, new VacationYear(
+            new \DateTimeImmutable(sprintf('%d-01-01', $year)),
+            new \DateTimeImmutable(sprintf('%d-12-31', $year)),
+            $year
+        ));
+    }
+
+    /**
+     * Full entitlement for the vacation year. A contract that starts or ends inside the window gets
+     * 1/12 per full month of employment (months counted from the window start), rounded up to half days.
+     */
+    public function getVacationDaysForYear(User $user, VacationYear $year): float
+    {
         $perYear = (float) $user->getHolidaysPerYear();
-        if ($year === null || $perYear <= 0) {
+        if ($perYear <= 0) {
             return $perYear;
         }
 
         $start = $user->getWorkStartingDay();
         $end = $user->getLastWorkingDay();
-        $startDay = $start !== null ? $start->format('Y-m-d') : null;
-        $endDay = $end !== null ? $end->format('Y-m-d') : null;
+        $startDay = $start?->format('Y-m-d');
+        $endDay = $end?->format('Y-m-d');
 
-        if (($startDay === null || $startDay <= sprintf('%d-01-01', $year)) && ($endDay === null || $endDay >= sprintf('%d-12-31', $year))) {
+        if (($startDay === null || $startDay <= $year->start->format('Y-m-d')) && ($endDay === null || $endDay >= $year->end->format('Y-m-d'))) {
             return $perYear;
         }
 
         $months = 0;
-        for ($month = 1; $month <= 12; ++$month) {
-            $first = new \DateTimeImmutable(sprintf('%d-%02d-01', $year, $month));
-            if (($startDay === null || $startDay <= $first->format('Y-m-d')) && ($endDay === null || $endDay >= $first->format('Y-m-t'))) {
+        for ($month = 0; $month < 12; ++$month) {
+            $first = $this->addMonths($year->start, $month);
+            $last = $this->addMonths($year->start, $month + 1)->modify('-1 day');
+            if (($startDay === null || $startDay <= $first->format('Y-m-d')) && ($endDay === null || $endDay >= $last->format('Y-m-d'))) {
                 ++$months;
             }
         }
 
         return ceil($perYear * $months / 12 * 2) / 2;
+    }
+
+    /**
+     * Same day-of-month n months later, clamped to the month end (31.01. + 1 month = 28.02.).
+     */
+    private function addMonths(\DateTimeImmutable $date, int $months): \DateTimeImmutable
+    {
+        $first = $date->modify('first day of this month')->modify(sprintf('+%d months', $months));
+        $day = min((int) $date->format('j'), (int) $first->format('t'));
+
+        return $first->setDate((int) $first->format('Y'), (int) $first->format('n'), $day);
     }
 
     public function getPublicHolidayGroup(User $user): ?PublicHolidayGroup

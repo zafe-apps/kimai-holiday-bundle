@@ -631,6 +631,18 @@ Action: requested</target>
         <source>holiday.kpi.vacation_left</source>
         <target>Vacation left</target>
       </trans-unit>
+      <trans-unit id="h175" resname="holiday.kpi.carry_over">
+        <source>holiday.kpi.carry_over</source>
+        <target>Carry-over from last year</target>
+      </trans-unit>
+      <trans-unit id="h176" resname="holiday.kpi.vacation_year">
+        <source>holiday.kpi.vacation_year</source>
+        <target>Vacation year %label%</target>
+      </trans-unit>
+      <trans-unit id="h177" resname="holiday.notice.no_start_date">
+        <source>holiday.notice.no_start_date</source>
+        <target>No start date in the contract — vacation year = calendar year</target>
+      </trans-unit>
       <trans-unit id="h156" resname="holiday.kpi.of_entitlement">
         <source>holiday.kpi.of_entitlement</source>
         <target>of %days% days</target>

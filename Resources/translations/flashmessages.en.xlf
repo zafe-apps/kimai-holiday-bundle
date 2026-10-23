@@ -66,6 +66,10 @@
         <source>holiday.error.overlap</source>
         <target>This absence overlaps with an existing absence.</target>
       </trans-unit>
+      <trans-unit id="h020" resname="holiday.error.half_day_not_allowed">
+        <source>holiday.error.half_day_not_allowed</source>
+        <target>Half vacation days are not allowed.</target>
+      </trans-unit>
       <trans-unit id="h016" resname="holiday.error.not_requested">
         <source>holiday.error.not_requested</source>
         <target>Only requested absences can be approved or rejected.</target>

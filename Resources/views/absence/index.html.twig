@@ -9,13 +9,13 @@
 {% block javascripts %}{{ parent() }}{% include '@Holiday/_assets.html.twig' with {part: 'js'} %}{% endblock %}
 
 {% block page_intro %}
-    {{ kit.context_line([target_user.displayName, year]) }}
+    {{ kit.context_line([target_user.displayName, 'holiday.kpi.vacation_year'|trans({'%label%': vacation_year.label()})]) }}
     {{ parent() }}
 {% endblock %}
 
 {% block table_actions %}
     <div class="d-flex flex-wrap align-items-center gap-2">
-        {{ kit.period_nav(['year'], 'year', year, period.prev, period.next, period.today, {}) }}
+        {{ kit.period_nav(['year'], 'year', vacation_year.label(), period.prev, period.next, period.today, {}) }}
         {% if user_form is not null %}
             {{ form_start(user_form, {attr: {class: 'holiday-filter', 'data-holiday-autosubmit': '1'}}) }}
                 {{ form_widget(user_form.user) }}
@@ -60,16 +60,20 @@
 
 {% block main %}
     {% set contract_url = (is_granted('contract_other_profile') or target_user == app.user) ? path('user_profile_contract', {username: target_user.userIdentifier}) : null %}
+    {% if no_start_date %}
+        {{ kit.result_callout('holiday.notice.no_start_date'|trans, 'warning') }}
+    {% endif %}
+    {# the kit shows at most four tiles: the carry-over is a detail of the remaining-vacation tile #}
     {{ kit.kpi_bar([
         {label: 'holiday.kpi.vacation_taken'|trans, value: kpi.taken|amount, hint: 'days'|trans},
         {label: 'holiday.kpi.vacation_requested'|trans, value: kpi.requested|amount, hint: 'days'|trans, tier: kpi.requested > 0 ? 1 : null},
         {label: 'holiday.kpi.sick_days'|trans, value: kpi.sick|amount, hint: 'days'|trans, tier: kpi.sick > 0 ? 2 : null},
-        {label: 'holiday.kpi.vacation_left'|trans, value: kpi.left|amount, hint: 'holiday.kpi.of_entitlement'|trans({'%days%': kpi.entitlement|amount}), highlight: true, url: contract_url},
+        {label: 'holiday.kpi.vacation_left'|trans, value: kpi.left|amount, hint: 'holiday.kpi.of_entitlement'|trans({'%days%': kpi.entitlement|amount}), highlight: true, url: contract_url, details: [{label: 'holiday.kpi.carry_over'|trans, value: kpi.carry_over|amount}]},
     ]) }}
 
     {% if not dataTable.hasResults() %}
         {{ kit.empty_state(
-            'holiday.absence.empty_year'|trans({'%year%': year}),
+            'holiday.absence.empty_year'|trans({'%year%': vacation_year.label()}),
             can_create ? path('holiday_absence_create', {user: user_param}) : null,
             can_create ? 'holiday.absence.create'|trans : null,
             'modal-ajax-form'

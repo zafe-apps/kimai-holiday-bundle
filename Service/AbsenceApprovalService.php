@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Repository\WorkingTimeRepository;
 use KimaiPlugin\HolidayBundle\Entity\Absence;
 use KimaiPlugin\HolidayBundle\Enum\AbsenceStatus;
+use KimaiPlugin\HolidayBundle\Enum\AbsenceType;
 use KimaiPlugin\HolidayBundle\Repository\AbsenceRepository;
 use KimaiPlugin\HolidayBundle\Repository\MonthLockRepository;
 
@@ -51,6 +52,10 @@ class AbsenceApprovalService
         $duration = $absence->getDuration();
         if ($duration !== null && ($duration < 0 || $duration > self::MAX_DURATION)) {
             throw new \InvalidArgumentException('holiday.error.invalid_duration');
+        }
+
+        if ($absence->isHalfDay() && $absence->getType() === AbsenceType::VACATION && !$this->configuration->allowHalfDayVacation()) {
+            throw new \InvalidArgumentException('holiday.error.half_day_not_allowed');
         }
 
         if ($this->absenceRepository->findOverlapping($absence->getUser(), $startDay, $endDay, $absence->getId()) !== []) {
