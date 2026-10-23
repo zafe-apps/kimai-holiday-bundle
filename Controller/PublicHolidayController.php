@@ -92,6 +92,21 @@ class PublicHolidayController extends AbstractController
         return $this->renderModalForm($form, 'holiday.public_holiday.create_group', $this->generateUrl('holiday_public_holidays'));
     }
 
+    #[Route(path: '/group/{id}/edit', name: 'holiday_public_holiday_group_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    public function editGroup(Request $request, PublicHolidayGroup $group): Response
+    {
+        $form = $this->createModalForm(PublicHolidayGroupType::class, $group, $this->generateUrl('holiday_public_holiday_group_edit', ['id' => $group->getId()]));
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->groupRepository->save($group);
+
+            return $this->formSuccess($request, 'holiday_public_holidays', ['group' => $group->getId()], false);
+        }
+
+        return $this->renderModalForm($form, 'holiday.public_holiday.edit_group', $this->generateUrl('holiday_public_holidays', ['group' => $group->getId()]), $group->getName());
+    }
+
     #[Route(path: '/group/{id}/holiday/create', name: 'holiday_public_holiday_create', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function createHoliday(Request $request, PublicHolidayGroup $group): Response
     {

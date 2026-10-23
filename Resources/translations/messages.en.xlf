@@ -747,6 +747,10 @@ Action: requested</target>
         <source>holiday.public_holiday.deleted_excluded</source>
         <target>Deleted. “%name%” was added to the exclusions and will not come back on sync.</target>
       </trans-unit>
+      <trans-unit id="h186" resname="holiday.public_holiday.edit_group">
+        <source>holiday.public_holiday.edit_group</source>
+        <target>Edit group</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

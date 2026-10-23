@@ -747,6 +747,10 @@ Aktion: beantragt</target>
         <source>holiday.public_holiday.deleted_excluded</source>
         <target>Gelöscht. „%name%“ wurde der Ausschlussliste hinzugefügt und kommt beim Abgleich nicht zurück.</target>
       </trans-unit>
+      <trans-unit id="h186" resname="holiday.public_holiday.edit_group">
+        <source>holiday.public_holiday.edit_group</source>
+        <target>Gruppe bearbeiten</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
