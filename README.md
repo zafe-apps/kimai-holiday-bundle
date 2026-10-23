@@ -38,7 +38,7 @@ Open-source Kimai plugin for working hours, overtime, absences, and public holid
 
 ```bash
 cd /path/to/kimai/var/plugins
-git clone https://github.com/shrippen/kimai-holiday-bundle.git HolidayBundle
+git clone https://github.com/zafe-apps/kimai-holiday-bundle.git HolidayBundle
 ```
 
 Or download a release archive and extract it to `var/plugins/HolidayBundle/`.
@@ -83,7 +83,7 @@ carries over automatically; without a start date the calendar year is used and n
 - **Create** opens the absence form in a modal. Vacation, time off in lieu and "other" absences start as *Requested*;
   sickness is approved immediately.
 - Click a row (or **… → Edit**) to change an absence. Saving an approved absence that needs approval sets it back to
-  *Requested*.
+  *Requested*, unless an approver edits someone else's absence (it stays approved).
 - Approvers select requested absences with the checkboxes and use **Approve** / **Reject** below the table, or the row menu.
   Both run immediately; the notice offers **Undo**, which sets the absences back to *Requested*. Undo works for
   15 minutes, only for the approver who acted, in the same browser session, and only for absences nobody changed since.
@@ -105,7 +105,8 @@ requested absences as faded icons; today is framed. Filter by team with the team
 
 **Administration → Public holidays** manages public holiday groups. Select a group on the left, then add single holidays,
 import a calendar (curated ICS feeds or a custom HTTPS URL) or sync a subscribed group. The number of imported holidays
-is shown after the import.
+is shown after the import. Editing a group's exclusion list applies from the next sync or import; holidays already
+imported stay until they are deleted.
 
 ### Manual bookings
 
@@ -150,7 +151,7 @@ The personal **ICS calendar link** is a secret of its owner: it is created when 
 
 ## API (examples)
 
-- `GET /api/holiday/absences?year=2026`
+- `GET /api/holiday/absences?year=2026` (`year` is a calendar year, as in the ICS feed; the UI uses vacation years)
 - `POST /api/holiday/absences` — JSON: `type`, `startDate`, `endDate`, `halfDay`, `comment`
 - `POST /api/holiday/absences/{id}/approve|reject|request`
 - `GET /api/holiday/absences/types`

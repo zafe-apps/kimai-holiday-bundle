@@ -32,8 +32,11 @@ Fork for zafe (GPL-3.0-or-later, upstream `shrippen/kimai-holiday-bundle`), test
 ### Changed
 
 - The working day comes only from the contract; Saturday counts when the contract says so
-
-## [Unreleased]
+- "Allow half vacation days" is now enforced: half-day vacation is rejected when the setting is off
+- An approver who edits someone else's absence keeps it approved; self-edits go back to *Requested*
+- Undoing an approve/reject mails the requester and all approvers again ("requested")
+- `GET /api/holiday/absences?year=` and the ICS feed use calendar years, while the UI uses vacation (employment) years
+- Approver lookup also finds ROLE_ADMIN users who are not the logged-in user (`view_all_data` by role)
 
 ### Changed (user interface)
 
@@ -73,7 +76,11 @@ Fork for zafe (GPL-3.0-or-later, upstream `shrippen/kimai-holiday-bundle`), test
   (`AbsenceController::UPDATE_EVENT`, formerly `kimai.holidayUpdate`); the plugin's own click script is gone
 - Translation keys `holiday.absence.undo.expired`, `.changed`, `.skipped` added, `holiday.error.action_failed` removed;
   approve/reject counts cover 0
-- `AbsenceApprovalService::request()` has an optional `$notify` argument (undo does not mail approvers again)
+- `AbsenceApprovalService::request()` has an optional `$notify` argument (default true; undo mails again)
+
+### Removed
+
+- Unused `UserWorkContract::getVacationDaysPerYear()` and `AbsenceWorkdayHelper::countDays()`
 
 ### Fixed
 
