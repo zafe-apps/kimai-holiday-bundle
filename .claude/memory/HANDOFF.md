@@ -1,10 +1,10 @@
 # HANDOFF — WIP
 
-> Stand 2026-10-23 (Abend).
+> Stand 2026-10-23 (nach dem Rollout).
 
 ## Current goal
-Plan 1 „Fundament + Urlaub richtig" ausliefern: PR #1 mergen, Release v2.0.0, dann Rollout auf
-`zafe-server-1` (Task 8) gemeinsam mit dem Betreiber.
+Plan 1 in Betrieb nehmen: SMTP, Stammdaten und Nachtrag auf `zeiterfassung.zafe.at`; danach Plan 2
+(Standort + Verfügbarkeit + Aushilfe) und Plan 3 (Tagesverschiebung).
 
 ## Done
 - Spec freigegeben (`docs/superpowers/specs/2026-10-23-kimai-dienstplan-design.md`).
@@ -12,21 +12,18 @@ Plan 1 „Fundament + Urlaub richtig" ausliefern: PR #1 mergen, Release v2.0.0, 
   Final-Review über den ganzen Branch (Opus) mit einer Fix-Welle, Re-Review sauber.
 - Branch `feat/fundament-urlaub` (21 Commits über upstream `master`), CI grün (Lint 8.2–8.4,
   Unit-Tests in Docker, Kimai-2.70.2-End-to-End), 52 Tests / 106 Assertions.
-- **PR #1 offen:** https://github.com/zafe-apps/kimai-holiday-bundle/pull/1 — nicht gemergt.
+- PR #1 gemergt (`d3378f7`), Release v2.0.0 veröffentlicht (`HolidayBundle-2.0.0.zip`).
+- **Rollout Task 8 teilweise:** Backup, Kimai 2.70.2, Plugin 2.0.0 installiert, ICS-Cron (felix, 04:00) —
+  Protokoll `docs/rollout/2026-10-kimai-2.70.2-und-plugin.md`. Image per Override `~felix/kimai-override.yml`
+  gepinnt, weil `sudo` ein Passwort verlangt — Compose-Datei von alex muss nachgezogen werden.
 - Entscheidungen und aufgeschobene Kleinbefunde: SDD-Ledger
   `.superpowers/sdd/2026-10-23-plan-1-fundament-urlaub/progress.md` (git-ignoriert, nur lokal).
 
 ## In progress / Next
-- Betreiber-Freigabe für Merge + Release (`gh release create v2.0.0`, `release.yml` baut das Zip).
-- **Task 8 Rollout** (Plan, Task 8): Backup → Compose auf `kimai/kimai2:2.70.2` → SMTP
-  (`MAILER_URL`/`MAILER_FROM`, Zugangsdaten vom Betreiber) → Plugin-Zip ins Volume
-  `kimai_kimai_plugins`, `kimai:reload`, `kimai:bundle:holiday:install` → Rollen, Feiertagsgruppe
-  `at-de` ab Jahr des frühesten Eintritts, Verträge (Eintrittsdatum, Wochentage, Urlaubstage) →
-  Nachtrag alter Urlaube durch die Chefs → systemd-Timer `kimai:bundle:holiday:sync-ics`.
-  Protokoll nach `docs/rollout/2026-10-kimai-2.70.2-und-plugin.md`.
-- Danach Plan 2 (Standort + Verfügbarkeitsansicht + Aushilfe) und Plan 3 (Tagesverschiebung)
-  schreiben; offene Punkte in `TODO.md` (u. a. WebTestCase für Genehmigungsrouten, API/ICS noch
-  Kalenderjahr).
+- **Offen in Task 8:** SMTP (`MAILER_URL`/`MAILER_FROM`, Zugangsdaten vom Betreiber), Feiertagsgruppe
+  „Österreich" (`at-de`), Verträge der vier Personen (Eintritt, Wochentage, Urlaubstage), Nachtrag alter
+  Urlaube durch die Chefs, Compose-Datei nachziehen (alex/sudo).
+- Dann Plan 2 und Plan 3 schreiben; offene Punkte in `TODO.md`.
 
 ## Settled decisions
 - Fork statt WorkContractBundle: `decisions/0001-fork-statt-workcontractbundle.md`.
@@ -43,5 +40,5 @@ Plan 1 „Fundament + Urlaub richtig" ausliefern: PR #1 mergen, Release v2.0.0, 
 - TODO.md
 
 ## Blocked
-- Merge/Release und Rollout warten auf den Betreiber (SMTP-Zugangsdaten, Vertragsdaten je Person,
-  Liste bisheriger Urlaube).
+- SMTP-Zugangsdaten, Vertragsdaten je Person und Liste bisheriger Urlaube vom Betreiber; `sudo` auf
+  zafe-server-1 nur mit Passwort (Compose-Datei, systemd).
