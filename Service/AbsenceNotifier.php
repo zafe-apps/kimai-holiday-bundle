@@ -52,7 +52,6 @@ class AbsenceNotifier
             $this->translator->trans('holiday.mail.approved.body', [
                 '%approver%' => $absence->getApprovedBy()?->getDisplayName() ?? '',
                 '%user%' => $user->getDisplayName(),
-                '%user%' => $user->getDisplayName(),
                 '%type%' => $this->translator->trans($absence->getType()->label()),
                 '%start%' => $absence->getStartDate()?->format('Y-m-d') ?? '',
                 '%end%' => $absence->getEndDate()?->format('Y-m-d') ?? '',
@@ -72,7 +71,6 @@ class AbsenceNotifier
             $this->translator->trans('holiday.mail.rejected.subject'),
             $this->translator->trans('holiday.mail.rejected.body', [
                 '%approver%' => $absence->getApprovedBy()?->getDisplayName() ?? '',
-                '%user%' => $user->getDisplayName(),
                 '%user%' => $user->getDisplayName(),
                 '%type%' => $this->translator->trans($absence->getType()->label()),
                 '%start%' => $absence->getStartDate()?->format('Y-m-d') ?? '',

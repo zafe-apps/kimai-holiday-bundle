@@ -40,6 +40,33 @@ final class ApproverResolverTest extends TestCase
         $this->assertSame([$b, $employee], $this->resolver([$a, $b, $employee], [$a, $b])->subjectsFor($a));
     }
 
+    public function testIsApproverOfExcludesSelf(): void
+    {
+        [$admin, , $employee] = $this->users();
+
+        $this->assertFalse($this->resolver([$admin, $employee], [$admin])->isApproverOf($admin, $admin));
+    }
+
+    public function testIsApproverOfAcceptsOtherApprover(): void
+    {
+        [$admin, , $employee] = $this->users();
+
+        $this->assertTrue($this->resolver([$admin, $employee], [$admin])->isApproverOf($admin, $employee));
+    }
+
+    public function testIsSameMatchesDistinctObjectsWithSameId(): void
+    {
+        [$a, $b, $c] = $this->users();
+        foreach ([$a, $b] as $user) {
+            $id = new \ReflectionProperty(User::class, 'id');
+            $id->setValue($user, 7);
+        }
+        $resolver = $this->resolver([], []);
+
+        $this->assertTrue($resolver->isSame($a, $b));
+        $this->assertFalse($resolver->isSame($a, $c));
+    }
+
     /** @return list<User> */
     private function users(): array
     {

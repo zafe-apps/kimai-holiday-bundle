@@ -4,6 +4,7 @@ namespace KimaiPlugin\HolidayBundle\Tests\Service;
 
 use App\Repository\WorkingTimeRepository;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use KimaiPlugin\HolidayBundle\Entity\Absence;
 use KimaiPlugin\HolidayBundle\Enum\AbsenceStatus;
 use KimaiPlugin\HolidayBundle\Enum\AbsenceType;
@@ -12,6 +13,7 @@ use KimaiPlugin\HolidayBundle\Repository\MonthLockRepository;
 use KimaiPlugin\HolidayBundle\Service\AbsenceApprovalService;
 use KimaiPlugin\HolidayBundle\Service\AbsenceNotifier;
 use KimaiPlugin\HolidayBundle\Service\AbsenceTimesheetService;
+use KimaiPlugin\HolidayBundle\Service\ApproverAccess;
 use KimaiPlugin\HolidayBundle\Service\ApproverResolver;
 use KimaiPlugin\HolidayBundle\Service\HolidayConfiguration;
 use KimaiPlugin\HolidayBundle\Tests\Support\AbsenceBuilder;
@@ -75,7 +77,7 @@ final class AbsenceApprovalServiceTest extends TestCase
         $employee = UserBuilder::make()->build();
         $absence = AbsenceBuilder::vacation($employee, '2026-10-21', '2026-10-21')->setStatus(AbsenceStatus::NEW);
 
-        $this->service(true, [$boss])->create($absence, $boss);
+        $this->service(true, [$boss], [$boss, $employee])->create($absence, $boss);
 
         $this->assertSame(AbsenceStatus::APPROVED, $absence->getStatus());
         $this->assertSame($boss, $absence->getApprovedBy());
@@ -86,7 +88,7 @@ final class AbsenceApprovalServiceTest extends TestCase
         $boss = UserBuilder::make()->build();
         $absence = AbsenceBuilder::vacation($boss, '2026-10-21', '2026-10-21')->setStatus(AbsenceStatus::NEW);
 
-        $this->service(true, [$boss])->create($absence, $boss);
+        $this->service(true, [$boss], [$boss])->create($absence, $boss);
 
         $this->assertSame(AbsenceStatus::REQUESTED, $absence->getStatus());
         $this->assertNull($absence->getApprovedBy());
@@ -99,14 +101,20 @@ final class AbsenceApprovalServiceTest extends TestCase
         return AbsenceBuilder::vacation($user, '2026-10-21', '2026-10-21')->setType($type)->setHalfDay($half);
     }
 
-    /** @param list<User> $approvers approvers of every subject (the subject itself is skipped by the real resolver) */
-    private function service(bool $allowHalfDay, array $approvers = []): AbsenceApprovalService
+    /**
+     * Runs against the real ApproverResolver; only the permission seam and the user list are stubbed.
+     *
+     * @param list<User> $approvers users holding the approval permission (they access everyone)
+     * @param list<User> $users     all enabled users
+     */
+    private function service(bool $allowHalfDay, array $approvers = [], array $users = []): AbsenceApprovalService
     {
-        $resolver = $this->createStub(ApproverResolver::class);
-        $resolver->method('isApproverOf')->willReturnCallback(
-            static fn (User $actor, User $subject): bool => $actor !== $subject && \in_array($actor, $approvers, true)
-        );
-        $resolver->method('isSame')->willReturnCallback(static fn (User $a, User $b): bool => $a === $b);
+        $repository = $this->createStub(UserRepository::class);
+        $repository->method('findBy')->willReturn($users);
+        $access = $this->createStub(ApproverAccess::class);
+        $access->method('mayApprove')->willReturnCallback(static fn (User $u): bool => \in_array($u, $approvers, true));
+        $access->method('mayAccess')->willReturn(true);
+        $resolver = new ApproverResolver($repository, $access);
 
         $config = $this->createStub(HolidayConfiguration::class);
         $config->method('allowHalfDayVacation')->willReturn($allowHalfDay);
