@@ -34,6 +34,10 @@ class PublicHolidayGroup
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $icsFromYear = null;
 
+    /** Holiday names the importer skips (observances in the feed, holidays deleted by an admin). */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $excludedNames = null;
+
     /** @var Collection<int, PublicHoliday> */
     #[ORM\OneToMany(mappedBy: 'holidayGroup', targetEntity: PublicHoliday::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $holidays;
@@ -106,6 +110,34 @@ class PublicHolidayGroup
         $this->icsFromYear = $icsFromYear;
 
         return $this;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getExcludedNames(): array
+    {
+        return $this->excludedNames ?? [];
+    }
+
+    /**
+     * Trims, drops empty and duplicate (case-insensitive) names, keeps the original casing.
+     *
+     * @param list<string> $names
+     */
+    public function setExcludedNames(array $names): void
+    {
+        $clean = [];
+        foreach ($names as $name) {
+            $name = trim((string) $name);
+            $key = mb_strtolower($name);
+            if ($name === '' || isset($clean[$key])) {
+                continue;
+            }
+            $clean[$key] = $name;
+        }
+
+        $this->excludedNames = array_values($clean);
     }
 
     /**

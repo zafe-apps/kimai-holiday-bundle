@@ -10,7 +10,7 @@ namespace KimaiPlugin\HolidayBundle\Service;
 class HolidayIcsCatalog
 {
     /**
-     * @return list<array{id: string, label: string, country: string, region: ?string, url: string}>
+     * @return list<array{id: string, label: string, country: string, region: ?string, url: string, exclude: list<string>}>
      */
     public function all(): array
     {
@@ -22,6 +22,7 @@ class HolidayIcsCatalog
                 'country' => $def['country'],
                 'region' => $def['region'] ?? null,
                 'url' => $def['url'] ?? $this->googleHolidayUrl($def['calendar']),
+                'exclude' => $def['exclude'] ?? [],
             ];
         }
 
@@ -29,7 +30,7 @@ class HolidayIcsCatalog
     }
 
     /**
-     * @return array{id: string, label: string, country: string, region: ?string, url: string}|null
+     * @return array{id: string, label: string, country: string, region: ?string, url: string, exclude: list<string>}|null
      */
     public function get(string $id): ?array
     {
@@ -118,8 +119,8 @@ class HolidayIcsCatalog
 
         return array_merge($feeds, [
             // Other countries — Google Calendar holiday ICS
-            ['id' => 'at', 'label' => 'holiday.public_holiday.ics.at', 'country' => 'AT', 'calendar' => 'en.austrian#holiday@group.v.calendar.google.com'],
-            ['id' => 'at-de', 'label' => 'holiday.public_holiday.ics.at_de', 'country' => 'AT', 'calendar' => 'de.austrian#holiday@group.v.calendar.google.com'],
+            ['id' => 'at', 'label' => 'holiday.public_holiday.ics.at', 'country' => 'AT', 'calendar' => 'en.austrian#holiday@group.v.calendar.google.com', 'exclude' => ['All Souls\' Day', 'Christmas Eve', 'Daylight Saving Time ends', 'Daylight Saving Time starts', 'Easter Sunday', 'Father’s Day', 'First Advent Sunday', 'Good Friday (regional holiday)', 'Mother’s Day', 'New Year\'s Eve', 'Palm Sunday', 'Reformation Day', 'Whit Sunday', 'Yom Kippur (Vorarlberg)']],
+            ['id' => 'at-de', 'label' => 'holiday.public_holiday.ics.at_de', 'country' => 'AT', 'calendar' => 'de.austrian#holiday@group.v.calendar.google.com', 'exclude' => ['Allerseelen', 'Beginn der Sommerzeit', 'Ende der Sommerzeit', 'Erster Advent', 'Heiligabend', 'Jom Kippur (Vorarlberg)', 'Karfreitag (regionaler Feiertag)', 'Muttertag', 'Ostern', 'Palmsonntag', 'Pfingsten', 'Reformationstag', 'Silvester', 'Vatertag']],
             ['id' => 'ch', 'label' => 'holiday.public_holiday.ics.ch', 'country' => 'CH', 'calendar' => 'en.ch#holiday@group.v.calendar.google.com'],
             ['id' => 'ch-de', 'label' => 'holiday.public_holiday.ics.ch_de', 'country' => 'CH', 'calendar' => 'de.ch#holiday@group.v.calendar.google.com'],
             ['id' => 'fr', 'label' => 'holiday.public_holiday.ics.fr', 'country' => 'FR', 'calendar' => 'en.french#holiday@group.v.calendar.google.com'],

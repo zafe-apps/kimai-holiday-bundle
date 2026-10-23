@@ -70,6 +70,9 @@ class HolidayImporter
             $url = $feed['url'];
             $country = $feed['country'];
             $region = $feed['region'];
+            if ($group->getExcludedNames() === [] && $feed['exclude'] !== []) {
+                $group->setExcludedNames($feed['exclude']);
+            }
         } else {
             throw new \InvalidArgumentException('holiday.error.ics_source_required');
         }
@@ -129,7 +132,7 @@ class HolidayImporter
     {
         $count = 0;
 
-        foreach ($holidays as $item) {
+        foreach ($this->withoutExcluded($group, $holidays) as $item) {
             $date = new \DateTimeImmutable($item['date']);
             $existing = $this->publicHolidayRepository->findOneByGroupAndDate($group, $date);
             if ($existing !== null) {
@@ -148,6 +151,26 @@ class HolidayImporter
         $this->groupRepository->save($group);
 
         return $count;
+    }
+
+    /**
+     * Drops feed entries whose name is on the group's exclusion list (case-insensitive).
+     *
+     * @param list<array{date: string, name: string}> $holidays
+     *
+     * @return list<array{date: string, name: string}>
+     */
+    private function withoutExcluded(PublicHolidayGroup $group, array $holidays): array
+    {
+        $excluded = array_map(static fn (string $n): string => mb_strtolower(trim($n)), $group->getExcludedNames());
+        if ($excluded === []) {
+            return $holidays;
+        }
+
+        return array_values(array_filter(
+            $holidays,
+            static fn (array $item): bool => !\in_array(mb_strtolower(trim($item['name'])), $excluded, true)
+        ));
     }
 
     /**

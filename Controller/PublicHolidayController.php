@@ -116,6 +116,27 @@ class PublicHolidayController extends AbstractController
         return $this->renderModalForm($form, 'holiday.public_holiday.create', $this->generateUrl('holiday_public_holidays', ['year' => $year, 'group' => $group->getId()]), $group->getName());
     }
 
+    #[Route(path: '/holiday/{id}/edit', name: 'holiday_public_holiday_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    public function editHoliday(Request $request, PublicHoliday $holiday): Response
+    {
+        $group = $holiday->getHolidayGroup();
+        $year = (int) $holiday->getDate()?->format('Y');
+
+        $form = $this->createModalForm(PublicHolidayType::class, $holiday, $this->generateUrl('holiday_public_holiday_edit', ['id' => $holiday->getId()]));
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->holidayRepository->save($holiday);
+
+            return $this->formSuccess($request, 'holiday_public_holidays', [
+                'year' => (int) $holiday->getDate()?->format('Y'),
+                'group' => $group?->getId(),
+            ], false);
+        }
+
+        return $this->renderModalForm($form, 'holiday.public_holiday.edit', $this->generateUrl('holiday_public_holidays', ['year' => $year, 'group' => $group?->getId()]), $group?->getName());
+    }
+
     #[Route(path: '/group/{id}/import', name: 'holiday_public_holiday_import', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function import(Request $request, PublicHolidayGroup $group): Response
     {
@@ -175,8 +196,19 @@ class PublicHolidayController extends AbstractController
 
         if ($request->isMethod('POST')) {
             $this->assertCsrf($request);
+            $group = $holiday->getHolidayGroup();
+            $excluded = $group !== null && $group->getIcsUrl() !== null && $group->getIcsUrl() !== '';
+            if ($excluded) {
+                // The next ICS sync must not bring the deleted holiday back.
+                $group->setExcludedNames([...$group->getExcludedNames(), $holiday->getName()]);
+                $this->groupRepository->save($group, false);
+            }
             $this->holidayRepository->remove($holiday);
-            $this->flashSuccess('action.delete.success');
+            if ($excluded) {
+                $this->addFlash('kpu_result', $this->translator->trans('holiday.public_holiday.deleted_excluded', ['%name%' => $holiday->getName()]));
+            } else {
+                $this->flashSuccess('action.delete.success');
+            }
 
             return $this->formSuccess($request, 'holiday_public_holidays', $parameters);
         }

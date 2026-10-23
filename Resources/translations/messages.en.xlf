@@ -731,6 +731,22 @@ Action: requested</target>
         <source>holiday.requests.user</source>
         <target>Employee</target>
       </trans-unit>
+      <trans-unit id="h182" resname="holiday.public_holiday.excluded_names">
+        <source>holiday.public_holiday.excluded_names</source>
+        <target>Excluded holidays</target>
+      </trans-unit>
+      <trans-unit id="h183" resname="holiday.public_holiday.excluded_names_help">
+        <source>holiday.public_holiday.excluded_names_help</source>
+        <target>One name per line. These calendar entries are not imported; deleted holidays are added here automatically.</target>
+      </trans-unit>
+      <trans-unit id="h184" resname="holiday.public_holiday.edit">
+        <source>holiday.public_holiday.edit</source>
+        <target>Edit holiday</target>
+      </trans-unit>
+      <trans-unit id="h185" resname="holiday.public_holiday.deleted_excluded">
+        <source>holiday.public_holiday.deleted_excluded</source>
+        <target>Deleted. “%name%” was added to the exclusions and will not come back on sync.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
