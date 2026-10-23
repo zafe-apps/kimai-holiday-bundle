@@ -17,7 +17,7 @@ Read `.claude/rules/design-system.md`, `.claude/rules/typography.md`, `.claude/r
 2. **Structure first:** Propose the simplest information architecture and suitable patterns (table, form, list, tabs, modal). Remove unnecessary cards and repeated content.
 3. **Map to project:** Reuse kit macros and Kimai/Tabler classes. Preserve existing routes, permissions, API behavior and translation keys (`holiday.*`, texts in `*.de.xlf` and `*.en.xlf`).
 4. **Implement:** Create an efficient desktop view and a workable narrow version. Apply only scoped changes; keep advanced controls progressively disclosed when appropriate.
-5. **Verify:** Start the dev stack (`dev/kimai-dev.sh`, `http://localhost:8001`, login `admin`/`admin`) and check normal, loading, empty and error states; keyboard/focus/labels; long German strings; narrow viewports; and 4/12/30 rows where relevant. Use screenshot/browser review. If unavailable, disclose that visual verification was not performed.
+5. **Verify:** Start the dev stack (`dev/kimai-dev.sh`, `http://localhost:8001`, login `admin`/`admin1234`) and check normal, loading, empty and error states; keyboard/focus/labels; long German strings; narrow viewports; and 4/12/30 rows where relevant. Use screenshot/browser review. If unavailable, disclose that visual verification was not performed.
 6. **Handoff:** Summarize what changed, design rationale, files affected, evidence/tests and any unresolved tradeoffs.
 
 ## Constraints

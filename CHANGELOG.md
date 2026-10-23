@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0 (2026-10-23)
+
+Fork for zafe (GPL-3.0-or-later, upstream `shrippen/kimai-holiday-bundle`), tested on Kimai 2.70.2.
+
+### Breaking changes
+
+- The vacation year is the employment year from the contract start, no longer the calendar year. Without a start date
+  the calendar year is used and the absence page shows a notice
+- The `{year}` route parameter of the absence page and export is the vacation-year index (calendar year in the fallback);
+  values >= 1000 from old links map to the vacation year that starts in that calendar year
+- The permission `approve_own_absence` is removed from all roles: nobody approves their own absence
+- The supervisor is no longer a mail recipient; mails go to the requester and all approvers
+
+### Added
+
+- CI on Kimai 2.70.2 and PHP 8.2-8.4 (syntax, translation check, release zip installed into Kimai), Docker dev stack
+  (`dev/kimai-dev.sh`) and PHPUnit tests (`dev/test.sh`)
+- Vacation account per employment year with automatic carry-over, manual corrections included
+- Approvers are resolved per user; decision mails name the decider
+- Badge with the number of open requests in the menu and the page "Open requests" (`holiday_absence_requests`)
+- Approvers who create an absence for someone else get it approved directly
+- Austrian public holidays (`at`, `at-de`) with an exclusion list per group (defaults from the catalog); holidays
+  deleted from a subscribed group are added to the list and do not come back on sync
+- Routes `holiday_public_holiday_edit` (edit a holiday) and `holiday_public_holiday_group_edit` (edit a group, including
+  its exclusion list)
+- `dev/check-translations.php` also fails on duplicate `trans-unit` ids
+
+### Changed
+
+- The working day comes only from the contract; Saturday counts when the contract says so
+
 ## [Unreleased]
 
 ### Changed (user interface)

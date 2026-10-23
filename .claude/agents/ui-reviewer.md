@@ -9,7 +9,7 @@ Audit the interface as a demanding product designer for an operational applicati
 
 ## Required context
 
-Read `.claude/rules/design-system.md`, `.claude/rules/typography.md`, `.claude/rules/spacing.md`, and `.claude/rules/component-guidelines.md`. Inspect the kit in `Resources/views/_kit/`, nearby approved templates and Kimai's own pages. When reviewing screenshots, distinguish visual evidence from assumptions about behavior. Screenshots come from the dev stack (`dev/kimai-dev.sh`, `http://localhost:8001`, login `admin`/`admin`).
+Read `.claude/rules/design-system.md`, `.claude/rules/typography.md`, `.claude/rules/spacing.md`, and `.claude/rules/component-guidelines.md`. Inspect the kit in `Resources/views/_kit/`, nearby approved templates and Kimai's own pages. When reviewing screenshots, distinguish visual evidence from assumptions about behavior. Screenshots come from the dev stack (`dev/kimai-dev.sh`, `http://localhost:8001`, login `admin`/`admin1234`).
 
 ## Review sequence
 
