@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 // PreToolUse-Guardrail: blockt git-Aufrufe mit --no-verify (Umgehung der pre-commit-Checks).
-// Ersatz für ECCs block-no-verify-Dispatcher nach Deaktivierung des ecc-Plugins
-// (.claude/memory/decisions/0017-ecc-plugin-deaktiviert-rosinen-kopiert.md).
+// Übernommen aus simudrom-backoffice-control (zafe), dort seit 2026-08 im Einsatz.
 // Block = Begründung auf stderr + Exit 2; alles andere (inkl. eigener Fehler) = Exit 0 (fail-open).
 
 function block(message) {
