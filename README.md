@@ -1,5 +1,7 @@
 # Working Hours & Holidays
 
+Fork of [shrippen/kimai-holiday-bundle](https://github.com/shrippen/kimai-holiday-bundle) for [zafe](https://zafe.at), licensed GPL-3.0-or-later. Adds shift planning ([spec](docs/superpowers/specs/2026-10-23-kimai-dienstplan-design.md)). Requires Kimai ≥ 2.64, tested with 2.70.2.
+
 Open-source Kimai plugin for working hours, overtime, absences, and public holidays — an alternative to the commercial [WorkContractBundle / Controlling](https://www.kimai.org/en/store/controlling.html) plugin.
 
 **Requires [Kimai](https://www.kimai.org/) ≥ 2.64.** Do **not** install alongside `WorkContractBundle`; remove the commercial plugin first. Permission names and UX intentionally overlap so existing docs and habits transfer.
@@ -10,7 +12,7 @@ Open-source Kimai plugin for working hours, overtime, absences, and public holid
 |---|---|
 | **Kimai plugin id** | `HolidayBundle` |
 | **License** | [GPL-3.0-or-later](LICENSE) |
-| **PHP** | ≥ 8.1 |
+| **PHP** | ≥ 8.2 |
 
 ## Features
 
