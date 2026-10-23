@@ -19,6 +19,7 @@ use KimaiPlugin\HolidayBundle\Service\AbsenceApprovalService;
 use KimaiPlugin\HolidayBundle\Service\AbsenceExcelExporter;
 use KimaiPlugin\HolidayBundle\Service\AbsencePermissions;
 use KimaiPlugin\HolidayBundle\Service\AbsenceWorkdayHelper;
+use KimaiPlugin\HolidayBundle\Service\ApproverResolver;
 use KimaiPlugin\HolidayBundle\Service\UserIcsTokenService;
 use KimaiPlugin\HolidayBundle\Service\VacationAccountService;
 use KimaiPlugin\HolidayBundle\Service\VacationYearResolver;
@@ -62,6 +63,7 @@ class AbsenceController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly VacationYearResolver $yearResolver,
         private readonly VacationAccountService $accountService,
+        private readonly ApproverResolver $approverResolver,
     ) {
     }
 
@@ -176,6 +178,42 @@ class AbsenceController extends AbstractController
                 'next' => $this->generateUrl('holiday_absence', ['year' => $this->yearResolver->next($user, $vacationYear)->index, 'user' => $userParam]),
                 'today' => $vacationYear->index === $current->index ? null : $this->generateUrl('holiday_absence', ['year' => $current->index, 'user' => $userParam]),
             ],
+        ]);
+    }
+
+    /**
+     * Open requests of all users the current user may approve for (second channel next to the mails).
+     */
+    #[Route(path: '/absence/requests', name: 'holiday_absence_requests', methods: ['GET'])]
+    #[IsGranted('approve_other_absence')]
+    public function requests(): Response
+    {
+        $absences = $this->absenceRepository->findRequestedForUsers($this->approverResolver->subjectsFor($this->getUser()));
+
+        $days = [];
+        foreach ($absences as $absence) {
+            $days[$absence->getId()] = $this->workdayHelper->countDaysBetween($absence, $absence->getStartDate(), $absence->getEndDate());
+        }
+
+        $table = new DataTable('holiday_requests', new BaseQuery());
+        $table->setPagination(new Pagination(new ArrayAdapter($absences)));
+        $table->setSticky(false);
+        $table->addColumn('user', ['class' => 'alwaysVisible', 'orderBy' => false, 'title' => 'holiday.requests.user']);
+        $table->addColumn('type', ['class' => 'd-none d-md-table-cell', 'orderBy' => false, 'title' => 'holiday.absence.type']);
+        $table->addColumn('period', ['class' => 'alwaysVisible', 'orderBy' => false, 'title' => 'holiday.absence.period']);
+        $table->addColumn('days', ['class' => 'text-end w-min', 'orderBy' => false, 'title' => 'holiday.absence.days']);
+        $table->addColumn('comment', ['class' => 'd-none d-xl-table-cell', 'orderBy' => false, 'title' => 'comment']);
+        $table->addColumn('actions', ['class' => 'actions alwaysVisible']);
+
+        $page = new PageSetup($this->translator->trans('holiday.requests.title'));
+        $page->setActionName('holiday_absences');
+        $page->setActionPayload(['user' => $this->getUser(), 'can_create' => false, 'can_ics' => false]);
+        $page->setDataTable($table);
+
+        return $this->render('@Holiday/absence/requests.html.twig', [
+            'page_setup' => $page,
+            'dataTable' => $table,
+            'absence_days' => $days,
         ]);
     }
 
@@ -447,6 +485,7 @@ class AbsenceController extends AbstractController
         $doneIds = [];
         $doneAbsences = [];
         $skipped = 0;
+        $firstError = null;
         foreach ($absences as $absence) {
             if ($absence->getStatus() !== AbsenceStatus::REQUESTED) {
                 ++$skipped;
@@ -458,14 +497,17 @@ class AbsenceController extends AbstractController
                     : $this->approvalService->reject($absence, $this->getUser());
                 $doneIds[] = (int) $absence->getId();
                 $doneAbsences[] = $absence;
-            } catch (\InvalidArgumentException|\RuntimeException) {
+            } catch (\InvalidArgumentException|\RuntimeException $e) {
+                $firstError ??= $this->errorKey($e);
                 ++$skipped;
             }
         }
 
         $parameters = $this->listParameters($absences[0] ?? null);
         if ($doneIds === []) {
-            return $this->actionResult($request, $this->translator->trans('holiday.absence.bulk.none'), null, 'holiday_absence', $parameters, 422);
+            $reason = $firstError === null ? 'holiday.absence.bulk.none' : $firstError;
+
+            return $this->actionResult($request, $this->translator->trans($reason, [], $firstError === null ? null : 'flashmessages'), null, 'holiday_absence', $parameters, 422);
         }
 
         $message = $this->translator->trans($approve ? 'holiday.absence.bulk.approved' : 'holiday.absence.bulk.rejected', ['%count%' => \count($doneIds)]);

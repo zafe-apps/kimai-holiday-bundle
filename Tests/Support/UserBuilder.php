@@ -8,12 +8,15 @@ use App\WorkingTime\Mode\WorkingTimeModeDay;
 /** Builds a User with a "hours per weekday" work contract for unit tests. */
 final class UserBuilder
 {
+    private static int $counter = 0;
     private User $user;
 
     private function __construct()
     {
         $this->user = new User();
         $this->user->setWorkContractMode(WorkingTimeModeDay::ID);
+        $this->user->setEnabled(true);
+        $this->user->setUserIdentifier('user' . ++self::$counter);
     }
 
     public static function make(): self

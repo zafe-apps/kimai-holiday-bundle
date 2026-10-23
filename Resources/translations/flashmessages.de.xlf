@@ -86,6 +86,10 @@
         <source>holiday.error.invalid_comment</source>
         <target>Der Kommentar muss ein Text sein.</target>
       </trans-unit>
+      <trans-unit id="h100" resname="holiday.error.self_approval">
+        <source>holiday.error.self_approval</source>
+        <target>Eigene Abwesenheiten können nicht selbst genehmigt werden. Das macht ein anderer Genehmiger.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

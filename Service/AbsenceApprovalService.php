@@ -24,6 +24,7 @@ class AbsenceApprovalService
         private readonly HolidayConfiguration $configuration,
         private readonly AbsenceTimesheetService $timesheetService,
         private readonly WorkingTimeRepository $workingTimeRepository,
+        private readonly ApproverResolver $approverResolver,
     ) {
     }
 
@@ -72,7 +73,8 @@ class AbsenceApprovalService
             throw new \InvalidArgumentException('holiday.error.comment_required');
         }
 
-        if ($absence->getType()->requiresApproval()) {
+        // An approver entering an absence for someone else (e.g. retroactive entry) decides it right away.
+        if ($absence->getType()->requiresApproval() && !$this->isApprovedByActor($absence, $actor)) {
             $absence->setStatus(AbsenceStatus::REQUESTED);
             $this->absenceRepository->save($absence);
             $this->notifier->notifyRequested($absence);
@@ -151,6 +153,7 @@ class AbsenceApprovalService
 
     public function approve(Absence $absence, User $approver): Absence
     {
+        $this->assertNotOwn($absence, $approver);
         $this->assertRequested($absence);
         $this->assertNotLocked($absence);
         $absence->setStatus(AbsenceStatus::APPROVED);
@@ -165,6 +168,7 @@ class AbsenceApprovalService
 
     public function reject(Absence $absence, User $approver): Absence
     {
+        $this->assertNotOwn($absence, $approver);
         $this->assertRequested($absence);
         $this->assertNotLocked($absence);
         $this->timesheetService->removeAbsenceTimesheets($absence);
@@ -182,6 +186,21 @@ class AbsenceApprovalService
         $this->assertNotLocked($absence);
         $this->timesheetService->removeAbsenceTimesheets($absence);
         $this->absenceRepository->remove($absence);
+    }
+
+    private function isApprovedByActor(Absence $absence, User $actor): bool
+    {
+        $user = $absence->getUser();
+
+        return $user !== null && $this->approverResolver->isApproverOf($actor, $user);
+    }
+
+    private function assertNotOwn(Absence $absence, User $approver): void
+    {
+        $user = $absence->getUser();
+        if ($user !== null && $this->approverResolver->isSame($user, $approver)) {
+            throw new \InvalidArgumentException('holiday.error.self_approval');
+        }
     }
 
     private function assertRequested(Absence $absence): void

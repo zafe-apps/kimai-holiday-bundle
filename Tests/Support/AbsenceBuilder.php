@@ -20,4 +20,9 @@ final class AbsenceBuilder
             ->setEndDate(new \DateTimeImmutable($endYmd))
             ->setHalfDay(false);
     }
+
+    public static function requested(User $user, string $startYmd, string $endYmd): Absence
+    {
+        return self::vacation($user, $startYmd, $endYmd)->setStatus(AbsenceStatus::REQUESTED);
+    }
 }

@@ -118,6 +118,28 @@ class AbsenceRepository extends ServiceEntityRepository
     }
 
     /**
+     * Open requests of the given users, oldest start first (one query).
+     *
+     * @param User[] $users
+     * @return Absence[]
+     */
+    public function findRequestedForUsers(array $users): array
+    {
+        if ($users === []) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.user IN (:users)')
+            ->andWhere('a.status = :status')
+            ->setParameter('users', $users)
+            ->setParameter('status', AbsenceStatus::REQUESTED->value)
+            ->orderBy('a.startDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Absences of the user (not rejected) that overlap the given date range.
      *
      * @return Absence[]

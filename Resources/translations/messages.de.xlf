@@ -309,7 +309,7 @@ Aktion: beantragt</target>
       </trans-unit>
       <trans-unit id="h075" resname="holiday.mail.approved.body">
         <source>holiday.mail.approved.body</source>
-        <target>Ihre Abwesenheit (%type%) vom %start% bis %end% wurde genehmigt.</target>
+        <target>%approver% hat die Abwesenheit von %user% (%type%) vom %start% bis %end% genehmigt.</target>
       </trans-unit>
       <trans-unit id="h076" resname="holiday.mail.rejected.subject">
         <source>holiday.mail.rejected.subject</source>
@@ -317,7 +317,7 @@ Aktion: beantragt</target>
       </trans-unit>
       <trans-unit id="h077" resname="holiday.mail.rejected.body">
         <source>holiday.mail.rejected.body</source>
-        <target>Ihre Abwesenheit (%type%) vom %start% bis %end% wurde abgelehnt.</target>
+        <target>%approver% hat die Abwesenheit von %user% (%type%) vom %start% bis %end% abgelehnt.</target>
       </trans-unit>
       <trans-unit id="h078" resname="holiday.public_holiday.country_help">
         <source>holiday.public_holiday.country_help</source>
@@ -714,6 +714,22 @@ Aktion: beantragt</target>
       <trans-unit id="h174" resname="holiday.absence.undo.skipped">
         <source>holiday.absence.undo.skipped</source>
         <target>%count% nicht zurückgesetzt: seitdem geändert oder Monat gesperrt.</target>
+      </trans-unit>
+      <trans-unit id="h178" resname="holiday.menu.requests">
+        <source>holiday.menu.requests</source>
+        <target>Offene Anträge</target>
+      </trans-unit>
+      <trans-unit id="h179" resname="holiday.requests.title">
+        <source>holiday.requests.title</source>
+        <target>Offene Anträge</target>
+      </trans-unit>
+      <trans-unit id="h180" resname="holiday.requests.empty">
+        <source>holiday.requests.empty</source>
+        <target>Keine offenen Anträge.</target>
+      </trans-unit>
+      <trans-unit id="h181" resname="holiday.requests.user">
+        <source>holiday.requests.user</source>
+        <target>Mitarbeiter</target>
       </trans-unit>
     </body>
   </file>

@@ -15,6 +15,7 @@ class AbsenceNotifier
         private readonly MailerInterface $mailer,
         private readonly LoggerInterface $logger,
         private readonly TranslatorInterface $translator,
+        private readonly ApproverResolver $approverResolver,
     ) {
     }
 
@@ -25,14 +26,8 @@ class AbsenceNotifier
             return;
         }
 
-        $supervisor = method_exists($user, 'getSupervisor') ? $user->getSupervisor() : null;
-        $recipients = array_filter([
-            $user->getEmail(),
-            $supervisor instanceof User ? $supervisor->getEmail() : null,
-        ]);
-
         $this->send(
-            $recipients,
+            $this->recipients($user),
             $this->translator->trans('holiday.mail.requested.subject'),
             $this->translator->trans('holiday.mail.requested.body', [
                 '%user%' => $user->getDisplayName(),
@@ -47,14 +42,17 @@ class AbsenceNotifier
     public function notifyApproved(Absence $absence): void
     {
         $user = $absence->getUser();
-        if ($user === null || $user->getEmail() === null) {
+        if ($user === null) {
             return;
         }
 
         $this->send(
-            [$user->getEmail()],
+            $this->recipients($user),
             $this->translator->trans('holiday.mail.approved.subject'),
             $this->translator->trans('holiday.mail.approved.body', [
+                '%approver%' => $absence->getApprovedBy()?->getDisplayName() ?? '',
+                '%user%' => $user->getDisplayName(),
+                '%user%' => $user->getDisplayName(),
                 '%type%' => $this->translator->trans($absence->getType()->label()),
                 '%start%' => $absence->getStartDate()?->format('Y-m-d') ?? '',
                 '%end%' => $absence->getEndDate()?->format('Y-m-d') ?? '',
@@ -65,19 +63,35 @@ class AbsenceNotifier
     public function notifyRejected(Absence $absence): void
     {
         $user = $absence->getUser();
-        if ($user === null || $user->getEmail() === null) {
+        if ($user === null) {
             return;
         }
 
         $this->send(
-            [$user->getEmail()],
+            $this->recipients($user),
             $this->translator->trans('holiday.mail.rejected.subject'),
             $this->translator->trans('holiday.mail.rejected.body', [
+                '%approver%' => $absence->getApprovedBy()?->getDisplayName() ?? '',
+                '%user%' => $user->getDisplayName(),
+                '%user%' => $user->getDisplayName(),
                 '%type%' => $this->translator->trans($absence->getType()->label()),
                 '%start%' => $absence->getStartDate()?->format('Y-m-d') ?? '',
                 '%end%' => $absence->getEndDate()?->format('Y-m-d') ?? '',
             ])
         );
+    }
+
+    /**
+     * The requester and every account that could approve the request.
+     *
+     * @return list<string|null>
+     */
+    private function recipients(User $user): array
+    {
+        return [
+            $user->getEmail(),
+            ...array_map(static fn (User $approver): ?string => $approver->getEmail(), $this->approverResolver->approversFor($user)),
+        ];
     }
 
     /**

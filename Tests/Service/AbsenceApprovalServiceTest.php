@@ -3,13 +3,16 @@
 namespace KimaiPlugin\HolidayBundle\Tests\Service;
 
 use App\Repository\WorkingTimeRepository;
+use App\Entity\User;
 use KimaiPlugin\HolidayBundle\Entity\Absence;
+use KimaiPlugin\HolidayBundle\Enum\AbsenceStatus;
 use KimaiPlugin\HolidayBundle\Enum\AbsenceType;
 use KimaiPlugin\HolidayBundle\Repository\AbsenceRepository;
 use KimaiPlugin\HolidayBundle\Repository\MonthLockRepository;
 use KimaiPlugin\HolidayBundle\Service\AbsenceApprovalService;
 use KimaiPlugin\HolidayBundle\Service\AbsenceNotifier;
 use KimaiPlugin\HolidayBundle\Service\AbsenceTimesheetService;
+use KimaiPlugin\HolidayBundle\Service\ApproverResolver;
 use KimaiPlugin\HolidayBundle\Service\HolidayConfiguration;
 use KimaiPlugin\HolidayBundle\Tests\Support\AbsenceBuilder;
 use KimaiPlugin\HolidayBundle\Tests\Support\UserBuilder;
@@ -43,6 +46,52 @@ final class AbsenceApprovalServiceTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    public function testApproverMayNotApproveOwnAbsence(): void
+    {
+        $boss = UserBuilder::make()->build();
+        $absence = AbsenceBuilder::requested($boss, '2026-10-21', '2026-10-21');
+
+        try {
+            $this->service(true)->approve($absence, $boss);
+            $this->fail('self approval must throw');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertSame('holiday.error.self_approval', $e->getMessage());
+        }
+        $this->assertSame(AbsenceStatus::REQUESTED, $absence->getStatus());
+    }
+
+    public function testApproverMayNotRejectOwnAbsence(): void
+    {
+        $boss = UserBuilder::make()->build();
+        $absence = AbsenceBuilder::requested($boss, '2026-10-21', '2026-10-21');
+
+        $this->expectExceptionMessage('holiday.error.self_approval');
+        $this->service(true)->reject($absence, $boss);
+    }
+
+    public function testApproverCreatingForOtherIsApprovedDirectly(): void
+    {
+        $boss = UserBuilder::make()->build();
+        $employee = UserBuilder::make()->build();
+        $absence = AbsenceBuilder::vacation($employee, '2026-10-21', '2026-10-21')->setStatus(AbsenceStatus::NEW);
+
+        $this->service(true, [$boss])->create($absence, $boss);
+
+        $this->assertSame(AbsenceStatus::APPROVED, $absence->getStatus());
+        $this->assertSame($boss, $absence->getApprovedBy());
+    }
+
+    public function testUserCreatingForSelfIsRequested(): void
+    {
+        $boss = UserBuilder::make()->build();
+        $absence = AbsenceBuilder::vacation($boss, '2026-10-21', '2026-10-21')->setStatus(AbsenceStatus::NEW);
+
+        $this->service(true, [$boss])->create($absence, $boss);
+
+        $this->assertSame(AbsenceStatus::REQUESTED, $absence->getStatus());
+        $this->assertNull($absence->getApprovedBy());
+    }
+
     private function absence(AbsenceType $type, bool $half): Absence
     {
         $user = UserBuilder::make()->build();
@@ -50,8 +99,15 @@ final class AbsenceApprovalServiceTest extends TestCase
         return AbsenceBuilder::vacation($user, '2026-10-21', '2026-10-21')->setType($type)->setHalfDay($half);
     }
 
-    private function service(bool $allowHalfDay): AbsenceApprovalService
+    /** @param list<User> $approvers approvers of every subject (the subject itself is skipped by the real resolver) */
+    private function service(bool $allowHalfDay, array $approvers = []): AbsenceApprovalService
     {
+        $resolver = $this->createStub(ApproverResolver::class);
+        $resolver->method('isApproverOf')->willReturnCallback(
+            static fn (User $actor, User $subject): bool => $actor !== $subject && \in_array($actor, $approvers, true)
+        );
+        $resolver->method('isSame')->willReturnCallback(static fn (User $a, User $b): bool => $a === $b);
+
         $config = $this->createStub(HolidayConfiguration::class);
         $config->method('allowHalfDayVacation')->willReturn($allowHalfDay);
 
@@ -62,6 +118,7 @@ final class AbsenceApprovalServiceTest extends TestCase
             $config,
             $this->createStub(AbsenceTimesheetService::class),
             $this->createStub(WorkingTimeRepository::class),
+            $resolver,
         );
     }
 }

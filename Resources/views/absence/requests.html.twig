@@ -1,0 +1,41 @@
+{% extends 'datatable.html.twig' %}
+{% import '@Holiday/_kit/macros.html.twig' as kit %}
+
+{% block stylesheets %}{{ parent() }}{% include '@Holiday/_assets.html.twig' with {part: 'css'} %}{% endblock %}
+{% block javascripts %}{{ parent() }}{% include '@Holiday/_assets.html.twig' with {part: 'js'} %}{% endblock %}
+
+{% block page_content_start %}
+    {{ kit.result_callouts() }}
+    {{ parent() }}
+{% endblock %}
+
+{% block datatable_row_attr %}
+    {%- if is_granted('edit_other_absence') %} class="modal-ajax-form open-edit" data-href="{{ path('holiday_absence_edit', {id: entry.id}) }}"{% endif -%}
+{% endblock %}
+
+{% block datatable_column_value %}
+    {% if column == 'user' %}
+        {{ entry.user.displayName }}
+    {% elseif column == 'type' %}
+        <i class="{{ entry.type.icon|icon }} fa-fw me-1" aria-hidden="true"></i>{{ entry.type.label|trans }}
+    {% elseif column == 'period' %}
+        <i class="{{ entry.type.icon|icon }} fa-fw me-1 d-md-none" title="{{ entry.type.label|trans }}"></i>
+        <span class="kpu-num">{{ entry.startDate|date_short }}{% if entry.endDate != entry.startDate %} – {{ entry.endDate|date_short }}{% endif %}</span>
+    {% elseif column == 'days' %}
+        <span class="kpu-num">{{ (absence_days[entry.id] ?? 0)|amount }}</span>
+    {% elseif column == 'comment' %}
+        {{ entry.comment }}
+    {% elseif column == 'actions' %}
+        {% set event = actions(app.user, 'holiday_absence', 'index', {absence: entry}) %}
+        {% import 'macros/widgets.html.twig' as widgets %}
+        {{ widgets.table_actions(event.actions) }}
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+    {% if not dataTable.hasResults() %}
+        {{ kit.empty_state('holiday.requests.empty'|trans) }}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

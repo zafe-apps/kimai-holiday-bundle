@@ -86,6 +86,10 @@
         <source>holiday.error.invalid_comment</source>
         <target>The comment must be a string.</target>
       </trans-unit>
+      <trans-unit id="h100" resname="holiday.error.self_approval">
+        <source>holiday.error.self_approval</source>
+        <target>You cannot approve your own absence. Another approver has to do it.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
