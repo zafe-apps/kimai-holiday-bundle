@@ -391,7 +391,7 @@ class AbsenceController extends AbstractController
                 continue;
             }
             try {
-                $this->approvalService->request($absence, false);
+                $this->approvalService->request($absence, true);
                 ++$done;
             } catch (\InvalidArgumentException|\RuntimeException) {
                 ++$changed; // locked month: leave unchanged
