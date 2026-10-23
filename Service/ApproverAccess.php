@@ -23,6 +23,12 @@ class ApproverAccess
 
     public function mayAccess(User $subject, User $candidate): bool
     {
+        // Kimai's checkUserAccess() only honours "view all data" through a flag it sets for the logged-in
+        // user; a ROLE_ADMIN candidate who is not the session user would fall through to the team rules.
+        if ($this->permissions->hasRolePermission($candidate, 'view_all_data')) {
+            return true;
+        }
+
         return $this->permissions->checkUserAccess($subject, $candidate);
     }
 }
