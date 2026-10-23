@@ -47,22 +47,6 @@ class UserWorkContract
     }
 
     /**
-     * Yearly vacation entitlement for the calendar year (old callers); see getVacationDaysForYear().
-     */
-    public function getVacationDaysPerYear(User $user, ?int $year = null): float
-    {
-        if ($year === null) {
-            return (float) $user->getHolidaysPerYear();
-        }
-
-        return $this->getVacationDaysForYear($user, new VacationYear(
-            new \DateTimeImmutable(sprintf('%d-01-01', $year)),
-            new \DateTimeImmutable(sprintf('%d-12-31', $year)),
-            $year
-        ));
-    }
-
-    /**
      * Full entitlement for the vacation year. A contract that starts or ends inside the window gets
      * 1/12 per full month of employment (months counted from the window start), rounded up to half days.
      */

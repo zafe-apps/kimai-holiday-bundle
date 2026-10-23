@@ -23,7 +23,7 @@ final class AbsenceWorkdayHelperTest extends TestCase
         $user = UserBuilder::make()->wednesdayToSaturday(7 * 3600, 9 * 3600)->build();
         $absence = AbsenceBuilder::vacation($user, '2026-10-21', '2026-10-24'); // Mi–Sa
 
-        self::assertSame(4.0, $this->helper()->countDays($absence));
+        self::assertSame(4.0, $this->helper()->countDaysBetween($absence, null, null));
     }
 
     public function testMondayDoesNotCount(): void

@@ -69,23 +69,6 @@ class AbsenceWorkdayHelper
     }
 
     /**
-     * Workdays covered by the absence (half-day = 0.5 per applicable day).
-     * Optionally limit to a calendar year for Urlaubskonto.
-     */
-    public function countDays(Absence $absence, ?int $year = null): float
-    {
-        if ($year === null) {
-            return $this->countDaysBetween($absence, null, null);
-        }
-
-        return $this->countDaysBetween(
-            $absence,
-            new \DateTimeImmutable(sprintf('%d-01-01', $year)),
-            new \DateTimeImmutable(sprintf('%d-12-31', $year))
-        );
-    }
-
-    /**
      * Applicable days of the absence inside [$from, $to] (inclusive, null = unbounded).
      */
     public function countDaysBetween(Absence $absence, ?\DateTimeImmutable $from, ?\DateTimeImmutable $to): float
