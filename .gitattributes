@@ -12,3 +12,5 @@
 /docs            export-ignore
 /demo export-ignore
 /dev            export-ignore
+/.claude        export-ignore
+/.superpowers    export-ignore

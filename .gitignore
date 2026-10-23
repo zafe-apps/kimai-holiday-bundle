@@ -21,3 +21,9 @@ composer.lock
 .php-cs-fixer.cache
 .phpstan.cache
 /coverage/
+
+# Claude-Harness (lokal)
+.claude/logs/
+.claude/worktrees/
+.claude/settings.local.json
+.superpowers/
