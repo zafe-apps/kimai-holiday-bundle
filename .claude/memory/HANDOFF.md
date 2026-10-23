@@ -20,9 +20,9 @@ Plan 1 in Betrieb nehmen: SMTP, Stammdaten und Nachtrag auf `zeiterfassung.zafe.
   `.superpowers/sdd/2026-10-23-plan-1-fundament-urlaub/progress.md` (git-ignoriert, nur lokal).
 
 ## In progress / Next
-- **Offen in Task 8:** SMTP (`MAILER_URL`/`MAILER_FROM`, Zugangsdaten vom Betreiber), Feiertagsgruppe
-  „Österreich" (`at-de`), Verträge der vier Personen (Eintritt, Wochentage, Urlaubstage), Nachtrag alter
-  Urlaube durch die Chefs, Compose-Datei nachziehen (alex/sudo).
+- Task 8 technisch abgeschlossen (Mail über Microsoft-Relay intern bestätigt, Feiertagsgruppe
+  Österreich, Verträge Manuel/Moritz). **Beim Betreiber:** Nachtrag alter Urlaube, Exchange-Connector/SPF
+  für externe Empfänger (Gmail), Compose-Datei nachziehen (alex/sudo), Crontab-Header kosmetisch.
 - Dann Plan 2 und Plan 3 schreiben; offene Punkte in `TODO.md`.
 
 ## Settled decisions
@@ -40,5 +40,4 @@ Plan 1 in Betrieb nehmen: SMTP, Stammdaten und Nachtrag auf `zeiterfassung.zafe.
 - TODO.md
 
 ## Blocked
-- SMTP-Zugangsdaten, Vertragsdaten je Person und Liste bisheriger Urlaube vom Betreiber; `sudo` auf
-  zafe-server-1 nur mit Passwort (Compose-Datei, systemd).
+- Nachtrag der Urlaube und Connector-Prüfung beim Betreiber; `sudo` auf zafe-server-1 nur mit Passwort.
