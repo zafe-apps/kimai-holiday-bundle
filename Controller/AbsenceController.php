@@ -21,7 +21,6 @@ use KimaiPlugin\HolidayBundle\Service\AbsencePermissions;
 use KimaiPlugin\HolidayBundle\Service\AbsenceWorkdayHelper;
 use KimaiPlugin\HolidayBundle\Service\UserIcsTokenService;
 use KimaiPlugin\HolidayBundle\Service\VacationAccountService;
-use KimaiPlugin\HolidayBundle\Service\VacationYear;
 use KimaiPlugin\HolidayBundle\Service\VacationYearResolver;
 use KimaiPlugin\HolidayBundle\Service\WorkingTimeCalculator;
 use Pagerfanta\Adapter\ArrayAdapter;
@@ -71,7 +70,7 @@ class AbsenceController extends AbstractController
     public function index(Request $request, ?int $year = null): Response
     {
         $user = $this->getTargetUser($request, $this->userRepository);
-        $vacationYear = $this->resolveYear($user, $year);
+        $vacationYear = $this->yearResolver->fromRouteParam($user, $year);
         $year = $vacationYear->index;
         $absences = $this->absenceRepository->findByUserBetween($user, $vacationYear->start, $vacationYear->end);
         $account = $this->accountService->calculate($user, $vacationYear);
@@ -142,7 +141,7 @@ class AbsenceController extends AbstractController
         $userForm = null;
         if ($this->isGranted('hours_other_profile') || $this->isGranted('view_other_absence') || $this->isGranted('edit_other_absence')) {
             $userForm = $this->createFormForGetRequest(FormType::class, ['user' => $user], [
-                'action' => $this->generateUrl('holiday_absence', ['year' => $year]),
+                'action' => $this->generateUrl('holiday_absence'),
                 'csrf_protection' => false,
             ]);
             $userForm->add('user', UserType::class, ['label' => false, 'required' => true]);
@@ -169,7 +168,7 @@ class AbsenceController extends AbstractController
                 'requested' => $requestedVacation,
                 'sick' => $sickDays,
                 'left' => $account->balance,
-                'entitlement' => $account->entitlement + $account->corrections,
+                'entitlement' => $account->entitlement + $account->carryOver + $account->corrections,
                 'carry_over' => $account->carryOver,
             ],
             'period' => [
@@ -428,7 +427,7 @@ class AbsenceController extends AbstractController
     public function export(Request $request, int $year): Response
     {
         $user = $this->getTargetUser($request, $this->userRepository);
-        $vacationYear = $this->resolveYear($user, $year);
+        $vacationYear = $this->yearResolver->fromRouteParam($user, $year);
         $absences = $this->absenceRepository->findByUserBetween($user, $vacationYear->start, $vacationYear->end);
         $csv = $this->excelExporter->exportCsv($user, $absences);
 
@@ -557,25 +556,6 @@ class AbsenceController extends AbstractController
         }
 
         return $this->yearResolver->forDate($user, $date)->index;
-    }
-
-    /**
-     * URL parameter → vacation year. No value: the year of today. Calendar years (>= 1000) from older
-     * links map to the vacation year that starts in that calendar year.
-     */
-    private function resolveYear(User $user, ?int $param): VacationYear
-    {
-        $today = new \DateTimeImmutable('today');
-        if ($param === null) {
-            return $this->yearResolver->forDate($user, $today);
-        }
-        if ($this->yearResolver->isCalendarFallback($user) || $param < 1000) {
-            return $this->yearResolver->forIndex($user, $param);
-        }
-
-        $first = $this->yearResolver->forIndex($user, 0);
-
-        return $this->yearResolver->forIndex($user, $param - (int) $first->start->format('Y'));
     }
 
     private function createAbsenceForm(Absence $absence, string $action): FormInterface

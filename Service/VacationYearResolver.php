@@ -32,6 +32,28 @@ class VacationYearResolver
     }
 
     /**
+     * Route parameter → vacation year. No value: the year containing $today. Without a start date only
+     * calendar years (>= 1000) are valid. With a start date a small value is the index; a calendar year
+     * (>= 1000, older links) maps to the vacation year starting in that calendar year.
+     */
+    public function fromRouteParam(User $user, ?int $param, ?\DateTimeInterface $today = null): VacationYear
+    {
+        $today ??= new \DateTimeImmutable('today');
+        if ($param === null) {
+            return $this->forDate($user, $today);
+        }
+
+        if ($this->anchor($user) === null) {
+            return $param >= 1000 ? $this->calendarYear($param) : $this->forDate($user, $today);
+        }
+        if ($param < 1000) {
+            return $this->forIndex($user, $param);
+        }
+
+        return $this->forIndex($user, $param - (int) $this->forIndex($user, 0)->start->format('Y'));
+    }
+
+    /**
      * Index below 0 (before the contract start) falls into the first year.
      */
     public function forIndex(User $user, int $index): VacationYear

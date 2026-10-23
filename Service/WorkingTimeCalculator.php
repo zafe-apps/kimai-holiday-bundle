@@ -27,8 +27,6 @@ class WorkingTimeCalculator
         private readonly HolidayConfiguration $configuration,
         private readonly AbsenceWorkdayHelper $workdayHelper,
         private readonly AbsenceTimesheetService $absenceTimesheetService,
-        private readonly VacationAccountService $vacationAccountService,
-        private readonly VacationYearResolver $vacationYearResolver,
     ) {
     }
 
@@ -56,12 +54,7 @@ class WorkingTimeCalculator
      *   expected: int,
      *   actual: int,
      *   delta: int,
-     *   manualTime: int,
-     *   vacationUsed: float,
-     *   vacationEntitlement: float,
-     *   vacationBalance: float,
-     *   vacationCarryOver: float,
-     *   vacationYearLabel: string
+     *   manualTime: int
      * }
      */
     public function calculateYear(User $user, int $year, ?\DateTimeInterface $until = null): array
@@ -131,11 +124,6 @@ class WorkingTimeCalculator
         }
 
         $manualTime = $this->manualBookingRepository->sumTimeSecondsUntil($user, $untilDay);
-        // Vacation fields come from the vacation year that contains the report day (capped to this calendar year).
-        $account = $this->vacationAccountService->calculate(
-            $user,
-            $this->vacationYearResolver->forDate($user, min($untilDay, $yearEnd))
-        );
 
         return [
             'year' => $year,
@@ -144,11 +132,6 @@ class WorkingTimeCalculator
             'actual' => $yearActual + $manualTime,
             'delta' => ($yearActual + $manualTime) - $yearExpected,
             'manualTime' => $manualTime,
-            'vacationUsed' => $account->used,
-            'vacationEntitlement' => $account->entitlement + $account->corrections,
-            'vacationBalance' => $account->balance,
-            'vacationCarryOver' => $account->carryOver,
-            'vacationYearLabel' => $account->year->label(),
         ];
     }
 

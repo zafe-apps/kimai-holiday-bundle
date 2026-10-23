@@ -100,6 +100,31 @@ final class VacationYearResolverTest extends TestCase
         self::assertSame(0, $this->resolver()->forIndex($user, -3)->index);
     }
 
+    public function testRouteParamNullIsYearOfToday(): void
+    {
+        $user = UserBuilder::make()->startingOn('2024-03-15')->build();
+        $y = $this->resolver()->fromRouteParam($user, null, new \DateTimeImmutable('2026-10-23'));
+
+        self::assertSame(2, $y->index);
+    }
+
+    public function testRouteParamIndexAndLegacyCalendarYear(): void
+    {
+        $user = UserBuilder::make()->startingOn('2024-03-15')->build();
+
+        self::assertSame('2025-03-15', $this->resolver()->fromRouteParam($user, 1)->start->format('Y-m-d'));
+        self::assertSame('2026-03-15', $this->resolver()->fromRouteParam($user, 2026)->start->format('Y-m-d'));
+    }
+
+    public function testRouteParamSmallIndexIsInvalidWithoutStartDate(): void
+    {
+        $user = UserBuilder::make()->build();
+        $today = new \DateTimeImmutable('2026-10-23');
+
+        self::assertSame(2026, $this->resolver()->fromRouteParam($user, 2, $today)->index);
+        self::assertSame(2025, $this->resolver()->fromRouteParam($user, 2025, $today)->index);
+    }
+
     private function resolver(): VacationYearResolver
     {
         return new VacationYearResolver();

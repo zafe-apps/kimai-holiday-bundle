@@ -601,7 +601,7 @@ Aktion: beantragt</target>
       </trans-unit>
       <trans-unit id="h148" resname="holiday.absence.empty_year">
         <source>holiday.absence.empty_year</source>
-        <target>Keine Abwesenheiten in %year%.</target>
+        <target>Keine Abwesenheiten im Urlaubsjahr %year%.</target>
       </trans-unit>
       <trans-unit id="h149" resname="holiday.page.absence">
         <source>holiday.page.absence</source>

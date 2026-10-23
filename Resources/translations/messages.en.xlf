@@ -601,7 +601,7 @@ Action: requested</target>
       </trans-unit>
       <trans-unit id="h148" resname="holiday.absence.empty_year">
         <source>holiday.absence.empty_year</source>
-        <target>No absences in %year%.</target>
+        <target>No absences in vacation year %year%.</target>
       </trans-unit>
       <trans-unit id="h149" resname="holiday.page.absence">
         <source>holiday.page.absence</source>

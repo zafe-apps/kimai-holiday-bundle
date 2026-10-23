@@ -74,7 +74,7 @@ Schedule that on the **host** if you want automatic updates (the official image 
 
 ### Absences
 
-**Employment contract → Absences** lists the absences of one user and year (`/holiday/absence/{year}`, `?user=` for other
+**Employment contract → Absences** lists the absences of one user and year (`/holiday/absence/{year}`, `{year}` = index of the vacation year (0 = first employment year; calendar year number without start date), `?user=` for other
 users you may access). The tiles at the top show vacation taken, vacation requested, sick days and the remaining vacation
 (entitlement from **Profile → Employment contract**).
 The vacation year runs from the contract start date (anniversary to anniversary) and the balance of the previous year
