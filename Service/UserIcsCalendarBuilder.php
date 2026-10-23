@@ -12,7 +12,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Builds an ICS calendar with the user's public holidays and approved absences.
- * Absence events skip weekends and other non-working days (split into contiguous ranges).
+ * Absence events skip non-working days (split into contiguous ranges).
  * Event titles use the calendar owner's language preference.
  */
 class UserIcsCalendarBuilder
@@ -49,7 +49,7 @@ class UserIcsCalendarBuilder
         $group = $this->userWorkContract->getPublicHolidayGroup($user);
         if ($group !== null) {
             foreach ($this->publicHolidayRepository->findByGroupBetween($group, $from, $to) as $holiday) {
-                $lines = array_merge($lines, $this->publicHolidayEvent($holiday, $locale));
+                $lines = array_merge($lines, $this->publicHolidayEvent($user, $holiday, $locale));
             }
         }
 
@@ -89,10 +89,10 @@ class UserIcsCalendarBuilder
     /**
      * @return list<string>
      */
-    private function publicHolidayEvent(PublicHoliday $holiday, string $locale): array
+    private function publicHolidayEvent(User $user, PublicHoliday $holiday, string $locale): array
     {
         $date = $holiday->getDate();
-        if ($date === null || $this->workdayHelper->isWeekend($date)) {
+        if ($date === null || !$this->workdayHelper->hasContractHours($user, $date)) {
             return [];
         }
 
