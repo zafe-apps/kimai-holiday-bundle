@@ -25,6 +25,9 @@ class PermissionSectionSubscriber implements EventSubscriberInterface
             'workdays_override',
             'booking_contract',
             'times_contract',
+            'location',
+            'availability',
+            'shift',
         ]));
     }
 }

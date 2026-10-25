@@ -751,6 +751,14 @@ Action: requested</target>
         <source>holiday.public_holiday.edit_group</source>
         <target>Edit group</target>
       </trans-unit>
+      <trans-unit id="h187" resname="holiday.location.exception.closed">
+        <source>holiday.location.exception.closed</source>
+        <target>Closed</target>
+      </trans-unit>
+      <trans-unit id="h188" resname="holiday.location.exception.open">
+        <source>holiday.location.exception.open</source>
+        <target>Special opening hours</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

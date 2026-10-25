@@ -50,6 +50,11 @@ class HolidayExtension extends Extension implements PrependExtensionInterface
             'approve_other_absence',
             'approval_other_absence',
             'edit_public_holidays',
+            'view_location',
+            'edit_location',
+            'view_availability',
+            'extra_shift_own',
+            'extra_shift_other',
         ];
 
         // approve_own_absence stays in the list above, but no role gets it: nobody approves their own absence
@@ -78,6 +83,11 @@ class HolidayExtension extends Extension implements PrependExtensionInterface
                         'approve_other_absence',
                         'approval_other_absence',
                         'edit_public_holidays',
+                        'view_location',
+                        'edit_location',
+                        'view_availability',
+                        'extra_shift_own',
+                        'extra_shift_other',
                     ],
                     'ROLE_TEAMLEAD' => [
                         'hours_own_profile',
@@ -89,12 +99,18 @@ class HolidayExtension extends Extension implements PrependExtensionInterface
                         'view_team_absence',
                         'view_other_absence',
                         'approve_other_absence',
+                        'view_location',
+                        'view_availability',
+                        'extra_shift_own',
+                        'extra_shift_other',
                     ],
                     'ROLE_USER' => [
                         'hours_own_profile',
                         'absence',
                         'edit_own_absence',
                         'delete_own_absence',
+                        'view_availability',
+                        'extra_shift_own',
                     ],
                 ],
             ],
