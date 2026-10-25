@@ -26,6 +26,9 @@ class LocationSchedule
      */
     public function slotsBetween(Location $location, \DateTimeImmutable $from, \DateTimeImmutable $to): array
     {
+        $from = $from->setTime(0, 0);
+        $to = $to->setTime(0, 0);
+
         $exceptions = [];
         foreach ($this->exceptionRepository->findBetween($location, $from, $to) as $exception) {
             $day = $exception->getDate()?->format('Y-m-d');

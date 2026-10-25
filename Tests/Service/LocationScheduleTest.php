@@ -100,6 +100,22 @@ final class LocationScheduleTest extends TestCase
         self::assertArrayHasKey('2026-10-15', $slots);
     }
 
+    public function testSlotsBetweenNormalisesBoundsToMidnight(): void
+    {
+        $location = LocationBuilder::vienna(new PublicHolidayGroup());
+
+        $slots = $this->schedule($location)->slotsBetween(
+            $location,
+            new \DateTimeImmutable('2026-10-01 10:00'),
+            new \DateTimeImmutable('2026-10-31 00:00')
+        );
+
+        self::assertCount(31, $slots);
+        self::assertArrayHasKey('2026-10-31', $slots);
+        self::assertSame('00:00', $slots['2026-10-31']->date->format('H:i'));
+        self::assertSame('00:00', $slots['2026-10-01']->date->format('H:i'));
+    }
+
     /** @param list<PublicHoliday> $holidays */
     private function schedule(Location $location, array $holidays = []): LocationSchedule
     {
