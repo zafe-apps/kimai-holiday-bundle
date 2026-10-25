@@ -9,6 +9,7 @@ use KimaiPlugin\HolidayBundle\Entity\PublicHolidayGroup;
 use KimaiPlugin\HolidayBundle\Form\PublicHolidayGroupType;
 use KimaiPlugin\HolidayBundle\Form\PublicHolidayImportType;
 use KimaiPlugin\HolidayBundle\Form\PublicHolidayType;
+use KimaiPlugin\HolidayBundle\Repository\LocationRepository;
 use KimaiPlugin\HolidayBundle\Repository\PublicHolidayGroupRepository;
 use KimaiPlugin\HolidayBundle\Repository\PublicHolidayRepository;
 use KimaiPlugin\HolidayBundle\Service\HolidayImporter;
@@ -33,6 +34,7 @@ class PublicHolidayController extends AbstractController
         private readonly PublicHolidayGroupRepository $groupRepository,
         private readonly PublicHolidayRepository $holidayRepository,
         private readonly HolidayImporter $importer,
+        private readonly LocationRepository $locationRepository,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -241,6 +243,13 @@ class PublicHolidayController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             $this->assertCsrf($request);
+            // A location needs its group, the database would refuse the delete.
+            if ($this->locationRepository->findByHolidayGroup($group) !== []) {
+                $this->flashError('holiday.error.group_in_use');
+
+                return $this->formSuccess($request, 'holiday_public_holidays', ['group' => $group->getId()], false);
+            }
+
             $this->groupRepository->remove($group);
             $this->flashSuccess('action.delete.success');
 

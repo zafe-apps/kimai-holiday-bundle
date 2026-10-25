@@ -759,6 +759,190 @@ Aktion: beantragt</target>
         <source>holiday.location.exception.open</source>
         <target>Besondere Öffnungszeiten</target>
       </trans-unit>
+      <trans-unit id="h189" resname="holiday.menu.locations">
+        <source>holiday.menu.locations</source>
+        <target>Standorte</target>
+      </trans-unit>
+      <trans-unit id="h190" resname="holiday.page.locations">
+        <source>holiday.page.locations</source>
+        <target>Standorte</target>
+      </trans-unit>
+      <trans-unit id="h191" resname="holiday.location.name">
+        <source>holiday.location.name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="h192" resname="holiday.location.public_holiday_group">
+        <source>holiday.location.public_holiday_group</source>
+        <target>Feiertagsgruppe</target>
+      </trans-unit>
+      <trans-unit id="h193" resname="holiday.location.public_holiday_group_help">
+        <source>holiday.location.public_holiday_group_help</source>
+        <target>Die Feiertage dieser Gruppe schließen den Standort.</target>
+      </trans-unit>
+      <trans-unit id="h194" resname="holiday.location.active">
+        <source>holiday.location.active</source>
+        <target>Aktiv</target>
+      </trans-unit>
+      <trans-unit id="h195" resname="holiday.location.opening_hours">
+        <source>holiday.location.opening_hours</source>
+        <target>Öffnungszeiten</target>
+      </trans-unit>
+      <trans-unit id="h196" resname="holiday.location.opening_hours_help">
+        <source>holiday.location.opening_hours_help</source>
+        <target>Beide Zeiten leer: der Standort ist an diesem Wochentag geschlossen.</target>
+      </trans-unit>
+      <trans-unit id="h197" resname="holiday.location.opens_at">
+        <source>holiday.location.opens_at</source>
+        <target>Öffnet</target>
+      </trans-unit>
+      <trans-unit id="h198" resname="holiday.location.closes_at">
+        <source>holiday.location.closes_at</source>
+        <target>Schließt</target>
+      </trans-unit>
+      <trans-unit id="h199" resname="holiday.location.hours_incomplete">
+        <source>holiday.location.hours_incomplete</source>
+        <target>Öffnungs- und Schließzeit angeben oder beide leer lassen.</target>
+      </trans-unit>
+      <trans-unit id="h200" resname="holiday.location.hours_order">
+        <source>holiday.location.hours_order</source>
+        <target>Die Schließzeit muss nach der Öffnungszeit liegen.</target>
+      </trans-unit>
+      <trans-unit id="h201" resname="holiday.location.create">
+        <source>holiday.location.create</source>
+        <target>Standort anlegen</target>
+      </trans-unit>
+      <trans-unit id="h202" resname="holiday.location.edit">
+        <source>holiday.location.edit</source>
+        <target>Standort bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="h203" resname="holiday.location.delete_message">
+        <source>holiday.location.delete_message</source>
+        <target>Standort samt Öffnungszeiten, Ausnahmen und Zuordnungen löschen? Aushilfen und Abwesenheiten bleiben erhalten.</target>
+      </trans-unit>
+      <trans-unit id="h204" resname="holiday.location.empty">
+        <source>holiday.location.empty</source>
+        <target>Noch kein Standort angelegt.</target>
+      </trans-unit>
+      <trans-unit id="h205" resname="holiday.location.closed">
+        <source>holiday.location.closed</source>
+        <target>geschlossen</target>
+      </trans-unit>
+      <trans-unit id="h206" resname="holiday.location.actions">
+        <source>holiday.location.actions</source>
+        <target>Aktionen</target>
+      </trans-unit>
+      <trans-unit id="h207" resname="holiday.location.members">
+        <source>holiday.location.members</source>
+        <target>Mitglieder</target>
+      </trans-unit>
+      <trans-unit id="h208" resname="holiday.location.members_empty">
+        <source>holiday.location.members_empty</source>
+        <target>Noch keine Mitglieder.</target>
+      </trans-unit>
+      <trans-unit id="h209" resname="holiday.location.member">
+        <source>holiday.location.member</source>
+        <target>Nutzer</target>
+      </trans-unit>
+      <trans-unit id="h210" resname="holiday.location.member_add">
+        <source>holiday.location.member_add</source>
+        <target>Mitglied hinzufügen</target>
+      </trans-unit>
+      <trans-unit id="h211" resname="holiday.location.member_remove">
+        <source>holiday.location.member_remove</source>
+        <target>Entfernen</target>
+      </trans-unit>
+      <trans-unit id="h212" resname="holiday.location.member_removed">
+        <source>holiday.location.member_removed</source>
+        <target>Mitglied entfernt.</target>
+      </trans-unit>
+      <trans-unit id="h213" resname="holiday.location.exceptions">
+        <source>holiday.location.exceptions</source>
+        <target>Ausnahmen</target>
+      </trans-unit>
+      <trans-unit id="h214" resname="holiday.location.exception.date">
+        <source>holiday.location.exception.date</source>
+        <target>Datum</target>
+      </trans-unit>
+      <trans-unit id="h215" resname="holiday.location.exception.kind">
+        <source>holiday.location.exception.kind</source>
+        <target>Art</target>
+      </trans-unit>
+      <trans-unit id="h216" resname="holiday.location.exception.times_help">
+        <source>holiday.location.exception.times_help</source>
+        <target>Nur bei Sonderöffnung: beide Zeiten angeben.</target>
+      </trans-unit>
+      <trans-unit id="h217" resname="holiday.location.exception.comment">
+        <source>holiday.location.exception.comment</source>
+        <target>Kommentar</target>
+      </trans-unit>
+      <trans-unit id="h218" resname="holiday.location.exception.create">
+        <source>holiday.location.exception.create</source>
+        <target>Ausnahme hinzufügen</target>
+      </trans-unit>
+      <trans-unit id="h219" resname="holiday.location.exception.empty">
+        <source>holiday.location.exception.empty</source>
+        <target>Keine kommenden Ausnahmen.</target>
+      </trans-unit>
+      <trans-unit id="h220" resname="holiday.location.exception.delete">
+        <source>holiday.location.exception.delete</source>
+        <target>Löschen</target>
+      </trans-unit>
+      <trans-unit id="h221" resname="holiday.weekday.1">
+        <source>holiday.weekday.1</source>
+        <target>Montag</target>
+      </trans-unit>
+      <trans-unit id="h222" resname="holiday.weekday.short.1">
+        <source>holiday.weekday.short.1</source>
+        <target>Mo</target>
+      </trans-unit>
+      <trans-unit id="h223" resname="holiday.weekday.2">
+        <source>holiday.weekday.2</source>
+        <target>Dienstag</target>
+      </trans-unit>
+      <trans-unit id="h224" resname="holiday.weekday.short.2">
+        <source>holiday.weekday.short.2</source>
+        <target>Di</target>
+      </trans-unit>
+      <trans-unit id="h225" resname="holiday.weekday.3">
+        <source>holiday.weekday.3</source>
+        <target>Mittwoch</target>
+      </trans-unit>
+      <trans-unit id="h226" resname="holiday.weekday.short.3">
+        <source>holiday.weekday.short.3</source>
+        <target>Mi</target>
+      </trans-unit>
+      <trans-unit id="h227" resname="holiday.weekday.4">
+        <source>holiday.weekday.4</source>
+        <target>Donnerstag</target>
+      </trans-unit>
+      <trans-unit id="h228" resname="holiday.weekday.short.4">
+        <source>holiday.weekday.short.4</source>
+        <target>Do</target>
+      </trans-unit>
+      <trans-unit id="h229" resname="holiday.weekday.5">
+        <source>holiday.weekday.5</source>
+        <target>Freitag</target>
+      </trans-unit>
+      <trans-unit id="h230" resname="holiday.weekday.short.5">
+        <source>holiday.weekday.short.5</source>
+        <target>Fr</target>
+      </trans-unit>
+      <trans-unit id="h231" resname="holiday.weekday.6">
+        <source>holiday.weekday.6</source>
+        <target>Samstag</target>
+      </trans-unit>
+      <trans-unit id="h232" resname="holiday.weekday.short.6">
+        <source>holiday.weekday.short.6</source>
+        <target>Sa</target>
+      </trans-unit>
+      <trans-unit id="h233" resname="holiday.weekday.7">
+        <source>holiday.weekday.7</source>
+        <target>Sonntag</target>
+      </trans-unit>
+      <trans-unit id="h234" resname="holiday.weekday.short.7">
+        <source>holiday.weekday.short.7</source>
+        <target>So</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

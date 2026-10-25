@@ -71,6 +71,15 @@ class MenuSubscriber implements EventSubscriberInterface
                 $admin->addChild($item);
             }
         }
+
+        if ($this->security->isGranted('view_location')) {
+            $admin = $event->getAdminMenu();
+            if ($admin->getChild('holiday_locations') === null) {
+                $item = new MenuItemModel('holiday_locations', 'holiday.menu.locations', 'holiday_locations', [], 'pin');
+                $item->setTranslationDomain('messages');
+                $admin->addChild($item);
+            }
+        }
     }
 
     /**

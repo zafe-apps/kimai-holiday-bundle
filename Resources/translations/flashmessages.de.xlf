@@ -90,6 +90,18 @@
         <source>holiday.error.self_approval</source>
         <target>Eigene Abwesenheiten können nicht selbst genehmigt werden. Das macht ein anderer Genehmiger.</target>
       </trans-unit>
+      <trans-unit id="h101" resname="holiday.error.exception_times_incomplete">
+        <source>holiday.error.exception_times_incomplete</source>
+        <target>Bei Sonderöffnung beide Zeiten angeben.</target>
+      </trans-unit>
+      <trans-unit id="h102" resname="holiday.error.exception_exists">
+        <source>holiday.error.exception_exists</source>
+        <target>Für dieses Datum gibt es schon eine Ausnahme.</target>
+      </trans-unit>
+      <trans-unit id="h103" resname="holiday.error.group_in_use">
+        <source>holiday.error.group_in_use</source>
+        <target>Die Feiertagsgruppe wird von einem Standort verwendet und kann nicht gelöscht werden.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

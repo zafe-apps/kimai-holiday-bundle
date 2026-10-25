@@ -33,4 +33,22 @@ class LocationExceptionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findOneOn(Location $location, \DateTimeImmutable $date): ?LocationException
+    {
+        return $this->findOneBy(['location' => $location, 'date' => $date]);
+    }
+
+    public function save(LocationException $exception): void
+    {
+        $this->getEntityManager()->persist($exception);
+        $this->getEntityManager()->flush();
+    }
+
+    public function remove(LocationException $exception): void
+    {
+        $exception->getLocation()?->removeException($exception);
+        $this->getEntityManager()->remove($exception);
+        $this->getEntityManager()->flush();
+    }
 }
