@@ -27,13 +27,13 @@ class LocationUserRepository extends ServiceEntityRepository
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('u')
+            ->addSelect("COALESCE(NULLIF(u.alias, ''), u.username) AS HIDDEN sortname")
             ->from(User::class, 'u')
             ->join(LocationUser::class, 'lu', 'WITH', 'lu.user = u')
             ->andWhere('lu.location = :location')
             ->andWhere('u.enabled = true')
             ->setParameter('location', $location)
-            ->orderBy('u.alias', 'ASC')
-            ->addOrderBy('u.username', 'ASC')
+            ->orderBy('sortname', 'ASC')
             ->getQuery()
             ->getResult();
     }

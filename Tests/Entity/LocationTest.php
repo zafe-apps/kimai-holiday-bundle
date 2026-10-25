@@ -2,6 +2,7 @@
 
 namespace KimaiPlugin\HolidayBundle\Tests\Entity;
 
+use KimaiPlugin\HolidayBundle\Entity\LocationOpeningHours;
 use KimaiPlugin\HolidayBundle\Entity\PublicHolidayGroup;
 use KimaiPlugin\HolidayBundle\Enum\LocationExceptionKind;
 use KimaiPlugin\HolidayBundle\Tests\Support\LocationBuilder;
@@ -18,22 +19,37 @@ final class LocationTest extends TestCase
         self::assertNull($loc->getOpeningHoursFor(1));
     }
 
-    public function testSetOpeningHoursReplacesAll(): void
+    public function testSetOpeningHoursMergesByWeekday(): void
     {
         $builder = LocationBuilder::make();
-        for ($day = 1; $day <= 7; ++$day) {
+        for ($day = 1; $day <= 3; ++$day) {
             $builder->open($day, '09:00', '17:00');
         }
         $loc = $builder->build();
-        self::assertCount(7, $loc->getOpeningHours());
+        $kept = $loc->getOpeningHoursFor(3);
+        $removed = $loc->getOpeningHoursFor(1);
 
-        $second = LocationBuilder::make()->open(2, '10:00', '12:00')->open(4, '13:00', '15:00')->build();
-        $loc->setOpeningHours($second->getOpeningHours()->toArray());
+        $loc->setOpeningHours([
+            self::row(2, '10:00', '12:00'),
+            self::row(3, '11:00', '19:00'),
+            self::row(7, '08:00', '09:00'),
+        ]);
 
-        self::assertCount(2, $loc->getOpeningHours());
+        self::assertCount(3, $loc->getOpeningHours());
+        self::assertSame($kept, $loc->getOpeningHoursFor(3));
+        self::assertSame('11:00', $kept?->getOpensAt()->format('H:i'));
+        self::assertSame('19:00', $kept?->getClosesAt()->format('H:i'));
         self::assertNull($loc->getOpeningHoursFor(1));
-        self::assertSame('10:00', $loc->getOpeningHoursFor(2)?->getOpensAt()->format('H:i'));
-        self::assertSame($loc, $loc->getOpeningHoursFor(4)?->getLocation());
+        self::assertFalse($loc->getOpeningHours()->contains($removed));
+        self::assertSame($loc, $loc->getOpeningHoursFor(7)?->getLocation());
+    }
+
+    private static function row(int $weekday, string $from, string $to): LocationOpeningHours
+    {
+        return (new LocationOpeningHours())
+            ->setWeekday($weekday)
+            ->setOpensAt(new \DateTimeImmutable($from))
+            ->setClosesAt(new \DateTimeImmutable($to));
     }
 
     public function testVienna(): void

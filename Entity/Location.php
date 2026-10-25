@@ -113,24 +113,37 @@ class Location
     }
 
     /**
-     * Replaces all opening hours; removed rows are deleted through orphanRemoval.
+     * Merges the rows by weekday: existing rows keep their instance and take the new times, new weekdays
+     * are added, weekdays missing in the input are removed (orphanRemoval). Reusing the instance avoids an
+     * INSERT before the DELETE, which would violate the unique index (location, weekday).
      *
      * @param iterable<LocationOpeningHours> $hours
      */
     public function setOpeningHours(iterable $hours): self
     {
-        $new = [];
+        $incoming = [];
         foreach ($hours as $row) {
-            $new[] = $row;
+            $incoming[$row->getWeekday()] = $row;
         }
 
-        foreach ($this->openingHours->toArray() as $old) {
-            if (!\in_array($old, $new, true)) {
-                $this->openingHours->removeElement($old);
+        foreach ($this->openingHours->toArray() as $existing) {
+            if (!isset($incoming[$existing->getWeekday()])) {
+                $this->openingHours->removeElement($existing);
             }
         }
-        foreach ($new as $row) {
-            $this->addOpeningHours($row);
+
+        foreach ($incoming as $weekday => $row) {
+            $existing = $this->getOpeningHoursFor($weekday);
+            if ($existing === null) {
+                $this->addOpeningHours($row);
+
+                continue;
+            }
+            if ($existing === $row) {
+                continue;
+            }
+
+            $existing->setOpensAt($row->getOpensAt())->setClosesAt($row->getClosesAt());
         }
 
         return $this;
