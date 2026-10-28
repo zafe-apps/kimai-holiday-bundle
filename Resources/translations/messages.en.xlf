@@ -975,6 +975,14 @@ Action: requested</target>
         <source>holiday.extra_shift.comment</source>
         <target>Comment</target>
       </trans-unit>
+      <trans-unit id="h243" resname="holiday.availability.kind.fixed">
+        <source>holiday.availability.kind.fixed</source>
+        <target>Regular</target>
+      </trans-unit>
+      <trans-unit id="h244" resname="holiday.availability.kind.extra_shift">
+        <source>holiday.availability.kind.extra_shift</source>
+        <target>Extra shift</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
