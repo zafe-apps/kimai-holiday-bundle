@@ -69,7 +69,9 @@ final class AvailabilityCalculator
                     $absent[] = ['user' => $user, 'absence' => $approved];
                 } else {
                     $halfDay = $approved !== null;
-                    if ($applicable) {
+                    if (!$slot->open) {
+                        // closed day: nobody is present, absences stay visible
+                    } elseif ($applicable) {
                         $present[] = new PresenceEntry($user, PresenceKind::FIXED, $halfDay, null);
                     } elseif ($shift !== null) {
                         $present[] = new PresenceEntry($user, PresenceKind::EXTRA_SHIFT, $halfDay, $shift);

@@ -71,6 +71,7 @@ final class AvailabilityCalculatorTest extends TestCase
         self::assertSame([], $days['2026-10-28']->present);
         self::assertSame($this->manuel, $days['2026-10-28']->absent[0]['user']);
         self::assertCount(1, $days['2026-10-29']->absent);
+        self::assertSame($this->manuel, $days['2026-10-29']->absent[0]['user']);
         self::assertSame(['Manuel', 'Moritz'], $this->names($days['2026-10-30']->present));
         self::assertSame([], $days['2026-10-30']->absent);
     }
@@ -131,14 +132,16 @@ final class AvailabilityCalculatorTest extends TestCase
             ->openOn('2026-05-01', '12:00', '18:00')
             ->build();
         $from = new \DateTimeImmutable('2026-05-01');
+        $holiday = (new PublicHoliday())->setDate($from)->setName('Staatsfeiertag')->setHalfDay(false);
 
-        $plain = $this->calculator($location, [], [])->forPeriod($location, $from, $from)['2026-05-01'];
+        $plain = $this->calculator($location, [], [], [$holiday])->forPeriod($location, $from, $from)['2026-05-01'];
         self::assertTrue($plain->isOpen());
         self::assertTrue($plain->isUnstaffed());
 
         $shift = ExtraShiftBuilder::on($this->manuel, '2026-05-01');
-        $staffed = $this->calculator($location, [], [$shift])->forPeriod($location, $from, $from)['2026-05-01'];
+        $staffed = $this->calculator($location, [], [$shift], [$holiday])->forPeriod($location, $from, $from)['2026-05-01'];
         self::assertSame(['Manuel'], $this->names($staffed->present));
+        self::assertSame(PresenceKind::EXTRA_SHIFT, $staffed->present[0]->kind);
         self::assertFalse($staffed->isUnstaffed());
     }
 
@@ -148,12 +151,13 @@ final class AvailabilityCalculatorTest extends TestCase
         $users = $this->createMock(LocationUserRepository::class);
         $users->expects(self::once())->method('findUsersOf')->willReturn([$this->manuel]);
         $absences = $this->createMock(AbsenceRepository::class);
-        $absences->expects(self::once())->method('findVisibleForUsersBetween')->willReturn([]);
+        $absences->expects(self::once())->method('findVisibleForUsersBetween')->with(self::anything(), self::callback(static fn (\DateTimeInterface $d): bool => $d->format('Y-m-d H:i') === '2026-10-01 00:00'), self::anything())->willReturn([]);
         $shifts = $this->createMock(ExtraShiftRepository::class);
-        $shifts->expects(self::once())->method('findForUsersBetween')->willReturn([]);
+        $shifts->expects(self::once())->method('findForUsersBetween')->with(self::anything(), self::callback(static fn (\DateTimeInterface $d): bool => $d->format('Y-m-d H:i') === '2026-10-01 00:00'), self::anything())->willReturn([]);
         $exceptions = $this->createMock(LocationExceptionRepository::class);
         $exceptions->expects(self::once())->method('findBetween')->willReturn([]);
-        $holidays = $this->createStub(PublicHolidayRepository::class);
+        $holidays = $this->createMock(PublicHolidayRepository::class);
+        $holidays->expects(self::once())->method('findByGroupBetween')->willReturn([]);
 
         $calculator = new AvailabilityCalculator(
             new \KimaiPlugin\HolidayBundle\Service\LocationSchedule($exceptions, $holidays),
@@ -165,6 +169,55 @@ final class AvailabilityCalculatorTest extends TestCase
 
         $days = $calculator->forPeriod($location, new \DateTimeImmutable('2026-10-01 12:00'), new \DateTimeImmutable('2026-10-31'));
         self::assertCount(31, $days);
+    }
+
+    public function testClosedExceptionDayHasNoPresenceButKeepsAbsences(): void
+    {
+        $location = LocationBuilder::vienna(new PublicHolidayGroup());
+        $location->addException((new \KimaiPlugin\HolidayBundle\Entity\LocationException())
+            ->setDate(new \DateTimeImmutable('2026-10-28'))
+            ->setKind(\KimaiPlugin\HolidayBundle\Enum\LocationExceptionKind::CLOSED));
+        $from = new \DateTimeImmutable('2026-10-28');
+
+        $plain = $this->calculator($location, [], [])->forPeriod($location, $from, $from)['2026-10-28'];
+        self::assertFalse($plain->isOpen());
+        self::assertSame([], $plain->present);
+
+        $vacation = AbsenceBuilder::vacation($this->manuel, '2026-10-28', '2026-10-28');
+        $day = $this->calculator($location, [$vacation], [])->forPeriod($location, $from, $from)['2026-10-28'];
+        self::assertFalse($day->isOpen());
+        self::assertSame([], $day->present);
+        self::assertSame($this->manuel, $day->absent[0]['user']);
+        self::assertFalse($day->isUnstaffed());
+    }
+
+    public function testMemberWithoutContractAppearsInAbsentOnVacation(): void
+    {
+        $day = $this->forWeek([AbsenceBuilder::vacation($this->chef, '2026-10-28', '2026-10-28')])['2026-10-28'];
+
+        self::assertSame($this->chef, $day->absent[0]['user']);
+        self::assertNotContains('Chef', $this->names($day->present));
+    }
+
+    public function testFullDayAbsenceBeatsExtraShift(): void
+    {
+        $day = $this->forWeek(
+            [AbsenceBuilder::vacation($this->moritz, '2026-10-29', '2026-10-29')],
+            [ExtraShiftBuilder::on($this->moritz, '2026-10-29')]
+        )['2026-10-29'];
+
+        self::assertCount(1, $day->absent);
+        self::assertSame($this->moritz, $day->absent[0]['user']);
+        self::assertSame(['Manuel'], $this->names($day->present));
+    }
+
+    public function testHalfDayAbsenceOnNonWorkdayWithoutShiftHasNoEffect(): void
+    {
+        $absence = AbsenceBuilder::vacation($this->moritz, '2026-10-28', '2026-10-28')->setHalfDay(true);
+        $day = $this->forWeek([$absence])['2026-10-28'];
+
+        self::assertSame(['Manuel'], $this->names($day->present));
+        self::assertSame([], $day->absent);
     }
 
     /**
@@ -186,8 +239,9 @@ final class AvailabilityCalculatorTest extends TestCase
     /**
      * @param Absence[] $absences
      * @param ExtraShift[] $shifts
+     * @param PublicHoliday[] $locationHolidays
      */
-    private function calculator(Location $location, array $absences, array $shifts): AvailabilityCalculator
+    private function calculator(Location $location, array $absences, array $shifts, array $locationHolidays = []): AvailabilityCalculator
     {
         $users = $this->createStub(LocationUserRepository::class);
         $users->method('findUsersOf')->willReturn([$this->manuel, $this->moritz, $this->chef]);
@@ -198,7 +252,7 @@ final class AvailabilityCalculatorTest extends TestCase
         $exceptions = $this->createStub(LocationExceptionRepository::class);
         $exceptions->method('findBetween')->willReturn($location->getExceptions()->toArray());
         $holidays = $this->createStub(PublicHolidayRepository::class);
-        $holidays->method('findByGroupBetween')->willReturn([]);
+        $holidays->method('findByGroupBetween')->willReturn($locationHolidays);
 
         return new AvailabilityCalculator(new LocationSchedule($exceptions, $holidays), $users, $this->helper(), $absenceRepo, $shiftRepo);
     }
