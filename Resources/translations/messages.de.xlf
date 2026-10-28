@@ -959,10 +959,6 @@ Aktion: beantragt</target>
         <source>holiday.extra_shift.deleted</source>
         <target>Aushilfe entfernt.</target>
       </trans-unit>
-      <trans-unit id="h239" resname="holiday.extra_shift.created">
-        <source>holiday.extra_shift.created</source>
-        <target>Aushilfe eingetragen.</target>
-      </trans-unit>
       <trans-unit id="h240" resname="holiday.extra_shift.user">
         <source>holiday.extra_shift.user</source>
         <target>Mitarbeiter</target>
@@ -982,6 +978,66 @@ Aktion: beantragt</target>
       <trans-unit id="h244" resname="holiday.availability.kind.extra_shift">
         <source>holiday.availability.kind.extra_shift</source>
         <target>Aushilfe</target>
+      </trans-unit>
+      <trans-unit id="h245" resname="holiday.menu.availability">
+        <source>holiday.menu.availability</source>
+        <target>Verfügbarkeit</target>
+      </trans-unit>
+      <trans-unit id="h246" resname="holiday.page.availability">
+        <source>holiday.page.availability</source>
+        <target>Verfügbarkeit</target>
+      </trans-unit>
+      <trans-unit id="h247" resname="holiday.availability.no_location">
+        <source>holiday.availability.no_location</source>
+        <target>Ihnen ist kein Standort zugeordnet.</target>
+      </trans-unit>
+      <trans-unit id="h248" resname="holiday.availability.location">
+        <source>holiday.availability.location</source>
+        <target>Standort</target>
+      </trans-unit>
+      <trans-unit id="h249" resname="holiday.availability.closed">
+        <source>holiday.availability.closed</source>
+        <target>geschlossen</target>
+      </trans-unit>
+      <trans-unit id="h250" resname="holiday.availability.unstaffed">
+        <source>holiday.availability.unstaffed</source>
+        <target>Unbesetzt</target>
+      </trans-unit>
+      <trans-unit id="h251" resname="holiday.availability.unstaffed_hint">
+        <source>holiday.availability.unstaffed_hint</source>
+        <target>Niemand ist an diesem Öffnungstag anwesend.</target>
+      </trans-unit>
+      <trans-unit id="h252" resname="holiday.availability.present">
+        <source>holiday.availability.present</source>
+        <target>Anwesend</target>
+      </trans-unit>
+      <trans-unit id="h253" resname="holiday.availability.pending">
+        <source>holiday.availability.pending</source>
+        <target>Offen</target>
+      </trans-unit>
+      <trans-unit id="h254" resname="holiday.availability.absent">
+        <source>holiday.availability.absent</source>
+        <target>Abwesend</target>
+      </trans-unit>
+      <trans-unit id="h255" resname="holiday.availability.half_day">
+        <source>holiday.availability.half_day</source>
+        <target>halber Tag</target>
+      </trans-unit>
+      <trans-unit id="h256" resname="holiday.availability.no_open_days">
+        <source>holiday.availability.no_open_days</source>
+        <target>In diesem Zeitraum ist der Standort nie geöffnet.</target>
+      </trans-unit>
+      <trans-unit id="h257" resname="holiday.availability.no_members">
+        <source>holiday.availability.no_members</source>
+        <target>Dem Standort sind keine Mitarbeiter zugeordnet.</target>
+      </trans-unit>
+      <trans-unit id="h258" resname="holiday.availability.delete_extra">
+        <source>holiday.availability.delete_extra</source>
+        <target>Aushilfe entfernen</target>
+      </trans-unit>
+      <trans-unit id="h259" resname="holiday.availability.delete_question">
+        <source>holiday.availability.delete_question</source>
+        <target>Aushilfe von %name% entfernen?</target>
       </trans-unit>
     </body>
   </file>

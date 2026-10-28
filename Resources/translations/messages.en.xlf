@@ -959,10 +959,6 @@ Action: requested</target>
         <source>holiday.extra_shift.deleted</source>
         <target>Extra shift removed.</target>
       </trans-unit>
-      <trans-unit id="h239" resname="holiday.extra_shift.created">
-        <source>holiday.extra_shift.created</source>
-        <target>Extra shift added.</target>
-      </trans-unit>
       <trans-unit id="h240" resname="holiday.extra_shift.user">
         <source>holiday.extra_shift.user</source>
         <target>Employee</target>
@@ -982,6 +978,66 @@ Action: requested</target>
       <trans-unit id="h244" resname="holiday.availability.kind.extra_shift">
         <source>holiday.availability.kind.extra_shift</source>
         <target>Extra shift</target>
+      </trans-unit>
+      <trans-unit id="h245" resname="holiday.menu.availability">
+        <source>holiday.menu.availability</source>
+        <target>Availability</target>
+      </trans-unit>
+      <trans-unit id="h246" resname="holiday.page.availability">
+        <source>holiday.page.availability</source>
+        <target>Availability</target>
+      </trans-unit>
+      <trans-unit id="h247" resname="holiday.availability.no_location">
+        <source>holiday.availability.no_location</source>
+        <target>No location is assigned to you.</target>
+      </trans-unit>
+      <trans-unit id="h248" resname="holiday.availability.location">
+        <source>holiday.availability.location</source>
+        <target>Location</target>
+      </trans-unit>
+      <trans-unit id="h249" resname="holiday.availability.closed">
+        <source>holiday.availability.closed</source>
+        <target>closed</target>
+      </trans-unit>
+      <trans-unit id="h250" resname="holiday.availability.unstaffed">
+        <source>holiday.availability.unstaffed</source>
+        <target>Unstaffed</target>
+      </trans-unit>
+      <trans-unit id="h251" resname="holiday.availability.unstaffed_hint">
+        <source>holiday.availability.unstaffed_hint</source>
+        <target>Nobody is present on this opening day.</target>
+      </trans-unit>
+      <trans-unit id="h252" resname="holiday.availability.present">
+        <source>holiday.availability.present</source>
+        <target>Present</target>
+      </trans-unit>
+      <trans-unit id="h253" resname="holiday.availability.pending">
+        <source>holiday.availability.pending</source>
+        <target>Open</target>
+      </trans-unit>
+      <trans-unit id="h254" resname="holiday.availability.absent">
+        <source>holiday.availability.absent</source>
+        <target>Absent</target>
+      </trans-unit>
+      <trans-unit id="h255" resname="holiday.availability.half_day">
+        <source>holiday.availability.half_day</source>
+        <target>half day</target>
+      </trans-unit>
+      <trans-unit id="h256" resname="holiday.availability.no_open_days">
+        <source>holiday.availability.no_open_days</source>
+        <target>The location is not open at any time in this period.</target>
+      </trans-unit>
+      <trans-unit id="h257" resname="holiday.availability.no_members">
+        <source>holiday.availability.no_members</source>
+        <target>No employees are assigned to this location.</target>
+      </trans-unit>
+      <trans-unit id="h258" resname="holiday.availability.delete_extra">
+        <source>holiday.availability.delete_extra</source>
+        <target>Remove extra shift</target>
+      </trans-unit>
+      <trans-unit id="h259" resname="holiday.availability.delete_question">
+        <source>holiday.availability.delete_question</source>
+        <target>Remove the extra shift of %name%?</target>
       </trans-unit>
     </body>
   </file>

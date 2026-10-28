@@ -63,6 +63,15 @@ class MenuSubscriber implements EventSubscriberInterface
             }
         }
 
+        if ($this->security->isGranted('view_availability')) {
+            $reporting = $event->getReportingMenu();
+            if ($reporting !== null && $reporting->getChild('holiday_availability') === null) {
+                $item = new MenuItemModel('holiday_availability', 'holiday.menu.availability', 'holiday_availability_current', [], 'user');
+                $item->setTranslationDomain('messages');
+                $reporting->addChild($item);
+            }
+        }
+
         if ($this->security->isGranted('edit_public_holidays')) {
             $admin = $event->getAdminMenu();
             if ($admin->getChild('public_holidays') === null) {

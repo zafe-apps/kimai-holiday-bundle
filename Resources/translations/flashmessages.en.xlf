@@ -118,6 +118,10 @@
         <source>holiday.error.extra_shift_closed</source>
         <target>The location is closed on this day.</target>
       </trans-unit>
+      <trans-unit id="h108" resname="holiday.extra_shift.created">
+        <source>holiday.extra_shift.created</source>
+        <target>Extra shift added.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
