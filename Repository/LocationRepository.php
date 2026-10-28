@@ -20,14 +20,6 @@ class LocationRepository extends ServiceEntityRepository
     /**
      * @return Location[]
      */
-    public function findActiveOrdered(): array
-    {
-        return $this->findBy(['active' => true], ['name' => 'ASC']);
-    }
-
-    /**
-     * @return Location[]
-     */
     public function findAllOrdered(): array
     {
         return $this->findBy([], ['name' => 'ASC']);

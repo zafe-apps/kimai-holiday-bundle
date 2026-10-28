@@ -12,6 +12,7 @@ use KimaiPlugin\HolidayBundle\Service\ExtraShiftPermissions;
 use KimaiPlugin\HolidayBundle\Service\ExtraShiftService;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -105,7 +106,7 @@ class ExtraShiftController extends AbstractController
         return $date !== false ? $date : new \DateTimeImmutable('today');
     }
 
-    private function addFormError(\Symfony\Component\Form\FormInterface $field, ?string $key): void
+    private function addFormError(FormInterface $field, ?string $key): void
     {
         $field->addError(new FormError($this->translator->trans($key ?? 'holiday.error.extra_shift_exists', [], 'flashmessages')));
     }

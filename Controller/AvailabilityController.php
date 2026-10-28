@@ -139,7 +139,7 @@ class AvailabilityController extends AbstractController
         $requested = $request->query->getInt('location');
         if ($requested > 0) {
             foreach ($locations as $location) {
-                if ($location->getId() === $requested) {
+                if ($location->getId() === $requested && $this->permissions->canViewAvailabilityOf($location)) {
                     return $location;
                 }
             }
