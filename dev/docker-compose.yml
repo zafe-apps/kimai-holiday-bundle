@@ -30,4 +30,4 @@ services:
       - ..:/opt/kimai/var/plugins/HolidayBundle
     ports:
       - "8001:8001"
-    command: php -d memory_limit=-1 -d variables_order=EGPCS -S 0.0.0.0:8001 -t public public/index.php
+    command: php -d memory_limit=-1 -d variables_order=EGPCS -S 0.0.0.0:8001 -t public
