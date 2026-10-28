@@ -51,8 +51,9 @@ Format und Regeln: `shrippen.github.io/overview/VERSIONS.md`.
 - [ ] Woche 53 in Jahren ohne KW 53 rollt über (`Controller/AvailabilityController.php`)
 - [ ] `?location=abc` fällt still auf den Default (`Controller/AvailabilityController.php`)
 - [ ] Print-CSS versteckt den `actions`-Slot der `hint_card`, Wochenkarten ohne Namen im Druck (Kit-Option nötig, `Resources/views/availability/index.html.twig`)
-- [ ] `findUsersOf` sortiert über den HIDDEN-Alias (`Repository/LocationUserRepository.php`)
 - [ ] Gruppe bearbeiten löst keinen Re-Import aus (`Controller/PublicHolidayController.php`)
 - [ ] `LocationException` erlaubt OPEN ohne Zeiten auf Entity-Ebene, nur das Formular validiert (`Entity/LocationException.php`)
 - [ ] Mitglieder-Filter ohne Test (`Form/LocationMemberType.php`)
 - [ ] Kit `hint_card` kennt keinen neutralen Typ, besetzte Tage heißen „Hinweis“ (`Resources/views/availability/index.html.twig`)
+- [ ] Aushilfe an einem später geschlossenen Tag, Vertragstag oder nach Standortwechsel der Person ist in der Verfügbarkeit verborgen und im Teamkalender nicht löschbar (`AvailabilityCalculator`, `AbsenceCalendarController`) – Löschaktion in die Teamkalender-Zelle
+- [ ] `AvailabilityPeriod::label()` ist nur deutsch („KW", `d.m.`) – über `holiday.availability.week_label` übersetzen, sobald die Oberfläche zweisprachig wird

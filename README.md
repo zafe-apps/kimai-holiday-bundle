@@ -135,7 +135,7 @@ present.
 
 **Extra shift** (Aushilfe): a person works on a day without a contract working day. It needs no approval. Rules: no
 contract working day, no approved absence, an opening day of the person's own location, one entry per person and day.
-Create it with the button on the availability page or from the team calendar; delete it from the day card (creator, or
+Create it with the button on the availability page; delete it from the day card (creator, or
 `extra_shift_own` / `extra_shift_other` for the person). The absence calendar shows extra shifts with a plus icon.
 
 ## User interface
