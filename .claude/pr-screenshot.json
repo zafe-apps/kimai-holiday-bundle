@@ -1,0 +1,8 @@
+{
+    "startCommand": "dev/kimai-dev.sh",
+    "baseUrl": "http://localhost:8001",
+    "screenshotDir": "docs/pr-screenshots",
+    "readySelector": "body",
+    "settleMs": 2500,
+    "note": "Login nötig — Screenshots mit node dev/screenshot.mjs <out.png> <url> [width] (meldet sich als admin an), nicht mit dem Skill-Skript."
+}
