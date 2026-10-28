@@ -1039,6 +1039,18 @@ Aktion: beantragt</target>
         <source>holiday.availability.delete_question</source>
         <target>Aushilfe von %name% entfernen?</target>
       </trans-unit>
+      <trans-unit id="h260" resname="holiday.availability.unstaffed_short">
+        <source>holiday.availability.unstaffed_short</source>
+        <target>leer</target>
+      </trans-unit>
+      <trans-unit id="h261" resname="holiday.location.exception.delete_question">
+        <source>holiday.location.exception.delete_question</source>
+        <target>Ausnahme löschen?</target>
+      </trans-unit>
+      <trans-unit id="h262" resname="holiday.location.member_remove_question">
+        <source>holiday.location.member_remove_question</source>
+        <target>%name% vom Standort entfernen?</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

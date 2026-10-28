@@ -89,7 +89,7 @@
                     {% set body %}
                         <div class="w-100">
                             {% if day.unstaffed %}
-                                <div class="mb-1">{{ kit.status_badge('warning', 'holiday.availability.unstaffed_hint'|trans) }} <strong>{{ 'holiday.availability.unstaffed'|trans }}</strong></div>
+                                <div class="mb-1 text-red" title="{{ 'holiday.availability.unstaffed_hint'|trans }}">{{ icon('warning') }} <strong>{{ 'holiday.availability.unstaffed'|trans }}</strong></div>
                             {% endif %}
                             {{ _self.day_body(day, deletable) }}
                         </div>
@@ -111,7 +111,7 @@
                             <tr>
                                 <td></td>
                                 {% for key, day in open_days %}
-                                    <td class="text-center text-body-secondary">{{ ('holiday.weekday.short.' ~ day.date|date('N'))|trans }}</td>
+                                    <td class="text-center {{ day.unstaffed ? 'text-red' : 'text-body-secondary' }}">{{ ('holiday.weekday.short.' ~ day.date|date('N'))|trans }}</td>
                                 {% endfor %}
                             </tr>
                         </thead>
@@ -140,7 +140,7 @@
                             <tr>
                                 <th class="text-nowrap">{{ 'holiday.availability.unstaffed'|trans }}</th>
                                 {% for key, day in open_days %}
-                                    <td class="text-center">{% if day.unstaffed %}<span title="{{ 'holiday.availability.unstaffed'|trans }}">{{ icon('warning') }}<span class="visually-hidden">{{ 'holiday.availability.unstaffed'|trans }}</span></span>{% endif %}</td>
+                                    <td class="text-center">{% if day.unstaffed %}<span class="text-red d-inline-flex flex-column align-items-center lh-1" title="{{ 'holiday.availability.unstaffed'|trans }}">{{ icon('warning') }}<span class="visually-hidden">{{ 'holiday.availability.unstaffed'|trans }}</span><span class="small" aria-hidden="true">{{ 'holiday.availability.unstaffed_short'|trans }}</span></span>{% endif %}</td>
                                 {% endfor %}
                             </tr>
                         </tfoot>
@@ -155,7 +155,7 @@
                     <span class="text-nowrap"><span class="opacity-50"><i class="{{ 'user'|icon }} fa-fw" aria-hidden="true"></i>½</span> {{ 'holiday.availability.half_day'|trans }}</span>
                     <div class="d-flex align-items-center gap-1 text-nowrap">{{ kit.calendar_day('01', {absence: true}) }} {{ 'holiday.availability.absent'|trans }}</div>
                     <span class="text-nowrap"><span class="opacity-50"><i class="{{ 'holiday'|icon }} fa-fw" aria-hidden="true"></i></span> {{ 'holiday.availability.pending'|trans }}</span>
-                    <span class="text-nowrap">{{ icon('warning') }} {{ 'holiday.availability.unstaffed'|trans }}</span>
+                    <span class="text-nowrap text-red">{{ icon('warning') }} {{ 'holiday.availability.unstaffed'|trans }}</span>
                 </div>
             </div>
         {% endif %}
