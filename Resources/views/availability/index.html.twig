@@ -66,10 +66,10 @@
 {% endmacro %}
 
 {% block main %}
+    <div data-kpu-page="holiday-availability">
     {% if location is null %}
         {{ kit.empty_state('holiday.availability.no_location'|trans) }}
     {% else %}
-    <div data-kpu-page="holiday-availability">
         {% if open_days is empty %}
             {{ kit.empty_state('holiday.availability.no_open_days'|trans) }}
         {% endif %}
@@ -158,6 +158,6 @@
                 </div>
             </div>
         {% endif %}
-    </div>
     {% endif %}
+    </div>
 {% endblock %}
