@@ -71,7 +71,7 @@
                                     <td>{{ e.comment }}</td>
                                     {% if can_edit %}
                                         <td class="text-end">
-                                            <a href="#" class="text-red" data-kpu-post="{{ path('holiday_location_exception_delete', {id: e.id}) }}" data-kpu-token="{{ csrf_token(csrf_id) }}">{{ 'holiday.location.exception.delete'|trans }}</a>
+                                            <a href="#" class="text-red" data-kpu-post="{{ path('holiday_location_exception_delete', {id: e.id}) }}" data-kpu-token="{{ csrf_token(csrf_id) }}" data-kpu-question="{{ 'holiday.location.exception.delete_question'|trans }}">{{ 'holiday.location.exception.delete'|trans }}</a>
                                         </td>
                                     {% endif %}
                                 </tr>
@@ -94,7 +94,7 @@
                             <li class="d-flex align-items-center gap-2">
                                 <span>{{ user.displayName }}</span>
                                 {% if can_edit %}
-                                    <a href="#" class="text-red" data-kpu-post="{{ path('holiday_location_member_remove', {userId: user.id}) }}" data-kpu-token="{{ csrf_token(csrf_id) }}">{{ 'holiday.location.member_remove'|trans }}</a>
+                                    <a href="#" class="text-red" data-kpu-post="{{ path('holiday_location_member_remove', {userId: user.id}) }}" data-kpu-token="{{ csrf_token(csrf_id) }}" data-kpu-question="{{ 'holiday.location.member_remove_question'|trans({'%name%': user.displayName}) }}">{{ 'holiday.location.member_remove'|trans }}</a>
                                 {% endif %}
                             </li>
                         {% endfor %}
