@@ -38,3 +38,21 @@ Format und Regeln: `shrippen.github.io/overview/VERSIONS.md`.
 
 ## Plan 2
 - [ ] 📖 WebTestCase-Abdeckung der Freigabe-Routen (Zeilenaktion, Sammelaktion, API), damit Selbstfreigabe über HTTP getestet statt nur geraucht wird
+
+## Plan 3
+- [ ] Tagesverschiebung: Entity `WorkdayShift`, Antrag und Genehmigung, Chokepoint `UserWorkContract::getExpectedSecondsForDate`
+- [ ] Vermerk „verschoben von“ und `PresenceKind::SHIFTED` in `Service/AvailabilityCalculator`
+- [ ] Verschiebungen im Zähler „offene Anträge“ und als „offen“ in der Verfügbarkeit
+- [ ] Duplikate `absenceSeconds`/Feiertags-Reduce zusammenführen (`AvailabilityCalculator` ↔ `EventSubscriber/WorkingTimeYearSubscriber`)
+- [ ] API für Standorte und Aushilfen (`/api/holiday/…`)
+- [ ] 📖 WebTestCase-Abdeckung bleibt offen (siehe Plan 2)
+
+## Kleinbefunde Plan 2
+- [ ] Woche 53 in Jahren ohne KW 53 rollt über (`Controller/AvailabilityController.php`)
+- [ ] `?location=abc` fällt still auf den Default (`Controller/AvailabilityController.php`)
+- [ ] Print-CSS versteckt den `actions`-Slot der `hint_card`, Wochenkarten ohne Namen im Druck (Kit-Option nötig, `Resources/views/availability/index.html.twig`)
+- [ ] `findUsersOf` sortiert über den HIDDEN-Alias (`Repository/LocationUserRepository.php`)
+- [ ] Gruppe bearbeiten löst keinen Re-Import aus (`Controller/PublicHolidayController.php`)
+- [ ] `LocationException` erlaubt OPEN ohne Zeiten auf Entity-Ebene, nur das Formular validiert (`Entity/LocationException.php`)
+- [ ] Mitglieder-Filter ohne Test (`Form/LocationMemberType.php`)
+- [ ] Kit `hint_card` kennt keinen neutralen Typ, besetzte Tage heißen „Hinweis“ (`Resources/views/availability/index.html.twig`)

@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.1.0 (2026-10-28)
+
+### Added
+
+- Locations with opening hours per weekday, exceptions per date and members (one location per person),
+  page "Locations" (`holiday_locations`)
+- Extra shifts (Aushilfe): working on a day without a contract working day, without approval
+- Availability view (Reports → Availability) per location, week as day cards, month as table
+- Permissions `view_location`, `edit_location`, `view_availability`, `extra_shift_own`, `extra_shift_other`
+- The absence calendar shows extra shifts with a plus icon
+
+### Changed
+
+- A public holiday group in use by a location cannot be deleted
+
+### Development
+
+- The dev server serves assets with their MIME type; `dev/screenshot.mjs` takes screenshots of the dev stack
+
 ## 2.0.0 (2026-10-23)
 
 Fork for zafe (GPL-3.0-or-later, upstream `shrippen/kimai-holiday-bundle`), tested on Kimai 2.70.2.
