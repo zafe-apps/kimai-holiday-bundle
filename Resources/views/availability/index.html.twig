@@ -83,7 +83,8 @@
                         {% set type = 'info' %}
                     {% else %}
                         {% set title = date_text ~ ' · ' ~ day.slot.label %}
-                        {% set type = day.unstaffed ? 'danger' : 'success' %}
+                        {# the kit has no neutral type; info is its neutral one #}
+                        {% set type = day.unstaffed ? 'danger' : 'info' %}
                     {% endif %}
                     {% set body %}
                         <div class="w-100">
@@ -139,7 +140,7 @@
                             <tr>
                                 <th class="text-nowrap">{{ 'holiday.availability.unstaffed'|trans }}</th>
                                 {% for key, day in open_days %}
-                                    <td class="text-center">{% if day.unstaffed %}{{ kit.status_badge('warning', 'holiday.availability.unstaffed'|trans) }}{% endif %}</td>
+                                    <td class="text-center">{% if day.unstaffed %}<span title="{{ 'holiday.availability.unstaffed'|trans }}">{{ icon('warning') }}<span class="visually-hidden">{{ 'holiday.availability.unstaffed'|trans }}</span></span>{% endif %}</td>
                                 {% endfor %}
                             </tr>
                         </tfoot>
@@ -154,7 +155,7 @@
                     <span class="text-nowrap"><span class="opacity-50"><i class="{{ 'user'|icon }} fa-fw" aria-hidden="true"></i>½</span> {{ 'holiday.availability.half_day'|trans }}</span>
                     <div class="d-flex align-items-center gap-1 text-nowrap">{{ kit.calendar_day('01', {absence: true}) }} {{ 'holiday.availability.absent'|trans }}</div>
                     <span class="text-nowrap"><span class="opacity-50"><i class="{{ 'holiday'|icon }} fa-fw" aria-hidden="true"></i></span> {{ 'holiday.availability.pending'|trans }}</span>
-                    <span class="text-nowrap">{{ kit.status_badge('warning') }} {{ 'holiday.availability.unstaffed'|trans }}</span>
+                    <span class="text-nowrap">{{ icon('warning') }} {{ 'holiday.availability.unstaffed'|trans }}</span>
                 </div>
             </div>
         {% endif %}
