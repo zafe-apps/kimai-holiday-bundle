@@ -943,6 +943,38 @@ Aktion: beantragt</target>
         <source>holiday.weekday.short.7</source>
         <target>So</target>
       </trans-unit>
+      <trans-unit id="h235" resname="holiday.extra_shift.title">
+        <source>holiday.extra_shift.title</source>
+        <target>Aushilfe</target>
+      </trans-unit>
+      <trans-unit id="h236" resname="holiday.extra_shift.label">
+        <source>holiday.extra_shift.label</source>
+        <target>Aushilfe</target>
+      </trans-unit>
+      <trans-unit id="h237" resname="holiday.extra_shift.create">
+        <source>holiday.extra_shift.create</source>
+        <target>Aushilfe eintragen</target>
+      </trans-unit>
+      <trans-unit id="h238" resname="holiday.extra_shift.deleted">
+        <source>holiday.extra_shift.deleted</source>
+        <target>Aushilfe entfernt.</target>
+      </trans-unit>
+      <trans-unit id="h239" resname="holiday.extra_shift.created">
+        <source>holiday.extra_shift.created</source>
+        <target>Aushilfe eingetragen.</target>
+      </trans-unit>
+      <trans-unit id="h240" resname="holiday.extra_shift.user">
+        <source>holiday.extra_shift.user</source>
+        <target>Mitarbeiter</target>
+      </trans-unit>
+      <trans-unit id="h241" resname="holiday.extra_shift.date">
+        <source>holiday.extra_shift.date</source>
+        <target>Datum</target>
+      </trans-unit>
+      <trans-unit id="h242" resname="holiday.extra_shift.comment">
+        <source>holiday.extra_shift.comment</source>
+        <target>Kommentar</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

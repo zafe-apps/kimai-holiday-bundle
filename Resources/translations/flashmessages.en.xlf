@@ -102,6 +102,22 @@
         <source>holiday.error.group_in_use</source>
         <target>The public holiday group is used by a location and cannot be deleted.</target>
       </trans-unit>
+      <trans-unit id="h104" resname="holiday.error.extra_shift_exists">
+        <source>holiday.error.extra_shift_exists</source>
+        <target>There is already an extra shift on this day.</target>
+      </trans-unit>
+      <trans-unit id="h105" resname="holiday.error.extra_shift_on_workday">
+        <source>holiday.error.extra_shift_on_workday</source>
+        <target>No extra shift is needed on a working day.</target>
+      </trans-unit>
+      <trans-unit id="h106" resname="holiday.error.extra_shift_absent">
+        <source>holiday.error.extra_shift_absent</source>
+        <target>An approved absence covers this day.</target>
+      </trans-unit>
+      <trans-unit id="h107" resname="holiday.error.extra_shift_closed">
+        <source>holiday.error.extra_shift_closed</source>
+        <target>The location is closed on this day.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
