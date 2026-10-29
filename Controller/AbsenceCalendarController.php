@@ -14,6 +14,7 @@ use App\Utils\PageSetup;
 use KimaiPlugin\HolidayBundle\Enum\AbsenceStatus;
 use KimaiPlugin\HolidayBundle\Enum\AbsenceType;
 use KimaiPlugin\HolidayBundle\Repository\AbsenceRepository;
+use KimaiPlugin\HolidayBundle\Repository\ExtraShiftRepository;
 use KimaiPlugin\HolidayBundle\Repository\PublicHolidayRepository;
 use KimaiPlugin\HolidayBundle\Service\AbsenceWorkdayHelper;
 use KimaiPlugin\HolidayBundle\Service\UserWorkContract;
@@ -36,6 +37,7 @@ class AbsenceCalendarController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly PublicHolidayRepository $publicHolidayRepository,
         private readonly UserWorkContract $userWorkContract,
+        private readonly ExtraShiftRepository $extraShiftRepository,
     ) {
     }
 
@@ -123,6 +125,22 @@ class AbsenceCalendarController extends AbstractController
                 }
                 $cursor = $cursor->modify('+1 day');
             }
+        }
+
+        // Extra shifts: shown on their day even when the day is off for the user
+        foreach ($this->extraShiftRepository->findForUsersBetween($users, $from, $to) as $shift) {
+            $uid = $shift->getUser()?->getId();
+            $date = $shift->getDate();
+            $month = $date !== null ? (int) $date->format('n') : 0;
+            if ($uid === null || $date === null || !isset($months[$month]['grid'][$uid])) {
+                continue;
+            }
+            $months[$month]['grid'][$uid]['days'][(int) $date->format('j')][] = [
+                'type' => 'extra_shift',
+                'icon' => 'create',
+                'label' => 'holiday.extra_shift.label',
+                'requested' => false,
+            ];
         }
 
         $teams = $this->getSelectableTeams();

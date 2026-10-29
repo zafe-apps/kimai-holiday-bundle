@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+{% import '@Holiday/_kit/macros.html.twig' as kit %}
+
+{% block stylesheets %}{{ parent() }}{% include '@Holiday/_assets.html.twig' with {part: 'css'} %}{% endblock %}
+{% block javascripts %}{{ parent() }}{% include '@Holiday/_assets.html.twig' with {part: 'js'} %}{% endblock %}
+
+{% block page_intro %}
+    {% if location is not null %}
+        {{ kit.context_line([location.name, period_label]) }}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block table_actions %}
+    {% if location is not null %}
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            {{ kit.period_nav(['week', 'month'], nav.unit, period_label, nav.prev, nav.next, nav.today, nav.units) }}
+            {% if locations|length > 1 %}
+                <form method="get" action="{{ path(period.unit == 'week' ? 'holiday_availability' : 'holiday_availability_month', period.routeParams) }}" class="holiday-filter" data-holiday-autosubmit="1">
+                    <select name="location" class="form-select" aria-label="{{ 'holiday.availability.location'|trans }}">
+                        {% for item in locations %}
+                            <option value="{{ item.id }}"{% if item.id == location.id %} selected{% endif %}>{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{# People of one day: present (name, kind, half day), open requests, absent #}
+{% macro day_body(day, deletable) %}
+    {% if day.present is not empty %}
+        <div class="fw-bold">{{ 'holiday.availability.present'|trans }}</div>
+        <ul class="list-unstyled mb-1">
+            {% for entry in day.present %}
+                <li>
+                    {{ entry.user.displayName }}
+                    <span class="text-body-secondary">· {{ entry.kind.label|trans }}{% if entry.halfDay %} · {{ 'holiday.availability.half_day'|trans }}{% endif %}</span>
+                    {% if entry.extraShift is not null and (deletable[entry.extraShift.id] ?? false) %}
+                        <a href="#" class="ms-1" data-kpu-post="{{ path('holiday_extra_shift_delete', {id: entry.extraShift.id}) }}"
+                           data-kpu-token="{{ csrf_token('holiday_extra_shift') }}"
+                           data-kpu-question="{{ 'holiday.availability.delete_question'|trans({'%name%': entry.user.displayName}) }}"
+                           title="{{ 'holiday.availability.delete_extra'|trans }}" aria-label="{{ 'holiday.availability.delete_extra'|trans }}: {{ entry.user.displayName }}"><i class="{{ 'trash'|icon }}" aria-hidden="true"></i></a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if day.pending is not empty %}
+        <div class="fw-bold">{{ 'holiday.availability.pending'|trans }}</div>
+        <ul class="list-unstyled mb-1">
+            {% for item in day.pending %}
+                <li>{{ item.user.displayName }} <span class="text-body-secondary">· {{ item.absence.type.label|trans }}</span></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if day.absent is not empty %}
+        <div class="fw-bold">{{ 'holiday.availability.absent'|trans }}</div>
+        <ul class="list-unstyled mb-1">
+            {% for item in day.absent %}
+                <li>{{ item.user.displayName }} <span class="text-body-secondary">· {{ item.absence.type.label|trans }}</span></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% block main %}
+    <div data-kpu-page="holiday-availability">
+    {% if location is null %}
+        {{ kit.empty_state('holiday.availability.no_location'|trans) }}
+    {% else %}
+        {% if open_days is empty %}
+            {{ kit.empty_state('holiday.availability.no_open_days'|trans) }}
+        {% endif %}
+
+        {% if period.unit == 'week' %}
+            <div class="kpu-hint-cards">
+                {% for key, day in days %}
+                    {% set date_text = ('holiday.weekday.short.' ~ day.date|date('N'))|trans ~ ' ' ~ day.date|date('d.m.') %}
+                    {% if not day.open %}
+                        {% set title = date_text ~ ' · ' ~ (day.slot.holidayName ?: 'holiday.availability.closed'|trans) %}
+                        {% set type = 'info' %}
+                    {% else %}
+                        {% set title = date_text ~ ' · ' ~ day.slot.label %}
+                        {# the kit has no neutral type; info is its neutral one #}
+                        {% set type = day.unstaffed ? 'danger' : 'info' %}
+                    {% endif %}
+                    {% set body %}
+                        <div class="w-100">
+                            {% if day.unstaffed %}
+                                <div class="mb-1 text-red" title="{{ 'holiday.availability.unstaffed_hint'|trans }}">{{ icon('warning') }} <strong>{{ 'holiday.availability.unstaffed'|trans }}</strong></div>
+                            {% endif %}
+                            {{ _self.day_body(day, deletable) }}
+                        </div>
+                    {% endset %}
+                    {{ kit.hint_card(title, {type: type, due: key == today ? ('kpu.day.today'|trans({}, 'kpu')) : null, actions: body}) }}
+                {% endfor %}
+            </div>
+        {% elseif open_days is not empty %}
+            <div class="card mb-3">
+                <div class="card-body p-0 table-responsive">
+                    <table class="table table-bordered table-sm mb-0 holiday-calendar">
+                        <thead>
+                            <tr>
+                                <th class="text-nowrap">{{ 'user'|trans }}</th>
+                                {% for key, day in open_days %}
+                                    {{ kit.calendar_day('%02d'|format(day.date|date('j')), {tag: 'td', today: key == today, label: ('holiday.weekday.' ~ day.date|date('N'))|trans ~ ' ' ~ day.date|date('d.m.')}) }}
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <td></td>
+                                {% for key, day in open_days %}
+                                    <td class="text-center {{ day.unstaffed ? 'text-red' : 'text-body-secondary' }}">{{ ('holiday.weekday.short.' ~ day.date|date('N'))|trans }}</td>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                                <tr>
+                                    <td class="text-nowrap">{{ row.user.displayName }}</td>
+                                    {% for key, day in open_days %}
+                                        {% set cell = row.cells[key] %}
+                                        {% if cell is null %}
+                                            {{ kit.calendar_day('', {tag: 'td', today: key == today}) }}
+                                        {% else %}
+                                            {% set cell_label = cell.label|trans ~ (cell.kind == 'pending' ? ' · ' ~ 'holiday.availability.pending'|trans : '') ~ (cell.pending ? ' · ' ~ 'holiday.availability.pending'|trans ~ ': ' ~ cell.pending|trans : '') %}
+                                            {% set icon_html %}
+                                                <i class="{{ cell.icon|icon }} fa-xs{{ cell.kind in ['pending', 'half_day'] ? ' opacity-50' : '' }}" aria-hidden="true"></i>{% if cell.kind == 'half_day' %}<span aria-hidden="true">½</span>{% endif %}{% if cell.pending %}<i class="{{ 'holiday'|icon }} fa-xs opacity-50" aria-hidden="true"></i>{% endif %}
+                                            {% endset %}
+                                            {{ kit.calendar_day('', {tag: 'td', today: key == today, absence: cell.kind == 'absent', label: cell_label, content: icon_html}) }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="{{ open_days|length + 1 }}">{{ 'holiday.availability.no_members'|trans }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="text-nowrap">{{ 'holiday.availability.unstaffed'|trans }}</th>
+                                {% for key, day in open_days %}
+                                    <td class="text-center">{% if day.unstaffed %}<span class="text-red d-inline-flex flex-column align-items-center lh-1" title="{{ 'holiday.availability.unstaffed'|trans }}">{{ icon('warning') }}<span class="visually-hidden">{{ 'holiday.availability.unstaffed'|trans }}</span><span class="small" aria-hidden="true">{{ 'holiday.availability.unstaffed_short'|trans }}</span></span>{% endif %}</td>
+                                {% endfor %}
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body py-2 d-flex flex-wrap align-items-center gap-3 text-body-secondary">
+                    <span class="text-nowrap"><i class="{{ 'user'|icon }} fa-fw" aria-hidden="true"></i> {{ 'holiday.availability.kind.fixed'|trans }}</span>
+                    <span class="text-nowrap"><i class="{{ 'create'|icon }} fa-fw" aria-hidden="true"></i> {{ 'holiday.availability.kind.extra_shift'|trans }}</span>
+                    <span class="text-nowrap"><span class="opacity-50"><i class="{{ 'user'|icon }} fa-fw" aria-hidden="true"></i>½</span> {{ 'holiday.availability.half_day'|trans }}</span>
+                    <div class="d-flex align-items-center gap-1 text-nowrap">{{ kit.calendar_day('01', {absence: true}) }} {{ 'holiday.availability.absent'|trans }}</div>
+                    <span class="text-nowrap"><span class="opacity-50"><i class="{{ 'holiday'|icon }} fa-fw" aria-hidden="true"></i></span> {{ 'holiday.availability.pending'|trans }}</span>
+                    <span class="text-nowrap text-red">{{ icon('warning') }} {{ 'holiday.availability.unstaffed'|trans }}</span>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+    </div>
+{% endblock %}

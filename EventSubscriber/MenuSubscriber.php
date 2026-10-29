@@ -63,10 +63,28 @@ class MenuSubscriber implements EventSubscriberInterface
             }
         }
 
+        if ($this->security->isGranted('view_availability')) {
+            $reporting = $event->getReportingMenu();
+            if ($reporting !== null && $reporting->getChild('holiday_availability') === null) {
+                $item = new MenuItemModel('holiday_availability', 'holiday.menu.availability', 'holiday_availability_current', [], 'user');
+                $item->setTranslationDomain('messages');
+                $reporting->addChild($item);
+            }
+        }
+
         if ($this->security->isGranted('edit_public_holidays')) {
             $admin = $event->getAdminMenu();
             if ($admin->getChild('public_holidays') === null) {
                 $item = new MenuItemModel('public_holidays', 'holiday.menu.public_holidays', 'holiday_public_holidays', [], 'public-holiday');
+                $item->setTranslationDomain('messages');
+                $admin->addChild($item);
+            }
+        }
+
+        if ($this->security->isGranted('view_location')) {
+            $admin = $event->getAdminMenu();
+            if ($admin->getChild('holiday_locations') === null) {
+                $item = new MenuItemModel('holiday_locations', 'holiday.menu.locations', 'holiday_locations', [], 'pin');
                 $item->setTranslationDomain('messages');
                 $admin->addChild($item);
             }

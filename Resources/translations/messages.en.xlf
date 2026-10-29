@@ -751,6 +751,306 @@ Action: requested</target>
         <source>holiday.public_holiday.edit_group</source>
         <target>Edit group</target>
       </trans-unit>
+      <trans-unit id="h187" resname="holiday.location.exception.closed">
+        <source>holiday.location.exception.closed</source>
+        <target>Closed</target>
+      </trans-unit>
+      <trans-unit id="h188" resname="holiday.location.exception.open">
+        <source>holiday.location.exception.open</source>
+        <target>Special opening hours</target>
+      </trans-unit>
+      <trans-unit id="h189" resname="holiday.menu.locations">
+        <source>holiday.menu.locations</source>
+        <target>Locations</target>
+      </trans-unit>
+      <trans-unit id="h190" resname="holiday.page.locations">
+        <source>holiday.page.locations</source>
+        <target>Locations</target>
+      </trans-unit>
+      <trans-unit id="h191" resname="holiday.location.name">
+        <source>holiday.location.name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="h192" resname="holiday.location.public_holiday_group">
+        <source>holiday.location.public_holiday_group</source>
+        <target>Public holiday group</target>
+      </trans-unit>
+      <trans-unit id="h193" resname="holiday.location.public_holiday_group_help">
+        <source>holiday.location.public_holiday_group_help</source>
+        <target>Public holidays of this group close the location.</target>
+      </trans-unit>
+      <trans-unit id="h194" resname="holiday.location.active">
+        <source>holiday.location.active</source>
+        <target>Active</target>
+      </trans-unit>
+      <trans-unit id="h195" resname="holiday.location.opening_hours">
+        <source>holiday.location.opening_hours</source>
+        <target>Opening hours</target>
+      </trans-unit>
+      <trans-unit id="h196" resname="holiday.location.opening_hours_help">
+        <source>holiday.location.opening_hours_help</source>
+        <target>Leave both times empty if the location is closed on that weekday.</target>
+      </trans-unit>
+      <trans-unit id="h197" resname="holiday.location.opens_at">
+        <source>holiday.location.opens_at</source>
+        <target>Opens</target>
+      </trans-unit>
+      <trans-unit id="h198" resname="holiday.location.closes_at">
+        <source>holiday.location.closes_at</source>
+        <target>Closes</target>
+      </trans-unit>
+      <trans-unit id="h199" resname="holiday.location.hours_incomplete">
+        <source>holiday.location.hours_incomplete</source>
+        <target>Enter both opening and closing time, or leave both empty.</target>
+      </trans-unit>
+      <trans-unit id="h200" resname="holiday.location.hours_order">
+        <source>holiday.location.hours_order</source>
+        <target>The closing time must be after the opening time.</target>
+      </trans-unit>
+      <trans-unit id="h201" resname="holiday.location.create">
+        <source>holiday.location.create</source>
+        <target>Create location</target>
+      </trans-unit>
+      <trans-unit id="h202" resname="holiday.location.edit">
+        <source>holiday.location.edit</source>
+        <target>Edit location</target>
+      </trans-unit>
+      <trans-unit id="h203" resname="holiday.location.delete_message">
+        <source>holiday.location.delete_message</source>
+        <target>Delete the location with its opening hours, exceptions and assignments? Extra shifts and absences are kept.</target>
+      </trans-unit>
+      <trans-unit id="h204" resname="holiday.location.empty">
+        <source>holiday.location.empty</source>
+        <target>No location yet.</target>
+      </trans-unit>
+      <trans-unit id="h205" resname="holiday.location.closed">
+        <source>holiday.location.closed</source>
+        <target>closed</target>
+      </trans-unit>
+      <trans-unit id="h206" resname="holiday.location.actions">
+        <source>holiday.location.actions</source>
+        <target>Actions</target>
+      </trans-unit>
+      <trans-unit id="h207" resname="holiday.location.members">
+        <source>holiday.location.members</source>
+        <target>Members</target>
+      </trans-unit>
+      <trans-unit id="h208" resname="holiday.location.members_empty">
+        <source>holiday.location.members_empty</source>
+        <target>No members yet.</target>
+      </trans-unit>
+      <trans-unit id="h209" resname="holiday.location.member">
+        <source>holiday.location.member</source>
+        <target>User</target>
+      </trans-unit>
+      <trans-unit id="h210" resname="holiday.location.member_add">
+        <source>holiday.location.member_add</source>
+        <target>Add member</target>
+      </trans-unit>
+      <trans-unit id="h211" resname="holiday.location.member_remove">
+        <source>holiday.location.member_remove</source>
+        <target>Remove</target>
+      </trans-unit>
+      <trans-unit id="h212" resname="holiday.location.member_removed">
+        <source>holiday.location.member_removed</source>
+        <target>Member removed.</target>
+      </trans-unit>
+      <trans-unit id="h213" resname="holiday.location.exceptions">
+        <source>holiday.location.exceptions</source>
+        <target>Exceptions</target>
+      </trans-unit>
+      <trans-unit id="h214" resname="holiday.location.exception.date">
+        <source>holiday.location.exception.date</source>
+        <target>Date</target>
+      </trans-unit>
+      <trans-unit id="h215" resname="holiday.location.exception.kind">
+        <source>holiday.location.exception.kind</source>
+        <target>Kind</target>
+      </trans-unit>
+      <trans-unit id="h216" resname="holiday.location.exception.times_help">
+        <source>holiday.location.exception.times_help</source>
+        <target>Only for special opening hours: enter both times.</target>
+      </trans-unit>
+      <trans-unit id="h217" resname="holiday.location.exception.comment">
+        <source>holiday.location.exception.comment</source>
+        <target>Comment</target>
+      </trans-unit>
+      <trans-unit id="h218" resname="holiday.location.exception.create">
+        <source>holiday.location.exception.create</source>
+        <target>Add exception</target>
+      </trans-unit>
+      <trans-unit id="h219" resname="holiday.location.exception.empty">
+        <source>holiday.location.exception.empty</source>
+        <target>No upcoming exceptions.</target>
+      </trans-unit>
+      <trans-unit id="h220" resname="holiday.location.exception.delete">
+        <source>holiday.location.exception.delete</source>
+        <target>Delete</target>
+      </trans-unit>
+      <trans-unit id="h221" resname="holiday.weekday.1">
+        <source>holiday.weekday.1</source>
+        <target>Monday</target>
+      </trans-unit>
+      <trans-unit id="h222" resname="holiday.weekday.short.1">
+        <source>holiday.weekday.short.1</source>
+        <target>Mo</target>
+      </trans-unit>
+      <trans-unit id="h223" resname="holiday.weekday.2">
+        <source>holiday.weekday.2</source>
+        <target>Tuesday</target>
+      </trans-unit>
+      <trans-unit id="h224" resname="holiday.weekday.short.2">
+        <source>holiday.weekday.short.2</source>
+        <target>Tu</target>
+      </trans-unit>
+      <trans-unit id="h225" resname="holiday.weekday.3">
+        <source>holiday.weekday.3</source>
+        <target>Wednesday</target>
+      </trans-unit>
+      <trans-unit id="h226" resname="holiday.weekday.short.3">
+        <source>holiday.weekday.short.3</source>
+        <target>We</target>
+      </trans-unit>
+      <trans-unit id="h227" resname="holiday.weekday.4">
+        <source>holiday.weekday.4</source>
+        <target>Thursday</target>
+      </trans-unit>
+      <trans-unit id="h228" resname="holiday.weekday.short.4">
+        <source>holiday.weekday.short.4</source>
+        <target>Th</target>
+      </trans-unit>
+      <trans-unit id="h229" resname="holiday.weekday.5">
+        <source>holiday.weekday.5</source>
+        <target>Friday</target>
+      </trans-unit>
+      <trans-unit id="h230" resname="holiday.weekday.short.5">
+        <source>holiday.weekday.short.5</source>
+        <target>Fr</target>
+      </trans-unit>
+      <trans-unit id="h231" resname="holiday.weekday.6">
+        <source>holiday.weekday.6</source>
+        <target>Saturday</target>
+      </trans-unit>
+      <trans-unit id="h232" resname="holiday.weekday.short.6">
+        <source>holiday.weekday.short.6</source>
+        <target>Sa</target>
+      </trans-unit>
+      <trans-unit id="h233" resname="holiday.weekday.7">
+        <source>holiday.weekday.7</source>
+        <target>Sunday</target>
+      </trans-unit>
+      <trans-unit id="h234" resname="holiday.weekday.short.7">
+        <source>holiday.weekday.short.7</source>
+        <target>Su</target>
+      </trans-unit>
+      <trans-unit id="h235" resname="holiday.extra_shift.title">
+        <source>holiday.extra_shift.title</source>
+        <target>Extra shift</target>
+      </trans-unit>
+      <trans-unit id="h236" resname="holiday.extra_shift.label">
+        <source>holiday.extra_shift.label</source>
+        <target>Extra shift</target>
+      </trans-unit>
+      <trans-unit id="h237" resname="holiday.extra_shift.create">
+        <source>holiday.extra_shift.create</source>
+        <target>Add extra shift</target>
+      </trans-unit>
+      <trans-unit id="h238" resname="holiday.extra_shift.deleted">
+        <source>holiday.extra_shift.deleted</source>
+        <target>Extra shift removed.</target>
+      </trans-unit>
+      <trans-unit id="h240" resname="holiday.extra_shift.user">
+        <source>holiday.extra_shift.user</source>
+        <target>Employee</target>
+      </trans-unit>
+      <trans-unit id="h241" resname="holiday.extra_shift.date">
+        <source>holiday.extra_shift.date</source>
+        <target>Date</target>
+      </trans-unit>
+      <trans-unit id="h242" resname="holiday.extra_shift.comment">
+        <source>holiday.extra_shift.comment</source>
+        <target>Comment</target>
+      </trans-unit>
+      <trans-unit id="h243" resname="holiday.availability.kind.fixed">
+        <source>holiday.availability.kind.fixed</source>
+        <target>Regular</target>
+      </trans-unit>
+      <trans-unit id="h244" resname="holiday.availability.kind.extra_shift">
+        <source>holiday.availability.kind.extra_shift</source>
+        <target>Extra shift</target>
+      </trans-unit>
+      <trans-unit id="h245" resname="holiday.menu.availability">
+        <source>holiday.menu.availability</source>
+        <target>Availability</target>
+      </trans-unit>
+      <trans-unit id="h246" resname="holiday.page.availability">
+        <source>holiday.page.availability</source>
+        <target>Availability</target>
+      </trans-unit>
+      <trans-unit id="h247" resname="holiday.availability.no_location">
+        <source>holiday.availability.no_location</source>
+        <target>No location is assigned to you.</target>
+      </trans-unit>
+      <trans-unit id="h248" resname="holiday.availability.location">
+        <source>holiday.availability.location</source>
+        <target>Location</target>
+      </trans-unit>
+      <trans-unit id="h249" resname="holiday.availability.closed">
+        <source>holiday.availability.closed</source>
+        <target>closed</target>
+      </trans-unit>
+      <trans-unit id="h250" resname="holiday.availability.unstaffed">
+        <source>holiday.availability.unstaffed</source>
+        <target>Unstaffed</target>
+      </trans-unit>
+      <trans-unit id="h251" resname="holiday.availability.unstaffed_hint">
+        <source>holiday.availability.unstaffed_hint</source>
+        <target>Nobody is present on this opening day.</target>
+      </trans-unit>
+      <trans-unit id="h252" resname="holiday.availability.present">
+        <source>holiday.availability.present</source>
+        <target>Present</target>
+      </trans-unit>
+      <trans-unit id="h253" resname="holiday.availability.pending">
+        <source>holiday.availability.pending</source>
+        <target>Open</target>
+      </trans-unit>
+      <trans-unit id="h254" resname="holiday.availability.absent">
+        <source>holiday.availability.absent</source>
+        <target>Absent</target>
+      </trans-unit>
+      <trans-unit id="h255" resname="holiday.availability.half_day">
+        <source>holiday.availability.half_day</source>
+        <target>half day</target>
+      </trans-unit>
+      <trans-unit id="h256" resname="holiday.availability.no_open_days">
+        <source>holiday.availability.no_open_days</source>
+        <target>The location is not open at any time in this period.</target>
+      </trans-unit>
+      <trans-unit id="h257" resname="holiday.availability.no_members">
+        <source>holiday.availability.no_members</source>
+        <target>No employees are assigned to this location.</target>
+      </trans-unit>
+      <trans-unit id="h258" resname="holiday.availability.delete_extra">
+        <source>holiday.availability.delete_extra</source>
+        <target>Remove extra shift</target>
+      </trans-unit>
+      <trans-unit id="h259" resname="holiday.availability.delete_question">
+        <source>holiday.availability.delete_question</source>
+        <target>Remove the extra shift of %name%?</target>
+      </trans-unit>
+      <trans-unit id="h260" resname="holiday.availability.unstaffed_short">
+        <source>holiday.availability.unstaffed_short</source>
+        <target>empty</target>
+      </trans-unit>
+      <trans-unit id="h261" resname="holiday.location.exception.delete_question">
+        <source>holiday.location.exception.delete_question</source>
+        <target>Delete this exception?</target>
+      </trans-unit>
+      <trans-unit id="h262" resname="holiday.location.member_remove_question">
+        <source>holiday.location.member_remove_question</source>
+        <target>Remove %name% from this location?</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

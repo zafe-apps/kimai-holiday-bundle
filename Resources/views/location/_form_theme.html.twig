@@ -1,0 +1,8 @@
+{# One opening-hours row: weekday name, opens, closes. Weekday = row key + 1. #}
+{% block holiday_opening_hours_row -%}
+    <div class="row g-2 align-items-start mb-2">
+        <div class="col-3 col-form-label">{{ ('holiday.weekday.' ~ (form.vars.name + 1))|trans }}</div>
+        <div class="col-4">{{ form_widget(form.opensAt, {attr: {'aria-label': ('holiday.location.opens_at'|trans) ~ ' ' ~ ('holiday.weekday.' ~ (form.vars.name + 1))|trans}}) }}{{ form_errors(form.opensAt) }}</div>
+        <div class="col-4">{{ form_widget(form.closesAt, {attr: {'aria-label': ('holiday.location.closes_at'|trans) ~ ' ' ~ ('holiday.weekday.' ~ (form.vars.name + 1))|trans}}) }}{{ form_errors(form.closesAt) }}</div>
+    </div>
+{%- endblock %}

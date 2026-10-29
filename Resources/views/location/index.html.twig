@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+{% import '@Holiday/_kit/macros.html.twig' as kit %}
+{% import 'macros/widgets.html.twig' as widgets %}
+{% import 'macros/datatables.html.twig' as tables %}
+
+{% block stylesheets %}{{ parent() }}{% include '@Holiday/_assets.html.twig' with {part: 'css'} %}{% endblock %}
+{% block javascripts %}{{ parent() }}{% include '@Holiday/_assets.html.twig' with {part: 'js'} %}{% endblock %}
+
+{% block page_content_start %}
+    {{ kit.result_callouts() }}
+    {{ parent() }}
+{% endblock %}
+
+{% block main %}
+    {% if rows is empty %}
+        {% if can_edit %}
+            {{ kit.empty_state('holiday.location.empty'|trans, path('holiday_location_create'), 'holiday.location.create'|trans, 'modal-ajax-form') }}
+        {% else %}
+            {{ kit.empty_state('holiday.location.empty'|trans) }}
+        {% endif %}
+    {% else %}
+        {% set columns = {
+            'name': {class: 'alwaysVisible', orderBy: false, title: 'holiday.location.name'},
+            'group': {class: 'd-none d-md-table-cell', orderBy: false, title: 'holiday.location.public_holiday_group'},
+            'hours': {class: 'alwaysVisible', orderBy: false, title: 'holiday.location.opening_hours'},
+            'members': {class: 'text-center w-min', orderBy: false, title: 'holiday.location.members'},
+            'active': {class: 'text-center w-min', orderBy: false, title: 'holiday.location.active'},
+            'actions': {class: 'actions alwaysVisible', orderBy: false},
+        } %}
+        {{ tables.datatable_header('holiday_locations', columns, null, {columnConfig: false, sticky: false}) }}
+            {% for row in rows %}
+                {% set location = row.location %}
+                <tr>
+                    <td class="{{ datatable_column_class('holiday_locations', 'name') }}">{{ location.name }}</td>
+                    <td class="{{ datatable_column_class('holiday_locations', 'group') }}">{{ location.publicHolidayGroup ? location.publicHolidayGroup.name : '' }}</td>
+                    <td class="{{ datatable_column_class('holiday_locations', 'hours') }} kpu-num">{{ row.hours ?: ('holiday.location.closed'|trans) }}</td>
+                    <td class="{{ datatable_column_class('holiday_locations', 'members') }} kpu-num">{{ row.members|length }}</td>
+                    <td class="{{ datatable_column_class('holiday_locations', 'active') }}">{{ widgets.label_boolean(location.active) }}</td>
+                    <td class="{{ datatable_column_class('holiday_locations', 'actions') }}">
+                        {% set event = actions(app.user, 'holiday_location', 'index', {location: location}) %}
+                        {{ widgets.table_actions(event.actions) }}
+                    </td>
+                </tr>
+            {% endfor %}
+        {{ tables.data_table_footer(null, null, null) }}
+
+        {% for row in rows %}
+            {% set location = row.location %}
+            <h2 class="h4 mt-4">{{ location.name }}</h2>
+
+            {% set exceptions_body %}
+                {% if row.exceptions is empty %}
+                    <p class="text-body-secondary mb-2">{{ 'holiday.location.exception.empty'|trans }}</p>
+                {% else %}
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'holiday.location.exception.date'|trans }}</th>
+                                <th scope="col">{{ 'holiday.location.exception.kind'|trans }}</th>
+                                <th scope="col">{{ 'holiday.location.opens_at'|trans }} – {{ 'holiday.location.closes_at'|trans }}</th>
+                                <th scope="col">{{ 'holiday.location.exception.comment'|trans }}</th>
+                                {% if can_edit %}<th scope="col"><span class="visually-hidden">{{ 'holiday.location.actions'|trans }}</span></th>{% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in row.exceptions %}
+                                <tr>
+                                    <td class="kpu-num text-nowrap">{{ e.date|date_short }}</td>
+                                    <td>{{ e.kind.label|trans }}</td>
+                                    <td class="kpu-num">{% if e.opensAt and e.closesAt %}{{ e.opensAt|date('H:i') }}–{{ e.closesAt|date('H:i') }}{% endif %}</td>
+                                    <td>{{ e.comment }}</td>
+                                    {% if can_edit %}
+                                        <td class="text-end">
+                                            <a href="#" class="text-red" data-kpu-post="{{ path('holiday_location_exception_delete', {id: e.id}) }}" data-kpu-token="{{ csrf_token(csrf_id) }}" data-kpu-question="{{ 'holiday.location.exception.delete_question'|trans }}">{{ 'holiday.location.exception.delete'|trans }}</a>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+                {% if can_edit %}
+                    <a href="{{ path('holiday_location_exception_create', {id: location.id}) }}" class="modal-ajax-form">{{ 'holiday.location.exception.create'|trans }}</a>
+                {% endif %}
+            {% endset %}
+            {{ kit.fold('holiday.location.exceptions'|trans, exceptions_body, {count: row.exceptions|length}) }}
+
+            {% set members_body %}
+                {% if row.members is empty %}
+                    <p class="text-body-secondary mb-2">{{ 'holiday.location.members_empty'|trans }}</p>
+                {% else %}
+                    <ul class="list-unstyled mb-2">
+                        {% for user in row.members %}
+                            <li class="d-flex align-items-center gap-2">
+                                <span>{{ user.displayName }}</span>
+                                {% if can_edit %}
+                                    <a href="#" class="text-red" data-kpu-post="{{ path('holiday_location_member_remove', {userId: user.id}) }}" data-kpu-token="{{ csrf_token(csrf_id) }}" data-kpu-question="{{ 'holiday.location.member_remove_question'|trans({'%name%': user.displayName}) }}">{{ 'holiday.location.member_remove'|trans }}</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if can_edit %}
+                    <a href="{{ path('holiday_location_member_add', {id: location.id}) }}" class="modal-ajax-form">{{ 'holiday.location.member_add'|trans }}</a>
+                {% endif %}
+            {% endset %}
+            {{ kit.fold('holiday.location.members'|trans, members_body, {count: row.members|length}) }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}

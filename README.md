@@ -113,6 +113,31 @@ imported stay until they are deleted.
 **Employment contract → Working times**, absence menu (umbrella icon) next to the user picker → **Manual booking**, adds working time or vacation days to a user's balance. Bookings
 cannot be edited; book the opposite amount to correct a mistake. The same menu opens the month PDFs.
 
+### Locations and availability
+
+**Administration → Locations** (`view_location`, edit with `edit_location`) manages locations:
+
+- name, public holiday group, active flag
+- opening hours per weekday (empty = closed)
+- exceptions per date: closed, or special opening with its own times
+- members; a person belongs to at most one location
+
+A date is an **opening day** of a location by this rule, first match wins: exception for the date; full-day public
+holiday of the location's holiday group (closed); the weekday pattern. An inactive location is always closed. A holiday
+group used by a location cannot be deleted.
+
+**Reports → Availability** (`view_availability`) shows who is on site, per location (a selector appears with more than
+one visible location). The week is a row of day cards, the month a table with open days only. A member is **present** on
+an open day when the contract has working time that day, or when an extra shift exists, and there is no approved
+full-day absence. A half-day absence still counts as present and is marked. Further lists per day: **open** (requested,
+not yet approved absence) and **absent**. A day without anyone present is flagged **Unbesetzt**. Closed days have nobody
+present.
+
+**Extra shift** (Aushilfe): a person works on a day without a contract working day. It needs no approval. Rules: no
+contract working day, no approved absence, an opening day of the person's own location, one entry per person and day.
+Create it with the button on the availability page; delete it from the day card (creator, or
+`extra_shift_own` / `extra_shift_other` for the person). The absence calendar shows extra shifts with a plus icon.
+
 ## User interface
 
 The plugin pages follow the shared UI guidelines and kit for Kimai plugins
@@ -136,6 +161,15 @@ Translation keys of this plugin all start with `holiday.`.
 | `view_team_absence` / `view_other_absence` | Team / other users in reports |
 | `approve_*_absence` / `approval_other_absence` | Approval workflow |
 | `edit_public_holidays` | Admin public holidays |
+| `view_location` / `edit_location` | See / edit locations |
+| `view_availability` | Availability view |
+| `extra_shift_own` / `extra_shift_other` | Create extra shifts for yourself / others (others: `access_user` scope) |
+
+Defaults: `ROLE_USER` gets `view_availability` and `extra_shift_own`; `ROLE_TEAMLEAD` additionally `view_location` and
+`extra_shift_other`; `ROLE_ADMIN` and `ROLE_SUPER_ADMIN` all five.
+
+Pages: `/holiday/locations`, `/holiday/availability`, `/holiday/availability/{year}/week/{week}`,
+`/holiday/availability/{year}/month/{month}`, `/holiday/extra-shifts/create`, `/holiday/extra-shifts/{id}/delete`.
 
 ### Scope of the `*_other_*` permissions
 
@@ -168,6 +202,13 @@ With an absence project/activity configured (system settings) and calculation mo
 
 - Declared Kimai version: **≥ 2.64** (`extra.kimai.require: 26400`)
 - Incompatible with the paid WorkContractBundle (same feature area and permissions)
+
+## Development
+
+`dev/kimai-dev.sh` starts the Docker dev stack (Kimai on `http://localhost:8001`), `dev/test.sh` runs PHPUnit.
+`node dev/screenshot.mjs <out.png> <url> [width]` takes a styled screenshot of a dev-stack page with headless Chrome
+(Node >= 22, no dependencies; `--user`/`--password` default to `admin`/`admin1234`, `CHROME_BIN` overrides the Chrome
+path), e.g. `node dev/screenshot.mjs /tmp/a.png http://localhost:8001/de/holiday/availability`.
 
 ## Contributing
 

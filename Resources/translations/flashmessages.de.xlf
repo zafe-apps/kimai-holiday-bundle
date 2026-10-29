@@ -90,6 +90,38 @@
         <source>holiday.error.self_approval</source>
         <target>Eigene Abwesenheiten können nicht selbst genehmigt werden. Das macht ein anderer Genehmiger.</target>
       </trans-unit>
+      <trans-unit id="h101" resname="holiday.error.exception_times_incomplete">
+        <source>holiday.error.exception_times_incomplete</source>
+        <target>Bei Sonderöffnung beide Zeiten angeben.</target>
+      </trans-unit>
+      <trans-unit id="h102" resname="holiday.error.exception_exists">
+        <source>holiday.error.exception_exists</source>
+        <target>Für dieses Datum gibt es schon eine Ausnahme.</target>
+      </trans-unit>
+      <trans-unit id="h103" resname="holiday.error.group_in_use">
+        <source>holiday.error.group_in_use</source>
+        <target>Die Feiertagsgruppe wird von einem Standort verwendet und kann nicht gelöscht werden.</target>
+      </trans-unit>
+      <trans-unit id="h104" resname="holiday.error.extra_shift_exists">
+        <source>holiday.error.extra_shift_exists</source>
+        <target>Für diesen Tag gibt es schon eine Aushilfe.</target>
+      </trans-unit>
+      <trans-unit id="h105" resname="holiday.error.extra_shift_on_workday">
+        <source>holiday.error.extra_shift_on_workday</source>
+        <target>An einem Arbeitstag ist keine Aushilfe nötig.</target>
+      </trans-unit>
+      <trans-unit id="h106" resname="holiday.error.extra_shift_absent">
+        <source>holiday.error.extra_shift_absent</source>
+        <target>An diesem Tag ist eine genehmigte Abwesenheit eingetragen.</target>
+      </trans-unit>
+      <trans-unit id="h107" resname="holiday.error.extra_shift_closed">
+        <source>holiday.error.extra_shift_closed</source>
+        <target>Der Standort hat an diesem Tag geschlossen.</target>
+      </trans-unit>
+      <trans-unit id="h108" resname="holiday.extra_shift.created">
+        <source>holiday.extra_shift.created</source>
+        <target>Aushilfe eingetragen.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
