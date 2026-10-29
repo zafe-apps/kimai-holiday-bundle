@@ -1,10 +1,10 @@
 # HANDOFF — WIP
 
-> Stand 2026-10-23 (nach dem Rollout).
+> Stand 2026-10-29 (Plan 2 ausgerollt).
 
 ## Current goal
-Plan 1 in Betrieb nehmen: SMTP, Stammdaten und Nachtrag auf `zeiterfassung.zafe.at`; danach Plan 2
-(Standort + Verfügbarkeit + Aushilfe) und Plan 3 (Tagesverschiebung).
+Plan 3 (Tagesverschiebung, Spec 4.4) schreiben und umsetzen; Plan 1 und 2 sind live auf
+`zeiterfassung.zafe.at` (Plugin 2.1.0, Kimai 2.70.2).
 
 ## Done
 - Spec freigegeben (`docs/superpowers/specs/2026-10-23-kimai-dienstplan-design.md`).
@@ -20,9 +20,13 @@ Plan 1 in Betrieb nehmen: SMTP, Stammdaten und Nachtrag auf `zeiterfassung.zafe.
   `.superpowers/sdd/2026-10-23-plan-1-fundament-urlaub/progress.md` (git-ignoriert, nur lokal).
 
 ## In progress / Next
-- Task 8 technisch abgeschlossen (Mail über Microsoft-Relay intern bestätigt, Feiertagsgruppe
-  Österreich, Verträge Manuel/Moritz). **Beim Betreiber:** Nachtrag alter Urlaube, Exchange-Connector/SPF
-  für externe Empfänger (Gmail), Compose-Datei nachziehen (alex/sudo), Crontab-Header kosmetisch.
+- Plan 1 live (2.0.0): Mail-Relay, Feiertage, Verträge; Compose-Datei vollständig. **Plan 2 live (2.1.0,
+  29.10.):** Standort Wien mit Öffnungszeiten und vier Mitgliedern, Aushilfe, Verfügbarkeitsansicht;
+  Protokoll `docs/rollout/2026-10-29-plugin-2.1.0.md`. Issues #2 (Urlaubs-Nachtrag) und #3
+  (Gmail-Zustellung) beim Betreiber offen.
+- Nächstes: Plan 3 — Tagesverschiebung (`WorkdayShift`, Antrag/Genehmigung, Chokepoint
+  `UserWorkContract::getExpectedSecondsForDate`, `PresenceKind::SHIFTED`, Zähler „offene Anträge"),
+  dazu Zusammenführung der Duplikate `absenceSeconds`/Feiertags-Reduce; Kleinbefunde in `TODO.md`.
 - Dann Plan 2 und Plan 3 schreiben; offene Punkte in `TODO.md`.
 
 ## Settled decisions
@@ -40,4 +44,4 @@ Plan 1 in Betrieb nehmen: SMTP, Stammdaten und Nachtrag auf `zeiterfassung.zafe.
 - TODO.md
 
 ## Blocked
-- Nachtrag der Urlaube und Connector-Prüfung beim Betreiber; `sudo` auf zafe-server-1 nur mit Passwort.
+- Issues #2/#3 beim Betreiber; Sichtprüfung der Verfügbarkeit auf Prod durch den Betreiber (kein Prod-Login für Claude); `sudo` auf zafe-server-1 nur mit Passwort; Prod-Deploys brauchen die ausdrückliche Freigabe „mach den Deploy auf Prod" (Klassifizierer).
