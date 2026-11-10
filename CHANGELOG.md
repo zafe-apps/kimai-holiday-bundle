@@ -2,22 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
-## 2.4.0 (2026-11-10)
+## 2.5.0 (2026-11-10)
 
 ### Changed
 
-- The absence calendar shows the same for everyone: all active users and every team in the team picker, for
-  employees as well as team leads. Before, employees saw only themselves and team leads only their teams.
 - Sickness (own and of a relative) of colleagues shows as *Absent* (*Abwesend*) in the absence calendar and on the
   availability page. The type stays visible to the owner and to whoever manages them (team lead of their team,
   admin).
-- Kimai's *Reporting* menu is called *Planning* (*Planung*): it only holds the absence calendar and availability.
 
 ### Added
 
 - Setting *Vacation year* (*Urlaubsjahr*): employment year (default, as before) or calendar year. With calendar year
   the year of entry and of leaving get the vacation entitlement pro rata by employed days, rounded up to half days
   (start 15 July, 20 days → 9.5 days); the balance carries over from the year of entry on.
+
+## 2.4.0 (2026-11-10)
+
+### Changed
+
+- The absence calendar shows the same for everyone: all active users and every team in the team picker, for
+  employees as well as team leads. Before, employees saw only themselves and team leads only their teams.
+- Kimai's *Reporting* menu is called *Planning* (*Planung*): it only holds the absence calendar and availability.
+
+### Added
 
 - Working times: every day cell shows its weekday, as the column only names the day of the month.
 - Working times: a second total row "Planned incl. time off" shows the balance minus approved time off after today.
