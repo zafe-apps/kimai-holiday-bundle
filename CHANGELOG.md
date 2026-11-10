@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.4.0 (2026-11-10)
+
+### Changed
+
+- The absence calendar shows the same for everyone: all active users and every team in the team picker, for
+  employees as well as team leads. Before, employees saw only themselves and team leads only their teams.
+- Kimai's *Reporting* menu is called *Planning* (*Planung*): it only holds the absence calendar and availability.
+
+### Added
+
+- Working times: every day cell shows its weekday, as the column only names the day of the month.
+- Working times: a second total row "Planned incl. time off" shows the balance minus approved time off after today.
+  Kimai counts days only up to today, so approved time off reduced the balance only on its day.
+
 ## 2.3.0 (2026-11-10)
 
 ### Changed
