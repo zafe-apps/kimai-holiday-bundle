@@ -87,6 +87,9 @@ users you may access). The tiles at the top show vacation taken, vacation reques
 (entitlement from **Profile → Employment contract**).
 The vacation year runs from the contract start date (anniversary to anniversary) and the balance of the previous year
 carries over automatically; without a start date the calendar year is used and nothing carries over.
+With **System → Settings → Vacation year: Calendar year** every vacation year is a calendar year: the year of entry and
+of leaving get the share of their employed days, rounded up to half days (start 15 July, 20 days → 9.5 days), and the
+balance carries over from the year of entry on.
 
 - **Create** opens the absence form in a modal. Vacation, time off in lieu and "other" absences start as *Requested*;
   sickness is approved immediately.
@@ -107,7 +110,8 @@ Outlook, Google Calendar or Apple Calendar. **Regenerate link** makes the old li
 
 **Planning → Absence calendar** shows the absences of all active users per year or month (`/holiday/absence-calendar/{year}`
 or `/{year}/{month}`). Every user with the `absence` permission sees the same calendar, employees as well as team
-leads. Approved absences and each user's public holidays are shown as bars, requested absences as faded icons; today is
+leads. Sickness of colleagues shows as *Absent*; the owner and whoever manages them (team lead, admin) see the
+type. Approved absences and each user's public holidays are shown as bars, requested absences as faded icons; today is
 framed. Filter by any team with the team picker. The plugin renames Kimai's *Reporting* menu to *Planning*, since it
 only holds the absence calendar and availability.
 

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.5.0 (2026-11-10)
+
+### Changed
+
+- Sickness (own and of a relative) of colleagues shows as *Absent* (*Abwesend*) in the absence calendar and on the
+  availability page. The type stays visible to the owner and to whoever manages them (team lead of their team,
+  admin).
+
+### Added
+
+- Setting *Vacation year* (*Urlaubsjahr*): employment year (default, as before) or calendar year. With calendar year
+  the year of entry and of leaving get the vacation entitlement pro rata by employed days, rounded up to half days
+  (start 15 July, 20 days → 9.5 days); the balance carries over from the year of entry on.
+
 ## 2.4.0 (2026-11-10)
 
 ### Changed
