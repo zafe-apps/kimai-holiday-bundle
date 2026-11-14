@@ -56,6 +56,36 @@ final class AbsenceNotifierTest extends TestCase
         $this->assertSame(['a@example.test', 'b@example.test'], $to);
     }
 
+    public function testTimesheetChangesOfOnePersonAreOneMail(): void
+    {
+        $user = $this->user('user@example.test');
+        $a = $this->user('a@example.test');
+        $changes = [
+            $this->change($user, '2026-10-20 08:00', '2026-10-20 12:00', '2026-10-20 13:00'),
+            $this->change($user, '2026-10-21 08:00', '2026-10-21 12:00', '2026-10-21 11:00'),
+        ];
+
+        $this->notifier([$a])->notifyTimesheetChanges($user, 'requested', $changes, $user);
+
+        $this->assertCount(1, $this->sent);
+        $body = (string) $this->sent[0]->getTextBody();
+        $this->assertStringContainsString('2026-10-20', $body);
+        $this->assertStringContainsString('08:00–12:00', $body);
+        $this->assertStringContainsString('08:00–13:00', $body);
+        $this->assertStringContainsString('2026-10-21', $body);
+        $to = array_map(static fn ($address) => $address->getAddress(), $this->sent[0]->getTo());
+        $this->assertSame(['a@example.test'], $to);
+    }
+
+    private function change(User $user, string $begin, string $oldEnd, string $newEnd): \KimaiPlugin\HolidayBundle\Entity\TimesheetChange
+    {
+        return (new \KimaiPlugin\HolidayBundle\Entity\TimesheetChange())
+            ->setUser($user)
+            ->setDay(new \DateTimeImmutable(substr($begin, 0, 10)))
+            ->setBefore(\KimaiPlugin\HolidayBundle\Tests\Support\TimesheetChangeBuilder::snapshot($begin, $oldEnd))
+            ->setAfter(\KimaiPlugin\HolidayBundle\Tests\Support\TimesheetChangeBuilder::snapshot($begin, $newEnd));
+    }
+
     private function user(string $email): User
     {
         $user = UserBuilder::make()->build();

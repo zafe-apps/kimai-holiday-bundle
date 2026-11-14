@@ -121,6 +121,16 @@ final class TimesheetSnapshot
         return $this->beginAt()?->setTimezone($zone)->setTime(0, 0);
     }
 
+    /** "08:00–12:30 (4:15 h)" for lists and mails. */
+    public function summary(): string
+    {
+        $begin = $this->beginAt()?->format('H:i') ?? '?';
+        $end = $this->endAt()?->format('H:i') ?? '…';
+        $seconds = max(0, (int) $this->duration);
+
+        return sprintf('%s–%s (%d:%02d h)', $begin, $end, intdiv($seconds, 3600), intdiv($seconds % 3600, 60));
+    }
+
     private function instant(?string $iso): ?int
     {
         return $iso === null ? null : (new \DateTimeImmutable($iso))->getTimestamp();

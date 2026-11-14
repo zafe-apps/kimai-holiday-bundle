@@ -1243,6 +1243,33 @@ Action: requested</target>
         <source>holiday.change.kind.delete</source>
         <target>Deleted</target>
       </trans-unit>
+      <trans-unit id="h312" resname="holiday.mail.change_requested.subject">
+        <source>holiday.mail.change_requested.subject</source>
+        <target>Late timesheet change requested</target>
+      </trans-unit>
+      <trans-unit id="h313" resname="holiday.mail.change_requested.body">
+        <source>holiday.mail.change_requested.body</source>
+        <target>%user% changed times after the fact; they need an approval:
+%changes%</target>
+      </trans-unit>
+      <trans-unit id="h314" resname="holiday.mail.change_approved.subject">
+        <source>holiday.mail.change_approved.subject</source>
+        <target>Late timesheet change approved</target>
+      </trans-unit>
+      <trans-unit id="h315" resname="holiday.mail.change_approved.body">
+        <source>holiday.mail.change_approved.body</source>
+        <target>%approver% approved late timesheet changes of %user%:
+%changes%</target>
+      </trans-unit>
+      <trans-unit id="h316" resname="holiday.mail.change_rejected.subject">
+        <source>holiday.mail.change_rejected.subject</source>
+        <target>Late timesheet change rejected</target>
+      </trans-unit>
+      <trans-unit id="h317" resname="holiday.mail.change_rejected.body">
+        <source>holiday.mail.change_rejected.body</source>
+        <target>%approver% rejected late timesheet changes of %user%; the times were restored:
+%changes%</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

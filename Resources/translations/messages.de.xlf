@@ -1243,6 +1243,33 @@ Aktion: beantragt</target>
         <source>holiday.change.kind.delete</source>
         <target>Gelöscht</target>
       </trans-unit>
+      <trans-unit id="h312" resname="holiday.mail.change_requested.subject">
+        <source>holiday.mail.change_requested.subject</source>
+        <target>Zeitnachtrag beantragt</target>
+      </trans-unit>
+      <trans-unit id="h313" resname="holiday.mail.change_requested.body">
+        <source>holiday.mail.change_requested.body</source>
+        <target>%user% hat Zeiten nachträglich geändert, die eine Freigabe brauchen:
+%changes%</target>
+      </trans-unit>
+      <trans-unit id="h314" resname="holiday.mail.change_approved.subject">
+        <source>holiday.mail.change_approved.subject</source>
+        <target>Zeitnachtrag freigegeben</target>
+      </trans-unit>
+      <trans-unit id="h315" resname="holiday.mail.change_approved.body">
+        <source>holiday.mail.change_approved.body</source>
+        <target>%approver% hat Zeitnachträge von %user% freigegeben:
+%changes%</target>
+      </trans-unit>
+      <trans-unit id="h316" resname="holiday.mail.change_rejected.subject">
+        <source>holiday.mail.change_rejected.subject</source>
+        <target>Zeitnachtrag abgelehnt</target>
+      </trans-unit>
+      <trans-unit id="h317" resname="holiday.mail.change_rejected.body">
+        <source>holiday.mail.change_rejected.body</source>
+        <target>%approver% hat Zeitnachträge von %user% abgelehnt, die Zeiten sind zurückgestellt:
+%changes%</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
