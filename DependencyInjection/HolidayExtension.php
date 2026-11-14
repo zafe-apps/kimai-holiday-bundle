@@ -58,6 +58,7 @@ class HolidayExtension extends Extension implements PrependExtensionInterface
             'shift_own',
             'shift_other',
             'approve_shift',
+            'approve_timesheet_change',
         ];
 
         // approve_own_absence stays in the list above, but no role gets it: nobody approves their own absence
@@ -94,6 +95,7 @@ class HolidayExtension extends Extension implements PrependExtensionInterface
                         'shift_own',
                         'shift_other',
                         'approve_shift',
+                        'approve_timesheet_change',
                     ],
                     'ROLE_TEAMLEAD' => [
                         'hours_own_profile',
@@ -112,6 +114,7 @@ class HolidayExtension extends Extension implements PrependExtensionInterface
                         'shift_own',
                         'shift_other',
                         'approve_shift',
+                        'approve_timesheet_change',
                     ],
                     'ROLE_USER' => [
                         'hours_own_profile',

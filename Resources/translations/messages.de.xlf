@@ -1223,6 +1223,93 @@ Aktion: beantragt</target>
         <source>holiday.shift.calendar.legend</source>
         <target>Tagesverschiebung</target>
       </trans-unit>
+      <trans-unit id="h307" resname="holiday.timesheet_approval_days">
+        <source>holiday.timesheet_approval_days</source>
+        <target>Zeitnachträge freigeben ab … Tagen</target>
+      </trans-unit>
+      <trans-unit id="h308" resname="holiday.timesheet_approval_days.help">
+        <source>holiday.timesheet_approval_days.help</source>
+        <target>Zeiten, deren Tag länger zurückliegt, brauchen die Freigabe eines Teamleads. 0 schaltet die Prüfung ab.</target>
+      </trans-unit>
+      <trans-unit id="h309" resname="holiday.change.kind.create">
+        <source>holiday.change.kind.create</source>
+        <target>Nachgetragen</target>
+      </trans-unit>
+      <trans-unit id="h310" resname="holiday.change.kind.update">
+        <source>holiday.change.kind.update</source>
+        <target>Geändert</target>
+      </trans-unit>
+      <trans-unit id="h311" resname="holiday.change.kind.delete">
+        <source>holiday.change.kind.delete</source>
+        <target>Gelöscht</target>
+      </trans-unit>
+      <trans-unit id="h312" resname="holiday.mail.change_requested.subject">
+        <source>holiday.mail.change_requested.subject</source>
+        <target>Zeitnachtrag beantragt</target>
+      </trans-unit>
+      <trans-unit id="h313" resname="holiday.mail.change_requested.body">
+        <source>holiday.mail.change_requested.body</source>
+        <target>%user% hat Zeiten nachträglich geändert, die eine Freigabe brauchen:
+%changes%</target>
+      </trans-unit>
+      <trans-unit id="h314" resname="holiday.mail.change_approved.subject">
+        <source>holiday.mail.change_approved.subject</source>
+        <target>Zeitnachtrag freigegeben</target>
+      </trans-unit>
+      <trans-unit id="h315" resname="holiday.mail.change_approved.body">
+        <source>holiday.mail.change_approved.body</source>
+        <target>%approver% hat Zeitnachträge von %user% freigegeben:
+%changes%</target>
+      </trans-unit>
+      <trans-unit id="h316" resname="holiday.mail.change_rejected.subject">
+        <source>holiday.mail.change_rejected.subject</source>
+        <target>Zeitnachtrag abgelehnt</target>
+      </trans-unit>
+      <trans-unit id="h317" resname="holiday.mail.change_rejected.body">
+        <source>holiday.mail.change_rejected.body</source>
+        <target>%approver% hat Zeitnachträge von %user% abgelehnt, die Zeiten sind zurückgestellt:
+%changes%</target>
+      </trans-unit>
+      <trans-unit id="h318" resname="holiday.change.requests.title">
+        <source>holiday.change.requests.title</source>
+        <target>Zeitnachträge</target>
+      </trans-unit>
+      <trans-unit id="h319" resname="holiday.change.day">
+        <source>holiday.change.day</source>
+        <target>Tag</target>
+      </trans-unit>
+      <trans-unit id="h320" resname="holiday.change.kind">
+        <source>holiday.change.kind</source>
+        <target>Art</target>
+      </trans-unit>
+      <trans-unit id="h321" resname="holiday.change.before">
+        <source>holiday.change.before</source>
+        <target>Vorher</target>
+      </trans-unit>
+      <trans-unit id="h322" resname="holiday.change.after">
+        <source>holiday.change.after</source>
+        <target>Nachher</target>
+      </trans-unit>
+      <trans-unit id="h323" resname="holiday.change.created">
+        <source>holiday.change.created</source>
+        <target>Angelegt am</target>
+      </trans-unit>
+      <trans-unit id="h324" resname="holiday.change.reject_question">
+        <source>holiday.change.reject_question</source>
+        <target>Zeitnachtrag ablehnen? Der Eintrag wird auf den Stand vor der Änderung zurückgestellt.</target>
+      </trans-unit>
+      <trans-unit id="h325" resname="holiday.change.bulk.approved">
+        <source>holiday.change.bulk.approved</source>
+        <target>{1}1 Zeitnachtrag freigegeben.|]1,Inf[%count% Zeitnachträge freigegeben.</target>
+      </trans-unit>
+      <trans-unit id="h326" resname="holiday.change.bulk.rejected">
+        <source>holiday.change.bulk.rejected</source>
+        <target>{1}1 Zeitnachtrag abgelehnt, die Zeit ist zurückgestellt.|]1,Inf[%count% Zeitnachträge abgelehnt, die Zeiten sind zurückgestellt.</target>
+      </trans-unit>
+      <trans-unit id="h327" resname="holiday.change.bulk.skipped">
+        <source>holiday.change.bulk.skipped</source>
+        <target>%count% übersprungen. %reason%</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

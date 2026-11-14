@@ -9,6 +9,8 @@ use KimaiPlugin\HolidayBundle\Enum\VacationYearMode;
 
 class HolidayConfiguration
 {
+    public const DEFAULT_APPROVAL_DAYS = 14;
+
     public function __construct(private readonly SystemConfiguration $configuration)
     {
     }
@@ -70,5 +72,16 @@ class HolidayConfiguration
     public function getVacationYearMode(): VacationYearMode
     {
         return VacationYearMode::tryFrom((string) $this->configuration->find('holiday.vacation_year')) ?? VacationYearMode::EMPLOYMENT;
+    }
+
+    /** Days after which a timesheet change needs an approval; 0 switches the check off. */
+    public function getTimesheetApprovalDays(): int
+    {
+        $value = $this->configuration->find('holiday.timesheet_approval_days');
+        if ($value === null || $value === '') {
+            return self::DEFAULT_APPROVAL_DAYS;
+        }
+
+        return max(0, (int) $value);
     }
 }

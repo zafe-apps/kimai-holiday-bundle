@@ -186,6 +186,30 @@
         <source>holiday.shift.created</source>
         <target>Verschiebung eingetragen.</target>
       </trans-unit>
+      <trans-unit id="h125" resname="holiday.change.needs_approval">
+        <source>holiday.change.needs_approval</source>
+        <target>Diese Änderung liegt länger zurück und braucht die Freigabe eines Teamleads.</target>
+      </trans-unit>
+      <trans-unit id="h126" resname="holiday.error.change_own">
+        <source>holiday.error.change_own</source>
+        <target>Eigene Zeitnachträge kann nur ein anderer Teamlead entscheiden.</target>
+      </trans-unit>
+      <trans-unit id="h127" resname="holiday.error.change_not_open">
+        <source>holiday.error.change_not_open</source>
+        <target>Dieser Zeitnachtrag ist bereits entschieden.</target>
+      </trans-unit>
+      <trans-unit id="h128" resname="holiday.error.change_exported">
+        <source>holiday.error.change_exported</source>
+        <target>Der Eintrag ist bereits exportiert und kann nicht zurückgestellt werden.</target>
+      </trans-unit>
+      <trans-unit id="h129" resname="holiday.error.change_target_missing">
+        <source>holiday.error.change_target_missing</source>
+        <target>Projekt oder Tätigkeit des gelöschten Eintrags gibt es nicht mehr; er kann nicht wiederhergestellt werden.</target>
+      </trans-unit>
+      <trans-unit id="h130" resname="holiday.error.month_open_changes">
+        <source>holiday.error.month_open_changes</source>
+        <target>Für diesen Zeitraum sind noch Zeitnachträge offen. Bitte zuerst entscheiden.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

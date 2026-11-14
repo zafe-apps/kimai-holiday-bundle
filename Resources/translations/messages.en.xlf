@@ -1223,6 +1223,93 @@ Action: requested</target>
         <source>holiday.shift.calendar.legend</source>
         <target>Day shift</target>
       </trans-unit>
+      <trans-unit id="h307" resname="holiday.timesheet_approval_days">
+        <source>holiday.timesheet_approval_days</source>
+        <target>Approve late timesheet changes after … days</target>
+      </trans-unit>
+      <trans-unit id="h308" resname="holiday.timesheet_approval_days.help">
+        <source>holiday.timesheet_approval_days.help</source>
+        <target>Entries whose day lies further back need a team lead's approval. 0 switches the check off.</target>
+      </trans-unit>
+      <trans-unit id="h309" resname="holiday.change.kind.create">
+        <source>holiday.change.kind.create</source>
+        <target>Added later</target>
+      </trans-unit>
+      <trans-unit id="h310" resname="holiday.change.kind.update">
+        <source>holiday.change.kind.update</source>
+        <target>Changed</target>
+      </trans-unit>
+      <trans-unit id="h311" resname="holiday.change.kind.delete">
+        <source>holiday.change.kind.delete</source>
+        <target>Deleted</target>
+      </trans-unit>
+      <trans-unit id="h312" resname="holiday.mail.change_requested.subject">
+        <source>holiday.mail.change_requested.subject</source>
+        <target>Late timesheet change requested</target>
+      </trans-unit>
+      <trans-unit id="h313" resname="holiday.mail.change_requested.body">
+        <source>holiday.mail.change_requested.body</source>
+        <target>%user% changed times after the fact; they need an approval:
+%changes%</target>
+      </trans-unit>
+      <trans-unit id="h314" resname="holiday.mail.change_approved.subject">
+        <source>holiday.mail.change_approved.subject</source>
+        <target>Late timesheet change approved</target>
+      </trans-unit>
+      <trans-unit id="h315" resname="holiday.mail.change_approved.body">
+        <source>holiday.mail.change_approved.body</source>
+        <target>%approver% approved late timesheet changes of %user%:
+%changes%</target>
+      </trans-unit>
+      <trans-unit id="h316" resname="holiday.mail.change_rejected.subject">
+        <source>holiday.mail.change_rejected.subject</source>
+        <target>Late timesheet change rejected</target>
+      </trans-unit>
+      <trans-unit id="h317" resname="holiday.mail.change_rejected.body">
+        <source>holiday.mail.change_rejected.body</source>
+        <target>%approver% rejected late timesheet changes of %user%; the times were restored:
+%changes%</target>
+      </trans-unit>
+      <trans-unit id="h318" resname="holiday.change.requests.title">
+        <source>holiday.change.requests.title</source>
+        <target>Late timesheet changes</target>
+      </trans-unit>
+      <trans-unit id="h319" resname="holiday.change.day">
+        <source>holiday.change.day</source>
+        <target>Day</target>
+      </trans-unit>
+      <trans-unit id="h320" resname="holiday.change.kind">
+        <source>holiday.change.kind</source>
+        <target>Kind</target>
+      </trans-unit>
+      <trans-unit id="h321" resname="holiday.change.before">
+        <source>holiday.change.before</source>
+        <target>Before</target>
+      </trans-unit>
+      <trans-unit id="h322" resname="holiday.change.after">
+        <source>holiday.change.after</source>
+        <target>After</target>
+      </trans-unit>
+      <trans-unit id="h323" resname="holiday.change.created">
+        <source>holiday.change.created</source>
+        <target>Created</target>
+      </trans-unit>
+      <trans-unit id="h324" resname="holiday.change.reject_question">
+        <source>holiday.change.reject_question</source>
+        <target>Reject this late change? The entry is put back to the state before the change.</target>
+      </trans-unit>
+      <trans-unit id="h325" resname="holiday.change.bulk.approved">
+        <source>holiday.change.bulk.approved</source>
+        <target>{1}1 late timesheet change approved.|]1,Inf[%count% late timesheet changes approved.</target>
+      </trans-unit>
+      <trans-unit id="h326" resname="holiday.change.bulk.rejected">
+        <source>holiday.change.bulk.rejected</source>
+        <target>{1}1 late timesheet change rejected, the time was restored.|]1,Inf[%count% late timesheet changes rejected, the times were restored.</target>
+      </trans-unit>
+      <trans-unit id="h327" resname="holiday.change.bulk.skipped">
+        <source>holiday.change.bulk.skipped</source>
+        <target>%count% skipped. %reason%</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

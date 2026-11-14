@@ -4,7 +4,9 @@ namespace KimaiPlugin\HolidayBundle\Tests\Service;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use KimaiPlugin\HolidayBundle\Entity\TimesheetChange;
 use KimaiPlugin\HolidayBundle\Repository\AbsenceRepository;
+use KimaiPlugin\HolidayBundle\Repository\TimesheetChangeRepository;
 use KimaiPlugin\HolidayBundle\Repository\WorkdayShiftRepository;
 use KimaiPlugin\HolidayBundle\Service\ApproverAccess;
 use KimaiPlugin\HolidayBundle\Service\ApproverResolver;
@@ -36,7 +38,7 @@ final class OpenRequestCounterTest extends TestCase
             WorkdayShiftBuilder::requested($employee, '2026-11-06', '2026-11-05'),
         ]);
 
-        $counter = new OpenRequestCounter(new ApproverResolver($users, $access), $absences, $shifts);
+        $counter = new OpenRequestCounter(new ApproverResolver($users, $access), $absences, $shifts, $this->createStub(TimesheetChangeRepository::class));
 
         self::assertSame(3, $counter->countFor($boss));
     }
@@ -61,8 +63,37 @@ final class OpenRequestCounterTest extends TestCase
             WorkdayShiftBuilder::requested($employee, '2026-10-30', '2026-10-29'),
         ]);
 
-        $counter = new OpenRequestCounter(new ApproverResolver($users, $access), $absences, $shifts);
+        $counter = new OpenRequestCounter(new ApproverResolver($users, $access), $absences, $shifts, $this->createStub(TimesheetChangeRepository::class));
 
         self::assertSame(1, $counter->countFor($boss));
+    }
+
+    public function testOpenTimesheetChangesCount(): void
+    {
+        $boss = UserBuilder::make()->build();
+        $employee = UserBuilder::make()->build();
+
+        $users = $this->createStub(UserRepository::class);
+        $users->method('findBy')->willReturn([$boss, $employee]);
+        $access = $this->createStub(ApproverAccess::class);
+        $access->method('mayApprove')->willReturnCallback(
+            static fn (User $u, string $permission = ''): bool => $permission === 'approve_timesheet_change'
+        );
+        $access->method('mayAccess')->willReturn(true);
+
+        $changes = $this->createMock(TimesheetChangeRepository::class);
+        $changes->expects(self::once())->method('findRequestedForUsers')->with([$employee])->willReturn([
+            (new TimesheetChange())->setUser($employee),
+            (new TimesheetChange())->setUser($employee),
+        ]);
+
+        $counter = new OpenRequestCounter(
+            new ApproverResolver($users, $access),
+            $this->createStub(AbsenceRepository::class),
+            $this->createStub(WorkdayShiftRepository::class),
+            $changes
+        );
+
+        self::assertSame(2, $counter->countFor($boss));
     }
 }

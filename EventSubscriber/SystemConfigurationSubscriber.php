@@ -7,6 +7,7 @@ use App\Form\Model\Configuration;
 use App\Form\Model\SystemConfiguration as SystemConfigurationModel;
 use KimaiPlugin\HolidayBundle\Enum\CalculationMode;
 use KimaiPlugin\HolidayBundle\Enum\VacationYearMode;
+use KimaiPlugin\HolidayBundle\Service\HolidayConfiguration;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -78,6 +79,13 @@ class SystemConfigurationSubscriber implements EventSubscriberInterface
                         ->setTranslationDomain('messages')
                         ->setRequired(false)
                         ->setType(IntegerType::class),
+                    (new Configuration('holiday.timesheet_approval_days'))
+                        ->setLabel('holiday.timesheet_approval_days')
+                        ->setTranslationDomain('messages')
+                        ->setRequired(false)
+                        ->setType(IntegerType::class)
+                        ->setValue(HolidayConfiguration::DEFAULT_APPROVAL_DAYS)
+                        ->setOptions(['help' => 'holiday.timesheet_approval_days.help', 'attr' => ['min' => 0]]),
                 ])
         );
 

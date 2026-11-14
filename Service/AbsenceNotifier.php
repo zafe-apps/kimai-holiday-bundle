@@ -4,6 +4,7 @@ namespace KimaiPlugin\HolidayBundle\Service;
 
 use App\Entity\User;
 use KimaiPlugin\HolidayBundle\Entity\Absence;
+use KimaiPlugin\HolidayBundle\Entity\TimesheetChange;
 use KimaiPlugin\HolidayBundle\Entity\WorkdayShift;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
@@ -117,6 +118,39 @@ class AbsenceNotifier
                 '%to%' => $shift->getToDate()?->format('Y-m-d') ?? '',
                 '%comment%' => $shift->getComment() ?? '',
                 '%approver%' => ($actor ?? $shift->getApprovedBy())?->getDisplayName() ?? '',
+            ])
+        );
+    }
+
+    /**
+     * Late timesheet changes of one person, one mail for all of them.
+     *
+     * @param list<TimesheetChange> $changes
+     */
+    public function notifyTimesheetChanges(User $owner, string $event, array $changes, ?User $actor): void
+    {
+        if ($changes === []) {
+            return;
+        }
+
+        $lines = [];
+        foreach ($changes as $change) {
+            $lines[] = sprintf(
+                '%s · %s · %s → %s',
+                $change->getDay()?->format('Y-m-d') ?? '',
+                $this->translator->trans($change->getKind()->label()),
+                $change->getBefore()?->summary($change->getAfter()) ?? '–',
+                $change->getAfter()?->summary($change->getBefore()) ?? '–'
+            );
+        }
+
+        $this->send(
+            $this->recipients($owner, TimesheetChangeService::PERMISSION),
+            $this->translator->trans('holiday.mail.change_' . $event . '.subject'),
+            $this->translator->trans('holiday.mail.change_' . $event . '.body', [
+                '%user%' => $owner->getDisplayName(),
+                '%approver%' => $actor?->getDisplayName() ?? '',
+                '%changes%' => implode("\n", $lines),
             ])
         );
     }
