@@ -97,6 +97,9 @@ check "/en/holiday/workday-shifts/create" 200
 code="$(curl -s -o /dev/null -w '%{http_code}' -c "$JAR" -b "$JAR" -X POST "$BASE/en/holiday/workday-shifts/approve")"
 test "$code" = "403" || fail "workday-shifts/approve without CSRF token: HTTP $code, expected 403"
 echo "ok POST /en/holiday/workday-shifts/approve (no token) 403"
+code="$(curl -s -o /dev/null -w '%{http_code}' -c "$JAR" -b "$JAR" -X POST "$BASE/en/holiday/timesheet-changes/approve")"
+test "$code" = "403" || fail "timesheet-changes/approve without CSRF token: HTTP $code, expected 403"
+echo "ok POST /en/holiday/timesheet-changes/approve (no token) 403"
 
 # Without the session: the API wants a token, an unknown ICS token finds nothing.
 JAR="$(mktemp)"

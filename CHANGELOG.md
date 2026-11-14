@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.6.0 (2026-11-14)
+
+### Added
+
+- Late timesheet changes (*Zeitnachträge*): creating, changing, stopping or deleting a timesheet entry whose day lies
+  more than 14 days back needs a team lead's approval. The change is saved at once and listed on *Open requests*
+  with the times before and after; the team leads get a mail, as for vacation. A rejection puts the entry back to
+  the state before the change. Covers the form, quick entry, bulk actions and the API.
+- Setting *Approve late timesheet changes after … days* (default 14, 0 switches it off) and permission
+  `approve_timesheet_change` (team lead, admin).
+- A month cannot be locked while a late timesheet change in it or in an earlier month of the year is open.
+
 ## 2.5.0 (2026-11-10)
 
 ### Changed

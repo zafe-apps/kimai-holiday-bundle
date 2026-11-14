@@ -6,6 +6,11 @@
 Alle drei Pläne sind live auf `zeiterfassung.zafe.at` (Plugin 2.2.0, Kimai 2.70.2). Offen: Probe der
 Tagesverschiebung durch den Betreiber, Issues #2/#3, Kleinbefunde in `TODO.md`.
 
+## Zeitnachträge (2026-11-14)
+Branch `feat/zeitnachtrag-genehmigung`, Version 2.6.0: Zeitänderungen älter als 14 Tage brauchen die Freigabe
+eines Teamleads. Spec `docs/superpowers/specs/2026-11-14-zeitnachtrag-genehmigung-design.md`, Plan
+`docs/superpowers/plans/2026-11-14-zeitnachtrag-genehmigung.md`. Merge und damit Prod-Deploy macht der Betreiber.
+
 ## Done
 - Spec freigegeben (`docs/superpowers/specs/2026-10-23-kimai-dienstplan-design.md`).
 - Plan 1 Tasks 1–7 subagent-driven umgesetzt und je Task reviewt (Fix-Runden bei Task 4 und 5),
