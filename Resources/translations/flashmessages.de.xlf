@@ -186,6 +186,10 @@
         <source>holiday.shift.created</source>
         <target>Verschiebung eingetragen.</target>
       </trans-unit>
+      <trans-unit id="h125" resname="holiday.change.needs_approval">
+        <source>holiday.change.needs_approval</source>
+        <target>Diese Änderung liegt länger zurück und braucht die Freigabe eines Teamleads.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

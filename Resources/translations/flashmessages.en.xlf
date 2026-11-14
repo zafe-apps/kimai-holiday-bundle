@@ -186,6 +186,10 @@
         <source>holiday.shift.created</source>
         <target>Day shift saved.</target>
       </trans-unit>
+      <trans-unit id="h125" resname="holiday.change.needs_approval">
+        <source>holiday.change.needs_approval</source>
+        <target>This change lies further back and needs a team lead's approval.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
