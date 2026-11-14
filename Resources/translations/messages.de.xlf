@@ -1270,6 +1270,46 @@ Aktion: beantragt</target>
         <target>%approver% hat Zeitnachträge von %user% abgelehnt, die Zeiten sind zurückgestellt:
 %changes%</target>
       </trans-unit>
+      <trans-unit id="h318" resname="holiday.change.requests.title">
+        <source>holiday.change.requests.title</source>
+        <target>Zeitnachträge</target>
+      </trans-unit>
+      <trans-unit id="h319" resname="holiday.change.day">
+        <source>holiday.change.day</source>
+        <target>Tag</target>
+      </trans-unit>
+      <trans-unit id="h320" resname="holiday.change.kind">
+        <source>holiday.change.kind</source>
+        <target>Art</target>
+      </trans-unit>
+      <trans-unit id="h321" resname="holiday.change.before">
+        <source>holiday.change.before</source>
+        <target>Vorher</target>
+      </trans-unit>
+      <trans-unit id="h322" resname="holiday.change.after">
+        <source>holiday.change.after</source>
+        <target>Nachher</target>
+      </trans-unit>
+      <trans-unit id="h323" resname="holiday.change.created">
+        <source>holiday.change.created</source>
+        <target>Angelegt am</target>
+      </trans-unit>
+      <trans-unit id="h324" resname="holiday.change.reject_question">
+        <source>holiday.change.reject_question</source>
+        <target>Zeitnachtrag ablehnen? Der Eintrag wird auf den Stand vor der Änderung zurückgestellt.</target>
+      </trans-unit>
+      <trans-unit id="h325" resname="holiday.change.bulk.approved">
+        <source>holiday.change.bulk.approved</source>
+        <target>{1}1 Zeitnachtrag freigegeben.|]1,Inf[%count% Zeitnachträge freigegeben.</target>
+      </trans-unit>
+      <trans-unit id="h326" resname="holiday.change.bulk.rejected">
+        <source>holiday.change.bulk.rejected</source>
+        <target>{1}1 Zeitnachtrag abgelehnt, die Zeit ist zurückgestellt.|]1,Inf[%count% Zeitnachträge abgelehnt, die Zeiten sind zurückgestellt.</target>
+      </trans-unit>
+      <trans-unit id="h327" resname="holiday.change.bulk.skipped">
+        <source>holiday.change.bulk.skipped</source>
+        <target>%count% übersprungen. %reason%</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -15,7 +15,9 @@ use KimaiPlugin\HolidayBundle\Enum\AbsenceStatus;
 use KimaiPlugin\HolidayBundle\Enum\AbsenceType;
 use KimaiPlugin\HolidayBundle\Form\AbsenceTypeForm;
 use KimaiPlugin\HolidayBundle\Repository\AbsenceRepository;
+use KimaiPlugin\HolidayBundle\Repository\TimesheetChangeRepository;
 use KimaiPlugin\HolidayBundle\Repository\WorkdayShiftRepository;
+use KimaiPlugin\HolidayBundle\Service\TimesheetChangeService;
 use KimaiPlugin\HolidayBundle\Service\AbsenceApprovalService;
 use KimaiPlugin\HolidayBundle\Service\AbsenceExcelExporter;
 use KimaiPlugin\HolidayBundle\Service\AbsencePermissions;
@@ -67,6 +69,7 @@ class AbsenceController extends AbstractController
         private readonly VacationAccountService $accountService,
         private readonly ApproverResolver $approverResolver,
         private readonly WorkdayShiftRepository $shiftRepository,
+        private readonly TimesheetChangeRepository $changeRepository,
     ) {
     }
 
@@ -190,7 +193,7 @@ class AbsenceController extends AbstractController
     #[Route(path: '/absence/requests', name: 'holiday_absence_requests', methods: ['GET'])]
     public function requests(): Response
     {
-        if (!$this->isGranted('approve_other_absence') && !$this->isGranted(WorkdayShiftService::PERMISSION)) {
+        if (!$this->isGranted('approve_other_absence') && !$this->isGranted(WorkdayShiftService::PERMISSION) && !$this->isGranted(TimesheetChangeService::PERMISSION)) {
             throw $this->createAccessDeniedException();
         }
 
@@ -220,6 +223,18 @@ class AbsenceController extends AbstractController
         $shiftTable->addColumn('comment', ['class' => 'd-none d-xl-table-cell', 'orderBy' => false, 'title' => 'comment']);
         $shiftTable->addColumn('actions', ['class' => 'actions alwaysVisible']);
 
+        $changes = $this->changeRepository->findRequestedForUsers($this->approverResolver->subjectsFor($this->getUser(), TimesheetChangeService::PERMISSION));
+        $changeTable = new DataTable('holiday_timesheet_change_requests', new BaseQuery());
+        $changeTable->setPagination(new Pagination(new ArrayAdapter($changes)));
+        $changeTable->setSticky(false);
+        $changeTable->addColumn('user', ['class' => 'alwaysVisible', 'orderBy' => false, 'title' => 'holiday.requests.user']);
+        $changeTable->addColumn('day', ['class' => 'alwaysVisible', 'orderBy' => false, 'title' => 'holiday.change.day']);
+        $changeTable->addColumn('kind', ['class' => 'd-none d-md-table-cell', 'orderBy' => false, 'title' => 'holiday.change.kind']);
+        $changeTable->addColumn('before', ['class' => 'd-none d-md-table-cell', 'orderBy' => false, 'title' => 'holiday.change.before']);
+        $changeTable->addColumn('after', ['class' => 'd-none d-md-table-cell', 'orderBy' => false, 'title' => 'holiday.change.after']);
+        $changeTable->addColumn('created', ['class' => 'd-none d-xl-table-cell', 'orderBy' => false, 'title' => 'holiday.change.created']);
+        $changeTable->addColumn('actions', ['class' => 'actions alwaysVisible']);
+
         $page = new PageSetup($this->translator->trans('holiday.requests.title'));
         $page->setActionName('holiday_absences');
         $page->setActionPayload(['user' => $this->getUser(), 'can_create' => false, 'can_ics' => false]);
@@ -230,6 +245,7 @@ class AbsenceController extends AbstractController
             'dataTable' => $table,
             'absence_days' => $days,
             'shiftTable' => $shiftTable,
+            'changeTable' => $changeTable,
         ]);
     }
 
