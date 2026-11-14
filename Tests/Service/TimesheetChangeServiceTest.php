@@ -42,6 +42,8 @@ final class TimesheetChangeServiceTest extends TestCase
     private ?Timesheet $stored = null;
     private ?Timesheet $restored = null;
     private bool $locked = false;
+    private int $days = 14;
+    private int $lookups = 0;
     /** @var list<string> */
     private array $storeCalls = [];
     private TimesheetChangeGate $gate;
@@ -186,6 +188,16 @@ final class TimesheetChangeServiceTest extends TestCase
 
         self::assertSame($this->open, $change);
         self::assertTrue($change->getAfter()?->sameTimes($this->at('2026-11-10', '09:00', '12:00')));
+    }
+
+    public function testSwitchedOffAsksTheDatabaseNothing(): void
+    {
+        $this->days = 0;
+
+        $change = $this->record(TimesheetChangeKind::UPDATE, $this->old('08:00', '12:00'), $this->old('08:00', '13:00'));
+
+        self::assertNull($change);
+        self::assertSame(0, $this->lookups);
     }
 
     public function testApproveLeavesTheEntryAlone(): void
@@ -355,7 +367,11 @@ final class TimesheetChangeServiceTest extends TestCase
     private function service(): TimesheetChangeService
     {
         $repository = $this->createStub(TimesheetChangeRepository::class);
-        $repository->method('findOpenForTimesheet')->willReturnCallback(fn (): ?TimesheetChange => $this->open);
+        $repository->method('findOpenForTimesheet')->willReturnCallback(function (): ?TimesheetChange {
+            ++$this->lookups;
+
+            return $this->open;
+        });
         $repository->method('save')->willReturnCallback(function (TimesheetChange $change): void {
             $this->saved[] = $change;
         });
@@ -365,7 +381,7 @@ final class TimesheetChangeServiceTest extends TestCase
         });
 
         $configuration = $this->createStub(HolidayConfiguration::class);
-        $configuration->method('getTimesheetApprovalDays')->willReturn(14);
+        $configuration->method('getTimesheetApprovalDays')->willReturnCallback(fn (): int => $this->days);
 
         $resolver = $this->createStub(ApproverResolver::class);
         $resolver->method('approversFor')->willReturnCallback(fn (): array => $this->approvers);

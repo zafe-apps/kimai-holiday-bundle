@@ -227,6 +227,15 @@ class AbsenceController extends AbstractController
         $changeTable = new DataTable('holiday_timesheet_change_requests', new BaseQuery());
         $changeTable->setPagination(new Pagination(new ArrayAdapter($changes)));
         $changeTable->setSticky(false);
+        $changeTable->addColumn('select', [
+            'class' => 'alwaysVisible multiCheckbox w-min',
+            'orderBy' => false,
+            'title' => false,
+            'html_after' => sprintf(
+                '<input type="checkbox" class="form-check-input m-0 align-middle kpu-select-all" data-kpu-form="holiday-timesheet-change-bulk" aria-label="%1$s" title="%1$s">',
+                htmlspecialchars($this->translator->trans('kpu.bulk.select_all', [], 'kpu'))
+            ),
+        ]);
         $changeTable->addColumn('user', ['class' => 'alwaysVisible', 'orderBy' => false, 'title' => 'holiday.requests.user']);
         $changeTable->addColumn('day', ['class' => 'alwaysVisible', 'orderBy' => false, 'title' => 'holiday.change.day']);
         $changeTable->addColumn('kind', ['class' => 'd-none d-md-table-cell', 'orderBy' => false, 'title' => 'holiday.change.kind']);

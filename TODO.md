@@ -82,3 +82,11 @@ Format und Regeln: `shrippen.github.io/overview/VERSIONS.md`.
 - [ ] Kein Rückgängig für Freigabe/Ablehnung von Zeitnachträgen (`Controller/TimesheetChangeController::decide`)
 - [ ] WebTestCase-Abdeckung für `holiday_timesheet_change_*` und den Hinweis nach dem Speichern (`EventSubscriber/TimesheetChangeSubscriber::flashOnce`)
 - [ ] Der Hinweis „braucht die Freigabe eines Teamleads" erscheint erst beim nächsten vollen Seitenaufruf; im Bearbeiten-Dialog (AJAX) und über die API sieht die Person ihn nicht sofort (`EventSubscriber/TimesheetChangeSubscriber::flashOnce`)
+- [ ] Die Person erfährt eine Ablehnung nicht aktiv (keine Mail, keine Meldung); Entscheidung des Betreibers offen (`Service/TimesheetChangeService::reject`, `Service/AbsenceNotifier::notifyTimesheetChanges`)
+- [ ] Unveränderte Zeile der Schnelleingabe mit offenem Nachtrag löst den Hinweis erneut aus (`Service/TimesheetChangeService::merge`)
+- [ ] Wiederhergestellter Eintrag verliert feste Sätze, Meta-Felder und das Export-Kennzeichen (`Service/TimesheetStore::restore`, `Service/TimesheetSnapshot`)
+- [ ] Monatssperre prüft nur den Tag des Nachtrags, nicht den Zieltag einer Verschiebung (`Service/MonthLockService::lock`, `Repository/TimesheetChangeRepository::hasOpenInRange`)
+- [ ] Mail „beantragt" kann hinausgehen, obwohl Kimai den Eintrag danach zurückrollt (`Service/TimesheetChangeBatch::flushMails`)
+- [ ] `ContractController::lockMonth` reicht jede RuntimeException-Meldung als Flash durch statt nur `holiday.error.*` (`Controller/HolidayUiTrait::errorKey`)
+- [ ] Ein Flush je Nachtrag bei Sammelschreibungen (`Repository/TimesheetChangeRepository::save` aus `TimesheetChangeSubscriber::postFlush`)
+

@@ -121,14 +121,25 @@ final class TimesheetSnapshot
         return $this->beginAt()?->setTimezone($zone)->setTime(0, 0);
     }
 
-    /** "08:00–12:30 (4:15 h)" for lists and mails. */
-    public function summary(): string
+    /**
+     * "08:00–12:30 (4:15 h)" for lists and mails. With the other side of a change given, the day is
+     * named when it differs: a move to another day is otherwise invisible.
+     */
+    public function summary(?self $other = null): string
     {
-        $begin = $this->beginAt()?->format('H:i') ?? '?';
-        $end = $this->endAt()?->format('H:i') ?? '…';
+        $begin = $this->beginAt();
+        $otherBegin = $other?->beginAt();
+        $moved = $begin !== null && $otherBegin !== null && $begin->format('Y-m-d') !== $otherBegin->format('Y-m-d');
         $seconds = max(0, (int) $this->duration);
 
-        return sprintf('%s–%s (%d:%02d h)', $begin, $end, intdiv($seconds, 3600), intdiv($seconds % 3600, 60));
+        return sprintf(
+            '%s%s–%s (%d:%02d h)',
+            $moved ? $begin->format('Y-m-d') . ' ' : '',
+            $begin?->format('H:i') ?? '?',
+            $this->endAt()?->format('H:i') ?? '…',
+            intdiv($seconds, 3600),
+            intdiv($seconds % 3600, 60)
+        );
     }
 
     private function instant(?string $iso): ?int

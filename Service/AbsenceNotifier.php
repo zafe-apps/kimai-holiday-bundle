@@ -139,8 +139,8 @@ class AbsenceNotifier
                 '%s · %s · %s → %s',
                 $change->getDay()?->format('Y-m-d') ?? '',
                 $this->translator->trans($change->getKind()->label()),
-                $change->getBefore()?->summary() ?? '–',
-                $change->getAfter()?->summary() ?? '–'
+                $change->getBefore()?->summary($change->getAfter()) ?? '–',
+                $change->getAfter()?->summary($change->getBefore()) ?? '–'
             );
         }
 

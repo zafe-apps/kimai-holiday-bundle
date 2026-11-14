@@ -11,6 +11,11 @@ class TimesheetChangePolicy
     {
     }
 
+    public function isEnabled(): bool
+    {
+        return $this->configuration->getTimesheetApprovalDays() > 0;
+    }
+
     public function isLate(\DateTimeInterface $begin, User $owner, \DateTimeImmutable $now): bool
     {
         $days = $this->configuration->getTimesheetApprovalDays();

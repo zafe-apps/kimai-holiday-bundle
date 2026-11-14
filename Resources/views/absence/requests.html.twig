@@ -76,28 +76,31 @@
     {% endif %}
     {% if hasChanges %}
         <h2 class="h4 mb-2{% if hasAbsences or hasShifts %} mt-4{% endif %}">{{ 'holiday.change.requests.title'|trans }}</h2>
+        {% set change_bulk_form = 'holiday-timesheet-change-bulk' %}
         {{ tables.header(changeTable) }}
         {% set changeColumns = changeTable.sortedColumnNames %}
         {% for change in changeTable %}
             <tr>
                 {% for column, data in changeColumns %}
                     <td class="{{ tables.class(changeTable, column) }}">
-                        {% if column == 'user' %}
+                        {% if column == 'select' %}
+                            {{ kit.bulk_checkbox(change_bulk_form, change.id) }}
+                        {% elseif column == 'user' %}
                             {{ change.user.displayName }}
                         {% elseif column == 'day' %}
                             <span class="kpu-num">{{ change.day|date_short }}</span>
                             {# narrow screens: kind and both states live in this cell, the other columns are hidden #}
                             <div class="d-md-none text-secondary">
                                 {{ change.kind.label|trans }}<br>
-                                <span class="kpu-num">{{ change.before ? change.before.summary : '–' }}</span><br>
-                                <span class="kpu-num">→ {{ change.after ? change.after.summary : '–' }}</span>
+                                <span class="kpu-num">{{ change.before ? change.before.summary(change.after) : '–' }}</span><br>
+                                <span class="kpu-num">→ {{ change.after ? change.after.summary(change.before) : '–' }}</span>
                             </div>
                         {% elseif column == 'kind' %}
                             {{ change.kind.label|trans }}
                         {% elseif column == 'before' %}
-                            <span class="kpu-num">{{ change.before ? change.before.summary : '–' }}</span>
+                            <span class="kpu-num">{{ change.before ? change.before.summary(change.after) : '–' }}</span>
                         {% elseif column == 'after' %}
-                            <span class="kpu-num">{{ change.after ? change.after.summary : '–' }}</span>
+                            <span class="kpu-num">{{ change.after ? change.after.summary(change.before) : '–' }}</span>
                         {% elseif column == 'created' %}
                             <span class="kpu-num">{{ change.createdAt|date_time }}</span>
                         {% elseif column == 'actions' %}
@@ -109,5 +112,9 @@
             </tr>
         {% endfor %}
         {{ tables.footer(changeTable) }}
+        {{ kit.bulk_bar(change_bulk_form, [
+            {label: 'approve'|trans, url: path('holiday_timesheet_change_approve'), token: csrf_token('holiday_timesheet_change_action'), icon: 'success', ajax: true},
+            {label: 'reject'|trans, url: path('holiday_timesheet_change_reject'), token: csrf_token('holiday_timesheet_change_action'), icon: 'rejected', class: '', ajax: true, question: 'holiday.change.reject_question'|trans},
+        ]) }}
     {% endif %}
 {% endblock %}

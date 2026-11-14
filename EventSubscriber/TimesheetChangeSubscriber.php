@@ -21,6 +21,7 @@ use KimaiPlugin\HolidayBundle\Service\TimesheetChangeBatch;
 use KimaiPlugin\HolidayBundle\Service\TimesheetChangeGate;
 use KimaiPlugin\HolidayBundle\Service\TimesheetChangeService;
 use KimaiPlugin\HolidayBundle\Service\TimesheetSnapshot;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -50,6 +51,7 @@ class TimesheetChangeSubscriber implements EventSubscriberInterface
         private readonly ManagerRegistry $registry,
         private readonly TokenStorageInterface $tokens,
         private readonly RequestStack $requests,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -117,7 +119,12 @@ class TimesheetChangeSubscriber implements EventSubscriberInterface
         $this->recording = true;
         try {
             foreach ($pending as $item) {
-                $this->recordItem($item, $manager, $now);
+                // time tracking must never fail because of this plugin (e.g. migration not applied yet)
+                try {
+                    $this->recordItem($item, $manager, $now);
+                } catch (\Throwable $e) {
+                    $this->logger->error('HolidayBundle: could not record a late timesheet change: ' . $e->getMessage());
+                }
             }
         } finally {
             $this->recording = false;
@@ -127,7 +134,11 @@ class TimesheetChangeSubscriber implements EventSubscriberInterface
     public function onTerminate(): void
     {
         $this->pending = [];
-        $this->batch->flushMails();
+        try {
+            $this->batch->flushMails();
+        } catch (\Throwable $e) {
+            $this->logger->error('HolidayBundle: could not send timesheet change mails: ' . $e->getMessage());
+        }
     }
 
     /** Quick entry sends new rows through the update event: without an id it is a create. */

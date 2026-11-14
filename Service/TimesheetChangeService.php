@@ -38,6 +38,11 @@ class TimesheetChangeService
         User $actor,
         \DateTimeImmutable $now,
     ): ?TimesheetChange {
+        // switched off: no request, and no query either
+        if (!$this->policy->isEnabled()) {
+            return null;
+        }
+
         // a further change to an entry with an open request belongs to that request
         $open = $timesheetId === null ? null : $this->repository->findOpenForTimesheet($timesheetId);
         if ($open !== null) {

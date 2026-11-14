@@ -57,6 +57,17 @@ final class TimesheetSnapshotTest extends TestCase
         self::assertSame('alt', $before->description);
     }
 
+    public function testSummaryNamesTheDayOnlyWhenItMoved(): void
+    {
+        $third = TimesheetSnapshot::fromTimesheet($this->timesheet('2026-10-03 08:00', '2026-10-03 16:00', 0));
+        $tenth = TimesheetSnapshot::fromTimesheet($this->timesheet('2026-10-10 08:00', '2026-10-10 16:00', 0));
+
+        self::assertSame('08:00–16:00 (8:00 h)', $third->summary());
+        self::assertSame('08:00–16:00 (8:00 h)', $third->summary($third));
+        self::assertSame('2026-10-03 08:00–16:00 (8:00 h)', $third->summary($tenth));
+        self::assertSame('2026-10-10 08:00–16:00 (8:00 h)', $tenth->summary($third));
+    }
+
     public function testDayInTimezone(): void
     {
         $snapshot = TimesheetSnapshot::fromTimesheet($this->timesheet('2026-10-20 00:30', '2026-10-20 02:00', 0));

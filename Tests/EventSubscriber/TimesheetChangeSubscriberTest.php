@@ -24,6 +24,7 @@ use KimaiPlugin\HolidayBundle\Service\TimesheetSnapshot;
 use KimaiPlugin\HolidayBundle\Tests\Support\TimesheetChangeBuilder;
 use KimaiPlugin\HolidayBundle\Tests\Support\UserBuilder;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -39,6 +40,7 @@ final class TimesheetChangeSubscriberTest extends TestCase
     /** @var list<array{TimesheetChangeKind, ?int, ?TimesheetSnapshot, ?TimesheetSnapshot}> */
     private array $recorded = [];
     private TimesheetChangeGate $gate;
+    private bool $recordFails = false;
 
     protected function setUp(): void
     {
@@ -154,6 +156,18 @@ final class TimesheetChangeSubscriberTest extends TestCase
         self::assertFalse($this->gate->isSuspended());
     }
 
+    public function testFailingRecorderNeverBreaksTheTimesheetWrite(): void
+    {
+        $this->recordFails = true;
+        $timesheet = $this->existing(7, '2026-10-20 09:00', '2026-10-20 12:00');
+        $subscriber = $this->subscriber();
+
+        $subscriber->onUpdate(new TimesheetUpdatePreEvent($timesheet));
+        $subscriber->postFlush();
+
+        self::assertSame([], $this->recorded);
+    }
+
     private function existing(int $id, string $begin, string $end): Timesheet
     {
         $timesheet = TimesheetChangeBuilder::timesheet($this->owner, $begin, $end, 0, $id);
@@ -198,6 +212,9 @@ final class TimesheetChangeSubscriberTest extends TestCase
         $service = $this->createStub(TimesheetChangeService::class);
         $service->method('record')->willReturnCallback(
             function (TimesheetChangeKind $kind, User $owner, ?int $id, ?TimesheetSnapshot $before, ?TimesheetSnapshot $after) {
+                if ($this->recordFails) {
+                    throw new \RuntimeException('table missing');
+                }
                 $this->recorded[] = [$kind, $id, $before, $after];
 
                 return null;
@@ -212,6 +229,7 @@ final class TimesheetChangeSubscriberTest extends TestCase
             $registry,
             $tokens,
             new RequestStack(),
+            new NullLogger(),
         );
     }
 }
