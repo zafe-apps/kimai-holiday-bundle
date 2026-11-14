@@ -66,8 +66,12 @@ class ContractController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token');
         }
         $user = $this->getTargetUser($request, $this->userRepository);
-        $this->monthLockService->lock($user, $year, $month, $this->getUser());
-        $this->flashSuccess('action.update.success');
+        try {
+            $this->monthLockService->lock($user, $year, $month, $this->getUser());
+            $this->flashSuccess('action.update.success');
+        } catch (\RuntimeException $e) {
+            $this->flashError($e->getMessage());
+        }
 
         return $this->redirectToRoute('holiday_working_times', ['year' => $year, 'user' => $user->getId()]);
     }

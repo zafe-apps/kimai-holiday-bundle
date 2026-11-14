@@ -190,6 +190,26 @@
         <source>holiday.change.needs_approval</source>
         <target>This change lies further back and needs a team lead's approval.</target>
       </trans-unit>
+      <trans-unit id="h126" resname="holiday.error.change_own">
+        <source>holiday.error.change_own</source>
+        <target>Only another team lead can decide your own late timesheet changes.</target>
+      </trans-unit>
+      <trans-unit id="h127" resname="holiday.error.change_not_open">
+        <source>holiday.error.change_not_open</source>
+        <target>This late timesheet change has been decided already.</target>
+      </trans-unit>
+      <trans-unit id="h128" resname="holiday.error.change_exported">
+        <source>holiday.error.change_exported</source>
+        <target>The entry has been exported and cannot be restored.</target>
+      </trans-unit>
+      <trans-unit id="h129" resname="holiday.error.change_target_missing">
+        <source>holiday.error.change_target_missing</source>
+        <target>The project or activity of the deleted entry no longer exists; it cannot be restored.</target>
+      </trans-unit>
+      <trans-unit id="h130" resname="holiday.error.month_open_changes">
+        <source>holiday.error.month_open_changes</source>
+        <target>There are open late timesheet changes in this period. Please decide them first.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

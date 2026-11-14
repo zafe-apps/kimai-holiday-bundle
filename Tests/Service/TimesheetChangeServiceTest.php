@@ -2,6 +2,7 @@
 
 namespace KimaiPlugin\HolidayBundle\Tests\Service;
 
+use App\Entity\Timesheet;
 use App\Entity\User;
 use KimaiPlugin\HolidayBundle\Entity\TimesheetChange;
 use KimaiPlugin\HolidayBundle\Enum\AbsenceStatus;
@@ -9,10 +10,13 @@ use KimaiPlugin\HolidayBundle\Enum\TimesheetChangeKind;
 use KimaiPlugin\HolidayBundle\Repository\TimesheetChangeRepository;
 use KimaiPlugin\HolidayBundle\Service\ApproverResolver;
 use KimaiPlugin\HolidayBundle\Service\HolidayConfiguration;
+use KimaiPlugin\HolidayBundle\Service\PeriodLockGuard;
 use KimaiPlugin\HolidayBundle\Service\TimesheetChangeBatch;
+use KimaiPlugin\HolidayBundle\Service\TimesheetChangeGate;
 use KimaiPlugin\HolidayBundle\Service\TimesheetChangePolicy;
 use KimaiPlugin\HolidayBundle\Service\TimesheetChangeService;
 use KimaiPlugin\HolidayBundle\Service\TimesheetSnapshot;
+use KimaiPlugin\HolidayBundle\Service\TimesheetStore;
 use KimaiPlugin\HolidayBundle\Tests\Support\TimesheetChangeBuilder;
 use KimaiPlugin\HolidayBundle\Tests\Support\UserBuilder;
 use PHPUnit\Framework\TestCase;
@@ -35,8 +39,16 @@ final class TimesheetChangeServiceTest extends TestCase
     /** @var list<array{TimesheetChange, string}> */
     private array $batched = [];
 
+    private ?Timesheet $stored = null;
+    private ?Timesheet $restored = null;
+    private bool $locked = false;
+    /** @var list<string> */
+    private array $storeCalls = [];
+    private TimesheetChangeGate $gate;
+
     protected function setUp(): void
     {
+        $this->gate = new TimesheetChangeGate();
         $this->owner = $this->user();
         $this->lead = $this->user();
         $this->otherLead = $this->user();
@@ -176,6 +188,139 @@ final class TimesheetChangeServiceTest extends TestCase
         self::assertTrue($change->getAfter()?->sameTimes($this->at('2026-11-10', '09:00', '12:00')));
     }
 
+    public function testApproveLeavesTheEntryAlone(): void
+    {
+        $change = $this->openChange(TimesheetChangeKind::UPDATE);
+
+        $this->service()->approve($change, $this->lead);
+
+        self::assertSame(AbsenceStatus::APPROVED, $change->getStatus());
+        self::assertSame($this->lead, $change->getApprovedBy());
+        self::assertSame([], $this->storeCalls);
+        self::assertSame([[$change, 'approved']], $this->batched);
+    }
+
+    public function testRejectedUpdateGetsTheOldTimesBack(): void
+    {
+        $change = $this->openChange(TimesheetChangeKind::UPDATE);
+        $this->stored = TimesheetChangeBuilder::timesheet($this->owner, self::OLD_DAY . ' 08:00', self::OLD_DAY . ' 13:00', 0, self::TIMESHEET);
+
+        $this->service()->reject($change, $this->lead);
+
+        self::assertSame(['apply 12:00', 'update suspended'], $this->storeCalls);
+        self::assertSame(AbsenceStatus::REJECTED, $change->getStatus());
+        // the restore itself is no new request and sends exactly one mail event
+        self::assertSame([[$change, 'rejected']], $this->batched);
+        self::assertCount(1, $this->saved);
+    }
+
+    public function testRejectedCreateIsDeleted(): void
+    {
+        $change = $this->openChange(TimesheetChangeKind::CREATE);
+        $this->stored = TimesheetChangeBuilder::timesheet($this->owner, self::OLD_DAY . ' 08:00', self::OLD_DAY . ' 13:00', 0, self::TIMESHEET);
+
+        $this->service()->reject($change, $this->lead);
+
+        self::assertSame(['delete suspended'], $this->storeCalls);
+        self::assertSame(AbsenceStatus::REJECTED, $change->getStatus());
+    }
+
+    public function testRejectedDeleteComesBackWithANewId(): void
+    {
+        $change = $this->openChange(TimesheetChangeKind::DELETE);
+        $this->restored = TimesheetChangeBuilder::timesheet($this->owner, self::OLD_DAY . ' 08:00', self::OLD_DAY . ' 12:00', 0, 99);
+
+        $this->service()->reject($change, $this->lead);
+
+        self::assertSame(['restore suspended'], $this->storeCalls);
+        self::assertSame(99, $change->getTimesheetId());
+        self::assertSame(AbsenceStatus::REJECTED, $change->getStatus());
+    }
+
+    public function testRejectedDeleteWithoutProjectStaysOpen(): void
+    {
+        $change = $this->openChange(TimesheetChangeKind::DELETE);
+        $this->restored = null;
+
+        $this->assertFails('holiday.error.change_target_missing', fn () => $this->service()->reject($change, $this->lead));
+
+        self::assertSame(AbsenceStatus::REQUESTED, $change->getStatus());
+        self::assertSame([], $this->batched);
+    }
+
+    public function testExportedEntryCannotBeRejected(): void
+    {
+        $change = $this->openChange(TimesheetChangeKind::UPDATE);
+        $this->stored = TimesheetChangeBuilder::timesheet($this->owner, self::OLD_DAY . ' 08:00', self::OLD_DAY . ' 13:00', 0, self::TIMESHEET);
+        $this->stored->setExported(true);
+
+        $this->assertFails('holiday.error.change_exported', fn () => $this->service()->reject($change, $this->lead));
+
+        self::assertSame(AbsenceStatus::REQUESTED, $change->getStatus());
+        self::assertSame([], $this->storeCalls);
+    }
+
+    public function testLockedMonthCannotBeRejectedButApproved(): void
+    {
+        $this->locked = true;
+        $change = $this->openChange(TimesheetChangeKind::UPDATE);
+        $this->stored = TimesheetChangeBuilder::timesheet($this->owner, self::OLD_DAY . ' 08:00', self::OLD_DAY . ' 13:00', 0, self::TIMESHEET);
+
+        $this->assertFails('holiday.error.month_locked', fn () => $this->service()->reject($change, $this->lead));
+        self::assertSame(AbsenceStatus::REQUESTED, $change->getStatus());
+
+        $this->service()->approve($change, $this->lead);
+        self::assertSame(AbsenceStatus::APPROVED, $change->getStatus());
+    }
+
+    public function testVanishedEntryClosesTheRequest(): void
+    {
+        $change = $this->openChange(TimesheetChangeKind::UPDATE);
+        $this->stored = null;
+
+        $this->service()->reject($change, $this->lead);
+
+        self::assertSame([], $this->storeCalls);
+        self::assertSame(AbsenceStatus::REJECTED, $change->getStatus());
+    }
+
+    public function testNobodyDecidesTheirOwnRequest(): void
+    {
+        $change = $this->openChange(TimesheetChangeKind::UPDATE);
+
+        $this->assertFails('holiday.error.change_own', fn () => $this->service()->approve($change, $this->owner));
+        $this->assertFails('holiday.error.change_own', fn () => $this->service()->reject($change, $this->owner));
+    }
+
+    public function testDecidedRequestCannotBeDecidedAgain(): void
+    {
+        $change = $this->openChange(TimesheetChangeKind::UPDATE)->setStatus(AbsenceStatus::APPROVED);
+
+        $this->assertFails('holiday.error.change_not_open', fn () => $this->service()->reject($change, $this->lead));
+    }
+
+    private function openChange(TimesheetChangeKind $kind): TimesheetChange
+    {
+        return (new TimesheetChange())
+            ->setUser($this->owner)
+            ->setRequestedBy($this->owner)
+            ->setTimesheetId(self::TIMESHEET)
+            ->setDay(new \DateTimeImmutable(self::OLD_DAY))
+            ->setKind($kind)
+            ->setBefore($kind === TimesheetChangeKind::CREATE ? null : $this->old('08:00', '12:00'))
+            ->setAfter($kind === TimesheetChangeKind::DELETE ? null : $this->old('08:00', '13:00'));
+    }
+
+    private function assertFails(string $key, callable $work): void
+    {
+        try {
+            $work();
+            self::fail('expected ' . $key);
+        } catch (\InvalidArgumentException|\RuntimeException $e) {
+            self::assertSame($key, $e->getMessage());
+        }
+    }
+
     private function record(TimesheetChangeKind $kind, ?TimesheetSnapshot $before, ?TimesheetSnapshot $after, ?User $actor = null): ?TimesheetChange
     {
         return $this->service()->record(
@@ -234,6 +379,28 @@ final class TimesheetChangeServiceTest extends TestCase
             $this->batched[] = [$change, $event];
         });
 
-        return new TimesheetChangeService($repository, new TimesheetChangePolicy($configuration), $resolver, $batch);
+        $store = $this->createStub(TimesheetStore::class);
+        $store->method('find')->willReturnCallback(fn (): ?Timesheet => $this->stored);
+        $store->method('applyTimes')->willReturnCallback(function (Timesheet $timesheet, TimesheetSnapshot $state): void {
+            $this->storeCalls[] = 'apply ' . substr((string) $state->end, 11, 5);
+        });
+        $store->method('update')->willReturnCallback(function (): void {
+            $this->storeCalls[] = 'update' . ($this->gate->isSuspended() ? ' suspended' : '');
+        });
+        $store->method('delete')->willReturnCallback(function (): void {
+            $this->storeCalls[] = 'delete' . ($this->gate->isSuspended() ? ' suspended' : '');
+        });
+        $store->method('restore')->willReturnCallback(function (): ?Timesheet {
+            $this->storeCalls[] = 'restore' . ($this->gate->isSuspended() ? ' suspended' : '');
+
+            return $this->restored;
+        });
+
+        $guard = $this->createStub(PeriodLockGuard::class);
+        if ($this->locked) {
+            $guard->method('assertOpen')->willThrowException(new \RuntimeException('holiday.error.month_locked'));
+        }
+
+        return new TimesheetChangeService($repository, new TimesheetChangePolicy($configuration), $resolver, $batch, $store, $guard, $this->gate);
     }
 }
