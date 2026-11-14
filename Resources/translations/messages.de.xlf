@@ -1223,6 +1223,26 @@ Aktion: beantragt</target>
         <source>holiday.shift.calendar.legend</source>
         <target>Tagesverschiebung</target>
       </trans-unit>
+      <trans-unit id="h307" resname="holiday.timesheet_approval_days">
+        <source>holiday.timesheet_approval_days</source>
+        <target>Zeitnachträge freigeben ab … Tagen</target>
+      </trans-unit>
+      <trans-unit id="h308" resname="holiday.timesheet_approval_days.help">
+        <source>holiday.timesheet_approval_days.help</source>
+        <target>Zeiten, deren Tag länger zurückliegt, brauchen die Freigabe eines Teamleads. 0 schaltet die Prüfung ab.</target>
+      </trans-unit>
+      <trans-unit id="h309" resname="holiday.change.kind.create">
+        <source>holiday.change.kind.create</source>
+        <target>Nachgetragen</target>
+      </trans-unit>
+      <trans-unit id="h310" resname="holiday.change.kind.update">
+        <source>holiday.change.kind.update</source>
+        <target>Geändert</target>
+      </trans-unit>
+      <trans-unit id="h311" resname="holiday.change.kind.delete">
+        <source>holiday.change.kind.delete</source>
+        <target>Gelöscht</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

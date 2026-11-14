@@ -1223,6 +1223,26 @@ Action: requested</target>
         <source>holiday.shift.calendar.legend</source>
         <target>Day shift</target>
       </trans-unit>
+      <trans-unit id="h307" resname="holiday.timesheet_approval_days">
+        <source>holiday.timesheet_approval_days</source>
+        <target>Approve late timesheet changes after … days</target>
+      </trans-unit>
+      <trans-unit id="h308" resname="holiday.timesheet_approval_days.help">
+        <source>holiday.timesheet_approval_days.help</source>
+        <target>Entries whose day lies further back need a team lead's approval. 0 switches the check off.</target>
+      </trans-unit>
+      <trans-unit id="h309" resname="holiday.change.kind.create">
+        <source>holiday.change.kind.create</source>
+        <target>Added later</target>
+      </trans-unit>
+      <trans-unit id="h310" resname="holiday.change.kind.update">
+        <source>holiday.change.kind.update</source>
+        <target>Changed</target>
+      </trans-unit>
+      <trans-unit id="h311" resname="holiday.change.kind.delete">
+        <source>holiday.change.kind.delete</source>
+        <target>Deleted</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
